@@ -146,6 +146,7 @@ body::before {
     background-size: 200% 200%;
     background-position: 0% 0%;
     animation: twinkle 8s ease-in-out infinite;
+    will-change: transform, opacity;
     opacity: 0.6;
     pointer-events: none;
     z-index: 0;
@@ -937,6 +938,42 @@ body::before {
     100% {
         transform: scale(1);
     }
-}.result-share
-.btn-icon
- display: none !important; 
+}
+
+/* 깨진 아이콘 숨김 처리 */
+.result-share .btn-icon {
+    display: none !important;
+}
+
+/* 토스트 알림 스타일 */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+}
+
+#toast-message {
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+#toast-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -584,7 +584,7 @@ async function shareResult() {
         } else {
             // Web Share API 미지원 시 클립보드 복사
             await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-            alert('결과가 클립보드에 복사되었습니다! 원하시는 곳에 붙여넣어 공유하세요.');
+            showToast('결과가 복사되었습니다! ✨');
         }
     } catch (err) {
         console.error('Share failed:', err);
@@ -609,11 +609,23 @@ async function shareApp() {
             await navigator.share(shareData);
         } else {
             await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-            alert('앱 공유 링크가 클립보드에 복사되었습니다! 친구들에게 전달해보세요. 🎁');
+            showToast('링크가 복사되었습니다! ✨');
         }
     } catch (err) {
         console.error('App share failed:', err);
     }
+}
+
+function showToast(message) {
+    const msgEl = document.getElementById('toast-message');
+    if (!msgEl) return;
+
+    msgEl.innerText = message;
+    msgEl.classList.add('show');
+
+    setTimeout(() => {
+        msgEl.classList.remove('show');
+    }, 2500);
 }
 
 // 사주 계산 함수들
