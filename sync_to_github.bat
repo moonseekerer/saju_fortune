@@ -7,7 +7,9 @@ set VERSION=%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%
 set VERSION=%VERSION: =0%
 
 :: index.html 내의 스타일시트와 자바스크립트 경로에 버전 쿼리 스트링 추가/업데이트
-powershell -Command "(gc index.html) -replace 'style\.css(\?v=\d+)?', 'style.css?v=%VERSION%' -replace 'script\.js(\?v=\d+)?', 'script.js?v=%VERSION%' | Out-File -encoding utf8 index.html"
+:: Get-Content와 Out-File 모두 -Encoding UTF8을 명시하여 한글 깨짐 방지
+powershell -Command "$c = Get-Content -Path index.html -Encoding UTF8; $c = $c -replace 'style\.css(\?v=\d+)?', 'style.css?v=%VERSION%'; $c = $c -replace 'script\.js(\?v=\d+)?', 'script.js?v=%VERSION%'; Set-Content -Path index.html -Value $c -Encoding UTF8"
+
 echo 캐시 방지 버전 적용 완료: v=%VERSION%
 echo.
 

@@ -4,195 +4,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>?ъ＜ 遺꾩꽍 ?댄뵆由ъ??댁뀡</title>
-    <!-- CSS 遺꾨━ -->
-    <link rel="stylesheet" href="style.css?v=20260205005009">
+    <title>사주 분석 어플리케이션</title>
+    <!-- CSS 분리 -->
+    <link rel="stylesheet" href="style.css?v=20260205005148">
 </head>
 
 <body>
     <div class="app-container">
-        <!-- 1. ?낅젰 ?붾㈃ -->
+        <!-- 1. 입력 화면 -->
         <div id="input-screen" class="input-section">
             <div class="logo-area">
-                <h1>?댁꽭 APP</h1>
-                <p>?앸뀈?붿씪???낅젰?섎㈃ ?뱀떊???ъ＜瑜?遺꾩꽍?대뱶由쎈땲??</p>
+                <h1>운세 APP</h1>
+                <p>생년월일을 입력하면 당신의 사주를 분석해드립니다.</p>
             </div>
 
             <form onsubmit="analyzeSaju(event)">
                 <div class="form-group">
-                    <label class="form-label">?대쫫 (?됰꽕??</label>
-                    <input type="text" id="userName" class="form-input" placeholder="?? ?띻만?? required>
+                    <label class="form-label">이름 (닉네임)</label>
+                    <input type="text" id="userName" class="form-input" placeholder="예: 홍길동" required>
                 </div>
 
                 <div class="row">
                     <div class="col form-group">
-                        <label class="form-label">?앸뀈</label>
+                        <label class="form-label">생년</label>
                         <input type="number" id="birthYear" class="form-input" placeholder="1990" min="1900" max="2100"
                             required>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">??/label>
+                        <label class="form-label">월</label>
                         <select id="birthMonth" class="form-select" required>
-                            <option value="">?좏깮</option>
-                            <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}??/option>`);</script>
+                            <option value="">선택</option>
+                            <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}월</option>`);</script>
                         </select>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">??/label>
+                        <label class="form-label">일</label>
                         <select id="birthDay" class="form-select" required>
-                            <option value="">?좏깮</option>
-                            <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}??/option>`);</script>
+                            <option value="">선택</option>
+                            <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}일</option>`);</script>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">?쒖뼱???쒓컙</label>
+                    <label class="form-label">태어난 시간</label>
                     <select id="birthTime" class="form-select">
-                        <option value="99">紐⑤쫫</option>
-                        <option value="0">?먯떆 (23:30 ~ 01:29)</option>
-                        <option value="1">異뺤떆 (01:30 ~ 03:29)</option>
-                        <option value="2">?몄떆 (03:30 ~ 05:29)</option>
-                        <option value="3">臾섏떆 (05:30 ~ 07:29)</option>
-                        <option value="4">吏꾩떆 (07:30 ~ 09:29)</option>
-                        <option value="5">?ъ떆 (09:30 ~ 11:29)</option>
-                        <option value="6">?ㅼ떆 (11:30 ~ 13:29)</option>
-                        <option value="7">誘몄떆 (13:30 ~ 15:29)</option>
-                        <option value="8">?좎떆 (15:30 ~ 17:29)</option>
-                        <option value="9">?좎떆 (17:30 ~ 19:29)</option>
-                        <option value="10">?좎떆 (19:30 ~ 21:29)</option>
-                        <option value="11">?댁떆 (21:30 ~ 23:29)</option>
+                        <option value="99">모름</option>
+                        <option value="0">자시 (23:30 ~ 01:29)</option>
+                        <option value="1">축시 (01:30 ~ 03:29)</option>
+                        <option value="2">인시 (03:30 ~ 05:29)</option>
+                        <option value="3">묘시 (05:30 ~ 07:29)</option>
+                        <option value="4">진시 (07:30 ~ 09:29)</option>
+                        <option value="5">사시 (09:30 ~ 11:29)</option>
+                        <option value="6">오시 (11:30 ~ 13:29)</option>
+                        <option value="7">미시 (13:30 ~ 15:29)</option>
+                        <option value="8">신시 (15:30 ~ 17:29)</option>
+                        <option value="9">유시 (17:30 ~ 19:29)</option>
+                        <option value="10">술시 (19:30 ~ 21:29)</option>
+                        <option value="11">해시 (21:30 ~ 23:29)</option>
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn" id="main-submit-btn">遺꾩꽍 ?쒖옉?섍린 ??/button>
+                <button type="submit" class="submit-btn" id="main-submit-btn">분석 시작하기 ✨</button>
             </form>
 
             <button class="share-btn secondary" onclick="shareApp()"
                 style="margin-top: 30px; border-style: dashed; opacity: 0.8;">
-                移쒓뎄?먭쾶 ????怨듭쑀?섍린 ?럞
+                친구에게 이 앱 공유하기 🎁
             </button>
         </div>
 
-        <!-- 2. 寃곌낵 ?붾㈃ -->
+        <!-- 2. 결과 화면 -->
         <div id="result-screen" class="result-section">
-            <button class="back-btn" onclick="goBack()">???ㅼ떆 ?낅젰?섍린</button>
+            <button class="back-btn" onclick="goBack()">← 다시 입력하기</button>
             <header style="text-align: center; margin-bottom: 20px;">
                 <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Analysis Report</div>
                 <h1 id="result-name-title"
                     style="margin: 0; background: linear-gradient(to right, #54a0ff, #00d2d3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-                    ???ъ＜ 由ы룷??/h1>
+                    님 사주 리포트</h1>
                 <div id="result-desc" style="margin-top: 10px; font-weight: 300; font-size: 0.9rem;"></div>
             </header>
 
             <div class="mini-grid">
                 <div id="col-hour" class="mini-col" onclick="showTabDetail('hour')">
                     <span id="hour-pillar" class="mini-char">-</span>
-                    <div class="col-label">?쒖＜</div>
-                    <div class="col-sub">留먮뀈/?먯떇</div>
+                    <div class="col-label">시주</div>
+                    <div class="col-sub">말년/자식</div>
                 </div>
                 <div id="col-day" class="mini-col" onclick="showTabDetail('day')">
                     <span id="day-pillar" class="mini-char">-</span>
-                    <div class="col-label">?쇱＜(??</div>
-                    <div class="col-sub">蹂몄썝/諛곗슦??/div>
+                    <div class="col-label">일주(나)</div>
+                    <div class="col-sub">본원/배우자</div>
                 </div>
                 <div id="col-month" class="mini-col" onclick="showTabDetail('month')">
                     <span id="month-pillar" class="mini-char">-</span>
-                    <div class="col-label">?붿＜</div>
-                    <div class="col-sub">?ы쉶/遺紐?/div>
+                    <div class="col-label">월주</div>
+                    <div class="col-sub">사회/부모</div>
                 </div>
                 <div id="col-year" class="mini-col" onclick="showTabDetail('year')">
                     <span id="year-pillar" class="mini-char">-</span>
-                    <div class="col-label">?꾩＜</div>
-                    <div class="col-sub">珥덈뀈/議곗긽</div>
+                    <div class="col-label">년주</div>
+                    <div class="col-sub">초년/조상</div>
                 </div>
             </div>
 
-            <!-- ???댁슜 ?쒖떆 -->
+            <!-- 탭 내용 표시 -->
             <div id="tab-detail-display" class="tab-content-area" style="display:none;">
                 <h3 id="detail-title" style="margin-top:0; color:var(--primary-color); font-size: 1.1rem;"></h3>
                 <div id="detail-body"></div>
             </div>
 
             <div id="bottom-analysis">
-                <div class="sub-tabs">
-                    <button class="sub-tab-btn active" id="btn-general" onclick="switchSubTab('general')">醫낇빀 遺꾩꽍</button>
-                    <button class="sub-tab-btn" id="btn-love" onclick="switchSubTab('love')">?뮆 ?곗븷??/button>
-                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">?뮥 ?щЪ??/button>
+                <div class="sub-tabs" style="overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;">
+                    <button class="sub-tab-btn active" id="btn-general" onclick="switchSubTab('general')">종합 분석</button>
+                    <button class="sub-tab-btn" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
+                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
+                    <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')">🏥 건강운</button>
+                    <button class="sub-tab-btn" id="btn-study" onclick="switchSubTab('study')">📚 학업운</button>
                 </div>
 
                 <div id="view-general" class="analysis-view">
                     <div class="card">
-                        <h3>?쭥 ?怨좊궃 湲곗쭏</h3>
+                        <h3>🧙 타고난 기질</h3>
                         <p id="nature-text"></p>
                     </div>
                     <div class="card">
-                        <h3>?뙚 2026???댁꽭 誘몃━蹂닿린</h3>
+                        <h3>🌟 2026년 운세 미리보기</h3>
                         <p id="fortune-text"></p>
                     </div>
                 </div>
 
                 <div id="view-love" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>?뮆 ?섏쓽 ?곗븷 ?ㅽ???/h3>
+                        <h3>💕 나의 연애 스타일</h3>
                         <p id="love-text"></p>
                     </div>
                 </div>
 
                 <div id="view-wealth" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>?뮥 ?섏쓽 ?щЪ 洹몃쫯</h3>
+                        <h3>💰 나의 재물 그릇</h3>
                         <p id="wealth-text"></p>
+                    </div>
+                </div>
+
+                <div id="view-health" class="analysis-view" style="display:none;">
+                    <div class="card">
+                        <h3>🏥 나의 건강 관리</h3>
+                        <p id="health-text"></p>
+                    </div>
+                </div>
+
+                <div id="view-study" class="analysis-view" style="display:none;">
+                    <div class="card">
+                        <h3>📚 나의 학습 스타일</h3>
+                        <p id="study-text"></p>
                     </div>
                 </div>
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="share-btn" onclick="shareResult()" style="flex: 2;">寃곌낵 怨듭쑀?섍린 ?뵕</button>
-                <button class="share-btn secondary" onclick="shareApp()" style="flex: 1; font-size: 0.9rem;">??異붿쿇
-                    ?럞</button>
+                <button class="share-btn" onclick="shareResult()" style="flex: 2;">결과 공유하기 🔗</button>
+                <button class="share-btn secondary" onclick="shareApp()" style="flex: 1; font-size: 0.9rem;">앱 추천
+                    🎁</button>
             </div>
 
-            <!-- ?섎떒 愿묎퀬 -->
+            <!-- 하단 광고 -->
             <div class="ad-section"
                 style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px;">?럞 ?ㅻ뒛???댁꽭 異붿쿇 ?꾩씠??/p>
+                <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px;">🎁 오늘의 운세 추천 아이템</p>
                 <div
                     style="min-height: 140px; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden;">
                     <script src="https://ads-partners.coupang.com/g.js"></script>
                     <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
                 </div>
-                <p style="font-size: 9px; opacity: 0.4; margin-top: 10px;">???ъ뒪?낆? 荑좏뙜 ?뚰듃?덉뒪 ?쒕룞???쇳솚?쇰줈, ?댁뿉 ?곕Ⅸ ?쇱젙?≪쓽 ?섏닔猷뚮?
-                    ?쒓났諛쏆뒿?덈떎.</p>
+                <p style="font-size: 9px; opacity: 0.4; margin-top: 10px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를
+                    제공받습니다.</p>
             </div>
         </div>
     </div>
 
-    <!-- 愿묎퀬 ?앹뾽 -->
+    <!-- 광고 팝업 -->
     <div id="ad-popup" class="ad-popup-overlay">
         <div class="ad-popup-content">
-            <h2 style="color: #fab1a0; margin-bottom: 20px;">?뵰 ?대챸??遺꾩꽍 以묒엯?덈떎...</h2>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">遺꾩꽍???꾨즺?섎뒗 ?숈븞<br>蹂몄씤?먭쾶 留욌뒗 ?됱슫???꾩씠?쒖쓣 ?뺤씤??蹂댁꽭??
+            <h2 style="color: #fab1a0; margin-bottom: 20px;">🔮 운명을 분석 중입니다...</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">분석이 완료되는 동안<br>본인에게 맞는 행운의 아이템을 확인해 보세요!
             </p>
             <div
                 style="min-height: 140px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 25px;">
                 <script src="https://ads-partners.coupang.com/g.js"></script>
                 <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
             </div>
-            <button class="submit-btn" id="ad-close-btn" onclick="closeAdPopup()">愿묎퀬 ?뺤씤 以?(3...)</button>
-            <p style="font-size: 9px; opacity: 0.4; margin-top: 15px;">???ъ뒪?낆? 荑좏뙜 ?뚰듃?덉뒪 ?쒕룞???쇳솚?쇰줈, ?댁뿉 ?곕Ⅸ ?쇱젙?≪쓽 ?섏닔猷뚮? ?쒓났諛쏆뒿?덈떎.
+            <button class="submit-btn" id="ad-close-btn" onclick="closeAdPopup()">광고 확인 중 (3...)</button>
+            <p style="font-size: 9px; opacity: 0.4; margin-top: 15px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
             </p>
         </div>
     </div>
 
-    <!-- 濡쒕뵫 -->
+    <!-- 로딩 -->
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
-        <div style="color: white; font-weight: 300;">?ъ＜ 紐낆떇??遺꾩꽍 以묒엯?덈떎...</div>
+        <div style="color: white; font-weight: 300;">사주 명식을 분석 중입니다...</div>
     </div>
 
-    <!-- JavaScript 遺꾨━ -->
-    <script src="script.js?v=20260205005009"></script>
+    <!-- JavaScript 분리 -->
+    <script src="script.js?v=20260205005148"></script>
 </body>
 
 </html>
