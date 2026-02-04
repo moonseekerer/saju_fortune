@@ -293,8 +293,6 @@ function updateBackground(char) {
 
 function updateOhaengChart(pillars) {
     const counts = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
-
-    // 8글자 모두 순회하며 오행 카운트 (년, 월, 일, 시의 천간/지지)
     Object.values(pillars).forEach(p => {
         if (p.s !== "모") {
             const sEl = getColorClass(p.s);
@@ -306,18 +304,78 @@ function updateOhaengChart(pillars) {
         }
     });
 
-    // 막대 그래프 업데이트
-    Object.keys(counts).forEach(el => {
-        const count = counts[el];
-        const bar = document.getElementById(`bar-${el}`);
-        const countText = document.getElementById(`count-${el}`);
+    const canvas = document.getElementById('ohaengRadarChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radius = width * 0.35;
 
-        if (bar && countText) {
-            // 최대 8글자이므로 (count / 8) * 100 으로 비율 계산
-            const percent = (count / 8) * 100;
-            bar.style.width = `${percent}%`;
-            countText.innerText = count;
-        }
+    ctx.clearRect(0, 0, width, height);
+
+    const labels = ["wood", "fire", "earth", "metal", "water"];
+    const emojis = { wood: "🌳木", fire: "🔥火", earth: "⛰️土", metal: "🪙金", water: "🌊水" };
+    const angles = labels.map((_, i) => (Math.PI * 2 / 5) * i - Math.PI / 2);
+
+    // 1. 그리드 그리기 (오각형 배경)
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.lineWidth = 1;
+    for (let level = 1; level <= 4; level++) {
+        ctx.beginPath();
+        const r = (radius / 4) * level;
+        angles.forEach((angle, i) => {
+            const x = centerX + Math.cos(angle) * r;
+            const y = centerY + Math.sin(angle) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    // 2. 축 선 그리기
+    angles.forEach(angle => {
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
+        ctx.stroke();
+    });
+
+    // 3. 데이터 플롯 그리기
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(84, 160, 255, 0.4)";
+    ctx.strokeStyle = "rgba(84, 160, 255, 0.8)";
+    ctx.lineWidth = 3;
+    angles.forEach((angle, i) => {
+        const count = counts[labels[i]];
+        // 최대 8글자이지만 가시성을 위해 4를 최대치 정도로 보정 (팔자 중 한 오행이 4개면 매우 강함)
+        const r = (radius / 4) * Math.min(count, 4);
+        const x = centerX + Math.cos(angle) * r;
+        const y = centerY + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 4. 이모지 라벨 그리기
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    angles.forEach((angle, i) => {
+        const r = radius + 25;
+        const x = centerX + Math.cos(angle) * r;
+        const y = centerY + Math.sin(angle) * r;
+        ctx.fillText(emojis[labels[i]], x, y);
+
+        // 숫자 표시
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
+        ctx.fillText(counts[labels[i]], x, y + 20);
+        ctx.font = "20px Arial"; // 폰트 복구
     });
 }
 
