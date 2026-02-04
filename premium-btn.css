@@ -1,0 +1,111 @@
+/* 프리미엄 공유 버튼 스타일 */
+.premium-share-btn {
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #FFD700 0%, #FDB931 50%, #FFD700 100%);
+    color: #4a3b00;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.premium-share-btn.result-share {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    color: #5c282b;
+    box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+}
+
+/* 반짝이는 효과 */
+.premium-share-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transition: 0.5s;
+    animation: shimmer 3s infinite;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-icon {
+    font-size: 1.8rem;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.main-text {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.sub-text {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    font-weight: 500;
+}
+
+.premium-share-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+}
+
+.premium-share-btn.result-share:hover {
+    box-shadow: 0 8px 25px rgba(255, 154, 158, 0.6);
+}
+
+.premium-share-btn:active {
+    transform: translateY(1px);
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
