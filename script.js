@@ -3,6 +3,18 @@ let pendingData = null;
 let lastResultData = null;
 let adShown = false;
 
+// --- 🔒 보안 설정: 우클릭 및 개발자 도구 접근 제한 ---
+document.addEventListener('contextmenu', e => e.preventDefault()); // 우클릭 방지
+document.addEventListener('keydown', e => {
+    // F12, Ctrl+Shift+I/J/C, Ctrl+U 방지
+    if (e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+        e.preventDefault();
+        return false;
+    }
+});
+
 const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const stemReadings = { "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무", "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계" };
