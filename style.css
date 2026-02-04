@@ -406,3 +406,13 @@ body {
     border-color: #54a0ff;
     transform: scale(0.98);
 }
+
+.share-btn.secondary {
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-btn.secondary:active {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+}

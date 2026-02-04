@@ -351,3 +351,28 @@ async function shareResult() {
         console.error('Share failed:', err);
     }
 }
+
+async function shareApp() {
+    const shareText = `🔮 [무료 사주] 당신의 타고난 운명을 확인해보세요!\n\n` +
+        `지금 바로 이름과 생년월일만 넣으면\n` +
+        `2026년 신년 운세부터 재물운, 연애운까지\n` +
+        `정확하게 분석해드립니다. ✨\n\n` +
+        `함께 사주 보러 가기! 👇`;
+
+    const shareData = {
+        title: '신비로운 사주 분석 APP',
+        text: shareText,
+        url: window.location.href
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+            alert('앱 공유 링크가 클립보드에 복사되었습니다! 친구들에게 전달해보세요. 🎁');
+        }
+    } catch (err) {
+        console.error('App share failed:', err);
+    }
+}
