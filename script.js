@@ -156,15 +156,23 @@ const pillarInterpretations = {
 };
 
 function getColoredHtml(stem, branch) {
-    if (stem === "모" && branch === "름") return "모름";
+    if (stem === "모" && branch === "름") return `<div class="pillar-box"><span class="unknown-pillar">모름</span></div>`;
 
     const sRead = stemReadings[stem] || "?";
     const bRead = branchReadings[branch] || "?";
     const sColor = getColorClass(stem);
     const bColor = getColorClass(branch);
 
-    return `<span class="${sColor}">${stem}<span style="font-size:0.4em; opacity:0.8; margin-left:1px;">(${sRead})</span></span>` +
-        `<span class="${bColor}">${branch}<span style="font-size:0.4em; opacity:0.8; margin-left:1px;">(${bRead})</span></span>`;
+    return `<div class="pillar-box">
+                <div class="pillar-item">
+                    <span class="${sColor} char-main">${stem}</span>
+                    <span class="char-sub">${sRead}</span>
+                </div>
+                <div class="pillar-item">
+                    <span class="${bColor} char-main">${branch}</span>
+                    <span class="char-sub">${bRead}</span>
+                </div>
+            </div>`;
 }
 
 function calculatePillars(year, month, day, timeIdx) {
@@ -194,11 +202,15 @@ function calculatePillars(year, month, day, timeIdx) {
     // 시주
     let hourStem = "?";
     let hourBranch = "?";
-    if (timeIdx != 99) {
-        hourBranch = branches[timeIdx];
+
+    // timeIdx 정수형 변환 (문자열 "99" 등 처리)
+    const tIdx = parseInt(timeIdx);
+
+    if (tIdx !== 99) {
+        hourBranch = branches[tIdx];
         const dStemIdx = stems.indexOf(dayStem);
         const hSBase = (dStemIdx % 5) * 2;
-        const hSIdx = (hSBase + parseInt(timeIdx)) % 10;
+        const hSIdx = (hSBase + tIdx) % 10;
         hourStem = stems[hSIdx];
     } else {
         hourStem = "모"; hourBranch = "름";

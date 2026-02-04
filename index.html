@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>사주 분석 어플리케이션</title>
     <!-- CSS 분리 -->
-    <link rel="stylesheet" href="style.css?v=20260205025645">
+    <link rel="stylesheet" href="style.css?v=20260205030505">
 </head>
 
 <body>
@@ -169,22 +169,22 @@
 
             <div class="mini-grid">
                 <div id="col-hour" class="mini-col" onclick="showTabDetail('hour')">
-                    <span id="hour-pillar" class="mini-char">-</span>
+                    <div id="hour-pillar" class="mini-char">-</div>
                     <div class="col-label">시주</div>
                     <div class="col-sub">말년/자식</div>
                 </div>
                 <div id="col-day" class="mini-col" onclick="showTabDetail('day')">
-                    <span id="day-pillar" class="mini-char">-</span>
+                    <div id="day-pillar" class="mini-char">-</div>
                     <div class="col-label">일주(나)</div>
                     <div class="col-sub">본원/배우자</div>
                 </div>
                 <div id="col-month" class="mini-col" onclick="showTabDetail('month')">
-                    <span id="month-pillar" class="mini-char">-</span>
+                    <div id="month-pillar" class="mini-char">-</div>
                     <div class="col-label">월주</div>
                     <div class="col-sub">사회/부모</div>
                 </div>
                 <div id="col-year" class="mini-col" onclick="showTabDetail('year')">
-                    <span id="year-pillar" class="mini-char">-</span>
+                    <div id="year-pillar" class="mini-char">-</div>
                     <div class="col-label">년주</div>
                     <div class="col-sub">초년/조상</div>
                 </div>
@@ -210,8 +210,7 @@
                 </div>
 
                 <!-- 상세 분석 탭 (나머지 4개) -->
-                <div class="sub-tabs"
-                    style="overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; margin-top: 10px;">
+                <div class="sub-tabs">
                     <button class="sub-tab-btn active" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
                     <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
                     <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')">🏥 건강운</button>
@@ -321,7 +320,7 @@
     </div>
 
     <!-- JavaScript 분리 -->
-    <script src="script.js?v=20260205025645"></script>
+    <script src="script.js?v=20260205030505"></script>
 </body>
 
 </html>
