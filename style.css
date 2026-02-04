@@ -26,15 +26,40 @@ body {
     padding: 0;
     min-height: 100vh;
     color: var(--text-color);
-    background-color: var(--bg-default);
-    background-image: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent),
-        radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.3), transparent);
-    background-attachment: fixed;
+    background: linear-gradient(-45deg, #134E5E, #4e0000, #3d4a57, #2c2c2c, #112a52);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow-x: hidden;
     transition: background-color 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    20% {
+        background-position: 100% 50%;
+    }
+
+    40% {
+        background-position: 50% 100%;
+    }
+
+    60% {
+        background-position: 100% 0%;
+    }
+
+    80% {
+        background-position: 0% 100%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .app-container {
