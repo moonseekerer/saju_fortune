@@ -282,6 +282,45 @@ const studyMap = {
     "癸": "직관력이 매우 좋고 아이디어가 풍부합니다. 암송하거나 소리 내어 읽기, 혹은 청각적인 자료를 활용할 때 암기력이 극대화되는 '청각적 학습자'인 경우가 많습니다. <br><br><strong>공부 팁:</strong> 질문을 통해 원리를 파악하거나 명상을 통해 집중력을 높인 뒤 공부를 시작하세요. 컨디션 기복이 성적에 영향을 주기 쉬우니 멘탈 관리가 핵심입니다."
 };
 
+function updateBackground(char) {
+    const element = getColorClass(char); // wood, fire, earth, metal, water
+    if (element) {
+        document.body.style.backgroundColor = `var(--bg-${element})`;
+    } else {
+        document.body.style.backgroundColor = `var(--bg-default)`;
+    }
+}
+
+function updateOhaengChart(pillars) {
+    const counts = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+
+    // 8글자 모두 순회하며 오행 카운트 (년, 월, 일, 시의 천간/지지)
+    Object.values(pillars).forEach(p => {
+        if (p.s !== "모") {
+            const sEl = getColorClass(p.s);
+            if (sEl) counts[sEl]++;
+        }
+        if (p.b !== "름") {
+            const bEl = getColorClass(p.b);
+            if (bEl) counts[bEl]++;
+        }
+    });
+
+    // 막대 그래프 업데이트
+    Object.keys(counts).forEach(el => {
+        const count = counts[el];
+        const bar = document.getElementById(`bar-${el}`);
+        const countText = document.getElementById(`count-${el}`);
+
+        if (bar && countText) {
+            // 최대 8글자이므로 (count / 8) * 100 으로 비율 계산
+            const percent = (count / 8) * 100;
+            bar.style.width = `${percent}%`;
+            countText.innerText = count;
+        }
+    });
+}
+
 function showSajuResult(data) {
     lastResultData = data;
     const { name, year, month, day, pillars } = data;
@@ -289,8 +328,16 @@ function showSajuResult(data) {
     document.getElementById('result-screen').style.display = 'block';
     window.scrollTo(0, 0);
 
+    // 만 나이 계산
+    const today = new Date();
+    let age = today.getFullYear() - year;
+    const m = today.getMonth() - (month - 1);
+    if (m < 0 || (m === 0 && today.getDate() < day)) {
+        age--;
+    }
+
     document.getElementById('result-name-title').innerText = `${name}님 사주 리포트`;
-    document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 | ${pillars.day.s}${pillars.day.b}일주`;
+    document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 (만 ${age}세) | ${pillars.day.s}${pillars.day.b}일주`;
 
     // 기둥 업데이트 (Hanja)
     document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
@@ -307,6 +354,8 @@ function showSajuResult(data) {
     document.getElementById('health-text').innerHTML = healthMap[dStem] || "건강운 정보가 없습니다.";
     document.getElementById('study-text').innerHTML = studyMap[dStem] || "학업운 정보가 없습니다.";
 
+    updateBackground(dStem);
+    updateOhaengChart(pillars);
     showTabDetail('day');
     switchSubTab('love');
 }
@@ -317,6 +366,11 @@ function showTabDetail(type) {
     document.querySelectorAll('.mini-col').forEach(c => c.classList.remove('active'));
     document.getElementById(`col-${type}`).classList.add('active');
 
+    // 배경색 전환
+    if (data.s !== '모') {
+        updateBackground(data.s);
+    }
+
     const titleEl = document.getElementById('detail-title');
     const bodyEl = document.getElementById('detail-body');
     const interp = pillarInterpretations[data.s] || {};
@@ -325,8 +379,21 @@ function showTabDetail(type) {
     let bodyHtml = "";
 
     if (type === 'hour' && data.s === '모') {
-        titleText = "시주: 정보 없음";
-        bodyHtml = "<p>시간을 모르면 말년운과 자식운 분석이 어렵습니다.</p>";
+        titleText = "시주(시간): 정보 없음";
+        bodyHtml = `
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; margin-top:10px;">
+                <h4 style="color:#ffd700; margin-top:0;">❓ 시간을 몰라도 괜찮나요?</h4>
+                <p style="font-size:0.9rem; line-height:1.6; margin-bottom:10px;">
+                    엄밀히 따지면 태어난 시간을 모를 경우, 네 개의 기둥(사주) 중 세 개만 보는 <strong>'삼주(三柱)'</strong>를 분석하게 됩니다. 하지만 실망하실 필요는 없습니다!
+                </p>
+                <ul style="font-size:0.85rem; padding-left:20px; line-height:1.7; opacity:0.9;">
+                    <li><strong>운의 흐름:</strong> 인생의 큰 흐름인 '대운(大運)'은 년, 월, 일만으로도 충분히 파악이 가능합니다.</li>
+                    <li><strong>말년운/자식운:</strong> 시주(時柱)는 주로 50대 이후의 노후 삶과 자식과의 인연을 상징합니다.</li>
+                    <li><strong>보완 가능:</strong> 현재의 기질과 2026년 신년 운세 등 핵심적인 내용은 이미 삼주 안에 80% 이상 담겨 있습니다.</li>
+                </ul>
+                <p style="font-size:0.85rem; margin-top:10px; color:var(--primary-color);">* 정확한 시간을 나중에 알게 되시면 다시 입력하여 보완된 결과를 확인해 보세요!</p>
+            </div>
+        `;
     } else {
         const labels = { year: "년주(뿌리)", month: "월주(사회)", day: "일주(나)", hour: "시주(미래)" };
         titleText = `${labels[type]}: ${data.s}${data.b}`;
@@ -352,6 +419,7 @@ function switchSubTab(tab) {
 }
 
 function goBack() {
+    updateBackground(null); // 기본 배경으로 복구
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('input-screen').style.display = 'flex';
 }
