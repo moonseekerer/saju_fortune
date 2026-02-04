@@ -316,7 +316,8 @@ function updateOhaengChart(pillars) {
     ctx.clearRect(0, 0, width, height);
 
     const labels = ["wood", "fire", "earth", "metal", "water"];
-    const emojis = { wood: "🌳木", fire: "🔥火", earth: "⛰️土", metal: "🪙金", water: "🌊水" };
+    const emojis = { wood: "🌳", fire: "🔥", earth: "⛰️", metal: "⚔️", water: "🌊" };
+    const hanjas = { wood: "(木)", fire: "(火)", earth: "(土)", metal: "(金)", water: "(水)" };
     const angles = labels.map((_, i) => (Math.PI * 2 / 5) * i - Math.PI / 2);
 
     // 1. 그리드 그리기 (오각형 배경)
@@ -362,20 +363,27 @@ function updateOhaengChart(pillars) {
     ctx.stroke();
 
     // 4. 이모지 라벨 그리기
-    ctx.font = "20px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     angles.forEach((angle, i) => {
-        const r = radius + 25;
+        const r = radius + 35; // 공간 확보를 위해 더 넓게
         const x = centerX + Math.cos(angle) * r;
         const y = centerY + Math.sin(angle) * r;
-        ctx.fillText(emojis[labels[i]], x, y);
+
+        // 이모지 표시
+        ctx.font = "24px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText(emojis[labels[i]], x, y - 12);
+
+        // 한자 표시 (괄호 포함)
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.fillText(hanjas[labels[i]], x, y + 12);
 
         // 숫자 표시
-        ctx.font = "12px Arial";
-        ctx.fillStyle = "rgba(255,255,255,0.6)";
-        ctx.fillText(counts[labels[i]], x, y + 20);
-        ctx.font = "20px Arial"; // 폰트 복구
+        ctx.font = "11px Arial";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillText(`${counts[labels[i]]}개`, x, y + 28);
     });
 }
 
