@@ -33,7 +33,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* 중앙 정렬 */
             overflow-x: hidden;
         }
 
@@ -109,7 +108,6 @@
             box-shadow: 0 0 0 2px rgba(84, 160, 255, 0.2);
         }
 
-        /* Fix for white text on white background in select options */
         .form-select option {
             background-color: white;
             color: #333;
@@ -139,7 +137,12 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .submit-btn:active {
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .submit-btn:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -175,7 +178,7 @@
             }
         }
 
-        /* 결과 화면 (기존 디자인 재활용) */
+        /* 결과 화면 */
         .result-section {
             display: none;
             padding-top: 20px;
@@ -196,12 +199,18 @@
             border-radius: 15px;
             text-align: center;
             border: 1px solid transparent;
-            transition: transform 0.3s;
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
         }
 
         .mini-col:hover {
-            transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mini-col.active {
+            border-color: var(--primary-color);
+            background: rgba(84, 160, 255, 0.15);
+            box-shadow: 0 0 15px rgba(84, 160, 255, 0.2);
         }
 
         .mini-char {
@@ -223,12 +232,6 @@
             font-size: 0.65rem;
             opacity: 0.6;
             margin-top: 2px;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
         }
 
         .card {
@@ -302,61 +305,11 @@
             border-radius: 20px;
             margin-bottom: 20px;
             cursor: pointer;
+            transition: background 0.3s;
         }
 
-        /* 팝업 모달 스타일 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: #1a1a2e;
-            width: 85%;
-            max-width: 400px;
-            border-radius: 20px;
-            padding: 25px;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.3s ease;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-title {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-body {
-            line-height: 1.6;
-            font-size: 0.95rem;
-            font-size: 0.95rem;
-            opacity: 0.9;
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* 서브 탭 스타일 */
@@ -385,7 +338,55 @@
             background: rgba(255, 255, 255, 0.1);
             color: var(--primary-color);
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 탭 상세 스타일 */
+        .tab-content-area {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 광고 팝업 */
+        .ad-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ad-popup-content {
+            background: #1a1a2e;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .nature-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -446,19 +447,19 @@
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn">분석 시작하기 ✨</button>
+                <button type="submit" class="submit-btn" id="main-submit-btn">분석 시작하기 ✨</button>
             </form>
         </div>
 
         <!-- 2. 결과 화면 -->
-        <div id="result-screen" class="result-section" style="display:none;">
+        <div id="result-screen" class="result-section">
             <button class="back-btn" onclick="goBack()">← 다시 입력하기</button>
             <header style="text-align: center; margin-bottom: 20px;">
                 <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Analysis Report</div>
-                <h1 id="result-name"
+                <h1 id="result-name-title"
                     style="margin: 0; background: linear-gradient(to right, #54a0ff, #00d2d3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
                     님 사주 리포트</h1>
-                <div id="result-desc" style="margin-top: 10px; font-weight: 300;"></div>
+                <div id="result-desc" style="margin-top: 10px; font-weight: 300; font-size: 0.9rem;"></div>
             </header>
 
             <div class="mini-grid">
@@ -484,167 +485,94 @@
                 </div>
             </div>
 
-            <!-- 탭 내용이 표시될 영역 -->
-            <div id="tab-detail-area" class="tab-content-area">
-                <!-- 탭 내용이 표시될 영역 -->
-                <div id="tab-detail-area" class="tab-content-area">
-                    <!-- <button class="tab-close-btn" onclick="closeTabDetail()">&times;</button> -->
-                    <h3 id="tab-title" style="margin-top:0; color:var(--primary-color);"></h3>
-                    <div id="tab-body" style="line-height:1.6; font-size:0.95rem;"></div>
-                </div>
-                <h3 id="tab-title" style="margin-top:0; color:var(--primary-color);"></h3>
-                <div id="tab-body" style="line-height:1.6; font-size:0.95rem;"></div>
+            <!-- 탭 내용 표시 -->
+            <div id="tab-detail-display" class="tab-content-area" style="display:none;">
+                <h3 id="detail-title" style="margin-top:0; color:var(--primary-color); font-size: 1.1rem;"></h3>
+                <div id="detail-body"></div>
             </div>
 
-            <div id="day-specific-content">
-                <!-- 서브 탭 네비게이션 -->
+            <div id="bottom-analysis">
                 <div class="sub-tabs">
-                    <button class="sub-tab-btn active" onclick="switchSubTab('general')">종합 분석</button>
-                    <button class="sub-tab-btn" onclick="switchSubTab('love')">💕 연애운</button>
-                    <button class="sub-tab-btn" onclick="switchSubTab('wealth')">💰 재물운</button>
+                    <button class="sub-tab-btn active" id="btn-general" onclick="switchSubTab('general')">종합 분석</button>
+                    <button class="sub-tab-btn" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
+                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
                 </div>
 
-                <!-- 1. 종합 분석 -->
                 <div id="view-general" class="analysis-view">
                     <div class="card">
                         <h3>🧙 타고난 기질</h3>
-                        <p id="nature-text">분석 중...</p>
+                        <p id="nature-text"></p>
                     </div>
                     <div class="card">
                         <h3>🌟 2026년 운세 미리보기</h3>
-                        <p id="fortune-text">분석 중...</p>
+                        <p id="fortune-text"></p>
                     </div>
                 </div>
 
-                <!-- 2. 연애운 -->
                 <div id="view-love" class="analysis-view" style="display:none;">
                     <div class="card">
                         <h3>💕 나의 연애 스타일</h3>
-                        <p id="love-text">분석 중...</p>
-                    </div>
-                    <div style="font-size:0.85rem; opacity:0.7; padding:0 10px;">
-                        * 일주(태어난 날)를 기준으로 분석한 연애 성향입니다.
+                        <p id="love-text"></p>
                     </div>
                 </div>
 
-                <!-- 3. 재물운 -->
                 <div id="view-wealth" class="analysis-view" style="display:none;">
                     <div class="card">
                         <h3>💰 나의 재물 그릇</h3>
-                        <p id="wealth-text">분석 중...</p>
-                    </div>
-                    <div style="font-size:0.85rem; opacity:0.7; padding:0 10px;">
-                        * 재물운은 본인의 노력과 환경에 따라 크게 달라질 수 있습니다.
+                        <p id="wealth-text"></p>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-        <!-- 쿠팡 파트너스 사주페이지 광고 (시작/결과 공통 노출) -->
-        <div class="ad-section"
-            style="margin-top: 40px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px; text-align: center;">
-            <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px; color: white;">🎁 오늘의 운세 추천 아이템</p>
-            <div id="saju-coupang-ad"
-                style="min-height: 140px; background: rgba(255,255,255,0.05); border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                <script src="https://ads-partners.coupang.com/g.js"></script>
-                <script>
-                    new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140", "tsource": "" });
-                </script>
+            <!-- 하단 광고 -->
+            <div class="ad-section"
+                style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px;">🎁 오늘의 운세 추천 아이템</p>
+                <div
+                    style="min-height: 140px; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden;">
+                    <script src="https://ads-partners.coupang.com/g.js"></script>
+                    <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
+                </div>
+                <p style="font-size: 9px; opacity: 0.4; margin-top: 10px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를
+                    제공받습니다.</p>
             </div>
-            <p style="font-size: 10px; opacity: 0.4; margin-top: 10px; line-height: 1.4; color: white;">
-                이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.
-            </p>
         </div>
     </div>
 
-    <div id="ad-popup" class="ad-popup-overlay" style="display:none;">
+    <!-- 광고 팝업 -->
+    <div id="ad-popup" class="ad-popup-overlay">
         <div class="ad-popup-content">
             <h2 style="color: #fab1a0; margin-bottom: 20px;">🔮 운명을 분석 중입니다...</h2>
             <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">분석이 완료되는 동안<br>본인에게 맞는 행운의 아이템을 확인해 보세요!
             </p>
-
-            <div id="popup-coupang-ad"
+            <div
                 style="min-height: 140px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 25px;">
                 <script src="https://ads-partners.coupang.com/g.js"></script>
-                <script>
-                    new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140", "tsource": "" });
-                </script>
+                <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
             </div>
-
-            <button class="submit-btn" onclick="closeAdPopup()" style="margin-top: 0;">광고 닫고 결과 확인하기</button>
-            <p style="font-size: 10px; opacity: 0.4; margin-top: 15px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를
-                제공받습니다.</p>
+            <button class="submit-btn" id="ad-close-btn" onclick="closeAdPopup()">광고 확인 중 (3...)</button>
+            <p style="font-size: 9px; opacity: 0.4; margin-top: 15px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
         </div>
     </div>
 
-    <!-- 로딩 오버레이 -->
+    <!-- 로딩 -->
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
-        <div style="color: white; font-weight: 300; letter-spacing: 1px;">사주 명식을 분석 중입니다...</div>
+        <div style="color: white; font-weight: 300;">사주 명식을 분석 중입니다...</div>
     </div>
 
-    <!-- 상세 내용 모달 삭제됨 (탭 방식 사용) -->
-    <script> // 전역 변수로 데이터 저장
+    <script>
+        // 전역 상태
         let currentPillars = null;
-        let pendingSajuData = null; // 광고 중 대기용
-        let hasAdShown = false;
+        let pendingData = null;
+        let adShown = false;
 
-        // 팝업 광고 스타일 추가
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .ad-popup-overlay {
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-                z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 20px;
-                animation: fadeIn 0.3s ease;
-            }
-            .ad-popup-content {
-                background: #1a1a2e; width: 100%; max-width: 400px; padding: 30px;
-                border-radius: 25px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-                animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            }
-            @keyframes slideUp {
-                from { opacity: 0; transform: translateY(50px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        `;
-        document.head.appendChild(style);
+        const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+        const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+        const stemReadings = { "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무", "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계" };
+        const branchReadings = { "子": "자", "丑": "축", "寅": "인", "卯": "묘", "辰": "진", "巳": "사", "午": "오", "未": "미", "申": "신", "酉": "유", "戌": "술", "亥": "해" };
 
-        function closeAdPopup() {
-            document.getElementById('ad-popup').style.display = 'none';
-            if (pendingSajuData) {
-                showSajuResult(pendingSajuData);
-                pendingSajuData = null;
-            }
-        }
-
-        // 간지 데이터 (천간, 지지)
-        const stems = ["甲",
-            "乙",
-            "丙",
-            "丁",
-            "戊",
-            "己",
-            "庚",
-            "辛",
-            "壬",
-            "癸"];
-        const branches = ["子",
-            "丑",
-            "寅",
-            "卯",
-            "辰",
-            "巳",
-            "午",
-            "未",
-            "申",
-            "酉",
-            "戌",
-            "亥"];
-
-        // 오행 컬러 매핑 (목:초록, 화:빨강, 토:노랑, 금:흰색, 수:검정/파랑)
         function getColorClass(char) {
             if ("甲乙寅卯".includes(char)) return "wood";
             if ("丙丁巳午".includes(char)) return "fire";
@@ -654,169 +582,12 @@
             return "";
         }
 
-        // 한글 음 (천간)
-        const stemReadings = { "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무", "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계" };
-        // 한글 음 (지지)
-        const branchReadings = { "子": "자", "丑": "축", "寅": "인", "卯": "묘", "辰": "진", "巳": "사", "午": "오", "未": "미", "申": "신", "酉": "유", "戌": "술", "亥": "해" };
-
-        function getColoredHtml(stem, branch) {
-            const sRead = stemReadings[stem];
-            const bRead = branchReadings[branch];
-            const sHtml = sRead ? `<span style="font-size:0.4em; vertical-align:middle; opacity:0.8; margin-left:2px;">(${sRead})</span>` : "";
-            const bHtml = bRead ? `<span style="font-size:0.4em; vertical-align:middle; opacity:0.8; margin-left:2px;">(${bRead})</span>` : "";
-            return `<span class="${getColorClass(stem)}">${stem}${sHtml}</span><span class="${getColorClass(branch)}">${branch}${bHtml}</span>`;
-        }
-
-        // [간단 계산 로직]
-        // *주의: 실제 서비스에서는 정확한 절기(Solar Terms) 시간을 계산해야 하지만,
-        // 이 데모에서는 근사치 알고리즘을 사용합니다.
-        function calculatePillars(year, month, day, timeIdx) {
-            // 1. 년주 (Year Pillar) - 입춘 기준 무시하고 단순 음력/양력 기준 (데모용)
-            // 1984년이 甲子년 (4)
-            const stemIdx = (year - 4) % 10;
-            const branchIdx = (year - 4) % 12;
-            const yearStem = stems[stemIdx < 0 ? stemIdx + 10 : stemIdx];
-            const yearBranch = branches[branchIdx < 0 ? branchIdx + 12 : branchIdx];
-
-            // 2. 월주 (Month Pillar) - 년간에 의해 결정 (월두법)
-            // 간략화: 양력 2월을 인(寅)월로 시작한다고 가정
-            let monthBranchIdx = (month + 12 - 2) % 12 + 2; // 2월=寅(2), 1월=丑(1).. 대략적
-            if (monthBranchIdx >= 12) monthBranchIdx -= 12;
-
-            // 월간 구하기 (년두법 공식)
-            // 갑기년 -> 병인두, 을경년 -> 무인두...
-            const yearStemIndex = stems.indexOf(yearStem); // 0~9
-            const monthStemBase = (yearStemIndex % 5) * 2 + 2; // 공식
-            const monthStemIdx = (monthStemBase + (month - 2)) % 10;
-
-            const monthStem = stems[monthStemIdx < 0 ? monthStemIdx + 10 : monthStemIdx];
-            const monthBranch = branches[monthBranchIdx]; // 근사치
-
-            // 3. 일주 (Day Pillar) - 가장 어려움 (기준일로부터 계산)
-            // 기준: 1900년 1월 1일 = 갑술(甲戌)일 (확인 필요, 데모용 근사)
-            // 여기서는 데모를 위해 'Date' 객체 활용하여 루틴 계산
-            const baseDate = new Date(1900, 0, 1);
-            const targetDate = new Date(year, month - 1, day);
-            const diffTime = Math.abs(targetDate - baseDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            // 1900.1.1 갑술(10번째) -> index 10
-            const offset = 10;
-            const dayCyclic = (offset + diffDays) % 60;
-            const dayStem = stems[dayCyclic % 10];
-            const dayBranch = branches[dayCyclic % 12];
-
-            // 4. 시주 (Time Pillar) - 일간에 의해 결정 (시두법)
-            let timeStem = "?";
-            let timeBranch = "?";
-
-            if (timeIdx != 99) {
-                // 시간을 안다면
-                timeBranch = branches[timeIdx]; // 0=자, 1=축...
-
-                // 시간 구하기 (일간 기준)
-                // 갑기일 -> 갑자시, 을경일 -> 병자시...
-                const dayStemIndex = stems.indexOf(dayStem);
-                const timeStemBase = (dayStemIndex % 5) * 2;
-                const timeStemIdx = (timeStemBase + parseInt(timeIdx)) % 10;
-                timeStem = stems[timeStemIdx];
-            }
-
-            else {
-                timeStem = "모";
-                timeBranch = "름";
-            }
-
-            return {
-                year: {
-                    s: yearStem, b: yearBranch
-                }
-
-                ,
-                month: {
-                    s: monthStem, b: monthBranch
-                }
-
-                ,
-                day: {
-                    s: dayStem, b: dayBranch
-                }
-
-                ,
-                hour: {
-                    s: timeStem, b: timeBranch
-                }
-            }
-
-                ;
-        }
-
-        function analyzeSaju(e) {
-            e.preventDefault();
-            document.getElementById('loading').style.display = 'flex';
-            const name = document.getElementById('userName').value;
-            const year = parseInt(document.getElementById('birthYear').value);
-            const month = parseInt(document.getElementById('birthMonth').value);
-            const day = parseInt(document.getElementById('birthDay').value);
-            const time = document.getElementById('birthTime').value;
-
-            fetch("https://script.google.com/macros/s/AKfycbxQIJnI8fGa5mnrdCWWdWjw_3Vi2endY0HhXgajiY-JWypycpOpxQJBi53fG_1SDRny/exec", {
-                method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ name, year, month, day, time })
-            }).catch(err => console.log("Data send failed", err));
-
-            const pillars = calculatePillars(year, month, day, time);
-            currentPillars = pillars;
-
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                if (!hasAdShown) {
-                    pendingSajuData = { name, year, month, day, pillars };
-                    hasAdShown = true;
-                    document.getElementById('ad-popup').style.display = 'flex';
-                } else {
-                    showSajuResult({ name, year, month, day, pillars });
-                }
-            }, 1200);
-        }
-
-        function showSajuResult(data) {
-            const { name, year, month, day, pillars } = data;
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('input-screen').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-
-            document.getElementById('result-name').innerText = name;
-            document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 | ${pillars.day.s}${pillars.day.b}일주`;
-
-            const dayStem = pillars.day.s;
-            document.getElementById('nature-text').innerText = `${name}님은 '${dayStem}(${stemReadings[dayStem]})'(으)로 태어나셨군요!\n\n${natureMap[dayStem] || "신비로운 매력이 있습니다."}`;
-            document.getElementById('fortune-text').innerHTML = fortune2026Map[dayStem] || "알 수 없음";
-            document.getElementById('love-text').innerHTML = loveMap[dayStem] || "알 수 없음";
-            document.getElementById('wealth-text').innerHTML = wealthMap[dayStem] || "알 수 없음";
-
-            document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
-            document.getElementById('month-pillar').innerHTML = getColoredHtml(pillars.month.s, pillars.month.b);
-            document.getElementById('day-pillar').innerHTML = getColoredHtml(pillars.day.s, pillars.day.b);
-            document.getElementById('hour-pillar').innerHTML = getColoredHtml(pillars.hour.s, pillars.hour.b);
-
-            showTabDetail('day');
-            switchSubTab('general');
-        }
-
-        function goBack() {
-            document.getElementById('result-screen').style.display = 'none';
-            document.getElementById('input-screen').style.display = 'flex';
-            document.getElementById('userName').value = '';
-        }
-
-        // 연애운 데이터
         const loveMap = {
             "甲": "곧게 뻗은 나무처럼 자존심이 강하고, 자신이 리드하는 연애를 선호합니다. <br><br>좋고 싫음이 분명하여 밀당을 하기보다는 직설적으로 감정을 표현하는 편입니다. 내 사람이다 싶으면 든든한 그늘이 되어 아낌없이 주는 나무처럼 헌신하지만, 자존심을 건드리면 관계가 급격히 냉각될 수 있습니다. <br>상대방에게 의지하기보다는 듬직하게 이끌어주기를 원하며, 존경할 수 있는 배울 점이 많은 사람에게 끌립니다.",
             "乙": "유연한 넝쿨처럼 부드럽고 섬세한 연애를 합니다. 상대방의 감정을 잘 파악하고 맞춰주는 배려심이 뛰어나, 편안하고 친구 같은 연인 관계를 유지합니다. <br><br>하지만 겉으로는 유순해 보여도 소유욕과 질투심이 상당히 강한 편입니다.  사랑을 확인받고 싶어 하는 욕구가 크며, 집착으로 변질되지 않도록 주의해야 합니다.  어려움이 닥쳐도 쉽게 헤어지지 않고 끈기 있게 관계를 이어가는 힘이 있습니다.",
             "丙": "한낮의 태양처럼 숨김없이 화끈하고 정열적인 사랑을 합니다. <br><br>마음에 드는 이성이 나타나면 주저 없이 다가가며, 애정 표현도 적극적이고 화려합니다.  하지만 불같이 타올랐다가 금방 식어버리는 경향이 있어 '금사빠' 기질이 다분합니다.  뒤끝 없이 쿨한 연애를 지향하지만, 욱하는 성질 때문에 다툼이 잦을 수 있으니 감정 조절이 필요합니다.  밝고 명랑한 에너지로 연인을 즐겁게 해주는 분위기 메이커입니다.",
             "丁": "어둠을 밝히는 촛불처럼 은근하고 헌신적인 사랑을 합니다. <br><br>첫눈에 반하기보다는 시간을 두고 천천히 스며드는 사랑을 추구합니다.  상대방의 사소한 습관이나 취향까지 기억하는 세심함이 있으며, 한번 마음을 주면 웬만해서는 변치 않는 일편단심형입니다.  하지만 상처를 받으면 겉으로 내색하지 않고 속으로 끙끙 앓거나 오랫동안 꽁해 있을 수 있습니다.  따뜻한 모성애/부성애를 자극하는 매력이 있습니다.",
-            "戊": "거대한 산처럼 묵묵히 자리를 지키며 믿음직스러운 연애를 합니다. <br><br>애교를 부리거나 달콤한 말을 하는 데는 서툴지만, 행동으로 보여주는 듬직한 사람입니다.  포용력이 넓어 연인의 투정을 잘 받아주며, 가벼운 만남보다는 결혼을 전제로 한 진지한 만남을 선호합니다.  하지만 변화를 싫어하고 고집이 세서, 한번 다투면 좀처럼 먼저 굽히지 않아 답답함을 줄 수도 있습니다.",
+            "戊": "거대한 산처럼 묵묵히 자리를 지키며 믿음직스러운 연애를 합니다. <br><br>애교를 부리거나 달콤한 말을 하는 데는 서툴지만, 행동으로 보여주는 듬직한 person입니다.  포용력이 넓어 연인의 투정을 잘 받아주며, 가벼운 만남보다는 결혼을 전제로 한 진지한 만남을 선호합니다.  하지만 변화를 싫어하고 고집이 세서, 한번 다투면 좀처럼 먼저 굽히지 않아 답답함을 줄 수도 있습니다.",
             "己": "비옥한 텃밭처럼 현실적이고 안정적인 연애를 추구합니다. <br><br>드라마 같은 로맨스보다는 서로에게 도움이 되고 실속 있는 관계를 중요하게 생각합니다.  상대방을 알뜰살뜰 잘 챙기고 배려하지만, 마음속으로는 이해득실을 계산하는 면도 있습니다.  의심이 많아 마음을 여는 데 시간이 걸리지만, 한번 깊어지면 가족처럼 편안하고 끈끈한 사이가 됩니다.",
             "庚": "단단한 바위처럼 의리와 신의를 중요시하는 사랑을 합니다. <br><br>맺고 끊음이 확실하여 어장관리를 하거나 애매한 태도를 보이는 것을 극도로 싫어합니다.  카리스마 있게 상대를 리드하며, 내 사람에게는 확실하게 책임을 지는 상남자/걸크러쉬 스타일입니다.  다만 자기주장이 너무 강하고 무뚝뚝하여 상대방이 상처받을 수 있으니, 부드러운 대화법을 익히는 것이 좋습니다.",
             "辛": "반짝이는 보석처럼 섬세하고 까다로운 취향을 가졌습니다. <br><br>외모나 스타일, 매너 등 자신만의 확고한 기준이 있어 눈이 높은 편입니다.  깔끔하고 세련된 데이트를 선호하며, 분위기에 약한 로맨티스트입니다.  예민한 감수성 때문에 사소한 말 한마디에도 쉽게 상처받을 수 있으며, 냉정하게 돌아설 때는 그 누구보다 차갑습니다.  자신을 빛나게 해주는 사람에게 끌립니다.",
@@ -850,48 +621,157 @@
             "癸": "안정적인 수입과 결과물이 따르는 해입니다. 뜨거운 열기를 시원한 비가 식혀주듯, 당신의 존재가 조직이나 모임에서 환영받게 됩니다. 재물운이 안정적이며, 남자가 여자에게, 여자가 남자에게 헌신하는 운이기도 합니다. 꼼꼼하게 실속을 챙기면 알토란 같은 재산을 모을 수 있습니다.\n\n<br><strong>💡 행운의 팁:</strong> 저축이나 적금 등 안정적인 자산 관리가 좋습니다."
         };
 
-        const adPopup = document.getElementById('ad-popup');
-        function showAdWithCountdown() {
-            adPopup.style.display = 'flex';
-            const closeBtn = adPopup.querySelector('.submit-btn');
-            closeBtn.disabled = true;
-            let count = 3;
-            closeBtn.innerText = `광고 확인 중 (${count}...)`;
+        const pillarInterpretations = {
+            "甲": {
+                nature_year: "자라나는 어린 묘목 🌱", nature_month: "숲을 이루는 거목 🌳", nature_day: "곧게 뻗은 대림목 🌲", nature_hour: "지혜로운 고목 🪵", keyword: "🌱 성장, 🦁 리더십, 😤 자존심",
+                year: "어린 시절부터 리더십이 돋보였습니다. 승부욕이 있어 무엇이든 1등을 하려 노력했고 정의로운 성향이었습니다.",
+                month: "사회 활동이 왕성하며 조직에서 핵심 리더 역할을 합니다. 명예를 중시하고 책임감이 강합니다.",
+                day: "굽히지 않는 자존심과 강력한 추진력이 삶의 원동력입니다. 시련이 닥쳐도 오똑이처럼 다시 일어납니다.",
+                hour: "말년에는 쌓아온 지혜로 존경받는 스승이나 정신적 지주가 됩니다. 끊임없이 공부하는 노년을 보냅니다."
+            },
+            "乙": {
+                nature_year: "봄바람에 흔들리는 꽃 🌸", nature_month: "담장을 넘는 덩굴 🌿", nature_day: "끈질긴 잡초/넝쿨 🌱", nature_hour: "열매 맺은 화초 🌻", keyword: "🌿 적응력, 🧗 끈기, 💰 현실적",
+                year: "환경 적응력이 뛰어나고 눈치가 빨랐습니다. 힘든 일도 웃어넘기는 강인함을 일찍 갖췄습니다.",
+                month: "유연한 처세술로 어떤 조직에서도 살아남습니다. 기회를 포착하는 감각과 근성이 대단합니다.",
+                day: "유연함이 최대 무기이며 실속을 챙길 줄 압니다. 장애물을 만나면 우회하여 결실을 맺는 타입입니다.",
+                hour: "자녀와 유대감이 깊고 편안한 노후를 즐깁니다. 소소한 취미로 삶의 즐거움을 찾는 여유가 있습니다."
+            },
+            "丙": {
+                nature_year: "떠오르는 아침 해 🌅", nature_month: "한낮의 뜨거운 태양 ☀️", nature_day: "만물을 비추는 빛 ✨", nature_hour: "노을 지는 석양 🌇", keyword: "🔥 열정, 🙏 예의, ✨ 화려함",
+                year: "어디서나 주목받는 밝은 아이였습니다. 감정이 솔직하게 드러나며 정이 많은 어린 시절이었습니다.",
+                month: "언변과 사교성으로 대중을 사로잡습니다. 에너지가 넘치고 공정한 업무 처리를 선호합니다.",
+                day: "공평하고 정의로운 성품입니다. 매사에 열정적이고 뒤끝이 없어 사람들에게 인기가 많습니다.",
+                hour: "식지 않는 열정으로 사회에 공헌하는 삶을 삽니다. 주변이 따르는 영향력 있는 어른이 됩니다."
+            },
+            "丁": {
+                nature_year: "반짝이는 별빛 ✨", nature_month: "활활 타는 모닥불 🔥", nature_day: "은은한 촛불 🕯️", nature_hour: "밤하늘의 달빛 🌙", keyword: "🕯️ 헌신, 🎀 섬세함, 🌙 은근함",
+                year: "조용하지만 집중력이 뛰어난 아이였습니다. 감수성이 풍부하고 소수와 깊은 우정을 나누는 편입니다.",
+                month: "전문 지식으로 인정받습니다. 디테일에 강하고 동료를 세심하게 챙기는 스타일입니다.",
+                day: "내면에 뜨거운 열정을 품은 외유내강형입니다. 묵묵히 헌신하며 사람의 마음을 얻습니다.",
+                hour: "종교나 철학 등 정신적 가치를 중시합니다. 지혜를 전하며 고상하고 품위 있는 말년을 보냅니다."
+            },
+            "戊": {
+                nature_year: "언덕 뒤의 동산 ⛰️", nature_month: "웅장한 태산 🌋", nature_day: "드넓은 광야 🏜️", nature_hour: "노을진 산맥 🌄", keyword: "🤝 신용, 🏔️ 포용력, 🐂 고집",
+                year: "또래보다 성숙하고 진중했습니다. 친구들이 믿고 의지하는 든든한 등대 같은 아이였습니다.",
+                month: "신용을 최우선으로 하며 조직의 중심을 잡습니다. 안정적인 분야에서 꾸준히 성과를 냅니다.",
+                day: "흔들림 없는 주관과 포용력을 가졌습니다. 말보다 행동으로 보여주는 묵직한 매력이 있습니다.",
+                hour: "재산과 덕망을 바탕으로 풍요로운 노후를 누립니다. 가문의 든든한 버팀목이 되는 큰 어른입니다."
+            },
+            "己": {
+                nature_year: "작은 화단 🌱", nature_month: "생산적인 농장 🚜", nature_day: "비옥한 텃밭 🌾", nature_hour: "평온한 전원 🏡", keyword: "🌾 실속, 🎨 다재다능, 🧹 자기관리",
+                year: "영리하고 야무진 아이였습니다. 다재다능하여 습득력이 빨랐고 중재자 역할을 잘했습니다.",
+                month: "꼼꼼한 일처리로 최고의 실무 능력을 보입니다. 관리와 교육 분야에서 특히 빛을 발합니다.",
+                day: "겸손함 속에 치밀한 계획을 갖춘 실속파입니다. 자기관리가 철저하며 성실하게 목표를 이룹니다.",
+                hour: "후학 양성이나 자녀 교육에 보람을 느낍니다. 알찬 노후 활동으로 조용하지만 실속 있게 삽니다."
+            },
+            "庚": {
+                nature_year: "원석 💎", nature_month: "제련소의 무쇠 🔨", nature_day: "단단한 바위 🪨", nature_hour: "완성된 도검 ⚔️", keyword: "⚔️ 의리, 🔪 결단력, 🛠️ 개혁",
+                year: "정의감이 넘치는 의리파 대장 스타일이었습니다. 운동이나 활동적인 분야에서 두각을 보였습니다.",
+                month: "추진력이 강한 카리스마 리더입니다. 공과 사가 명확하며 결단이 필요한 순간 진가를 발휘합니다.",
+                day: "거칠지만 순수한 힘을 가졌습니다. 신념이 강하고 한번 맺은 인연을 끝까지 소중히 합니다.",
+                hour: "자신만의 원칙을 지키며 명예롭게 늙어갑니다. 엄격한 자기관리로 주변에 덕을 끼치는 노후입니다."
+            },
+            "辛": {
+                nature_year: "예쁜 구슬 🔮", nature_month: "수술용 칼 🔪", nature_day: "빛나는 다이아몬드 💎", nature_hour: "보물 👑", keyword: "💎 섬세, 📏 예민, ✨ 깔끔",
+                year: "예민하고 미적 감각이 뛰어난 아이였습니다. 자존심이 세고 세련된 분위기를 좋아했습니다.",
+                month: "정밀하고 섬세한 전문직에서 성공합니다. 완벽주의 성향이며 트렌드를 읽는 눈이 예리합니다.",
+                day: "자신을 빛내는 능력이 탁월합니다. 냉철한 이성을 가졌지만 내 사람에게는 아낌없이 베풉니다.",
+                hour: "품위와 여유를 잃지 않는 우아한 말년을 즐깁니다. 세련된 취미로 젊은 감각을 유지합니다."
+            },
+            "壬": {
+                nature_year: "시냇물 💧", nature_month: "댐의 물 🌊", nature_day: "넓은 바다 🌊", nature_hour: "고요한 호수 🏞️", keyword: "🌊 지혜, 🌍 역마, 🎭 임기응변",
+                year: "자유로운 탐험을 즐기는 아이였습니다. 스케일이 크고 대범하며 조숙한 면이 있었습니다.",
+                month: "유연한 사고로 큰 무대에서 활약합니다. 아이디어가 풍부하고 정보 수집 능력이 뛰어납니다.",
+                day: "마음이 깊고 포용력이 넓습니다. 어떤 상황에도 얽매이지 않고 지혜롭게 난관을 극복합니다.",
+                hour: "세상의 이치를 통달한 현자처럼 깊은 지혜를 갖습니다. 물 흐르듯 평화로운 노년을 보냅니다."
+            },
+            "癸": {
+                nature_year: "아침 이슬 💧", nature_month: "대지를 적시는 비 🌧️", nature_day: "옹달샘 🏞️", nature_hour: "신비로운 안개 🌫️", keyword: "☔ 감수성, 💡 아이디어, 🕊️ 순수",
+                year: "마음이 여리고 상상력이 풍부한 순수 소년/소녀였습니다. 공감 능력이 좋아 인기가 많았습니다.",
+                month: "아이디어로 승부하는 전략가입니다. 전면보다는 참모 역할에서 부드러운 카리스마를 보입니다.",
+                day: "투명하고 맑은 수호천사 같은 영혼입니다. 겉은 여려 보이지만 바위를 뚫는 끈기가 있습니다.",
+                hour: "안식처 같은 평온한 말년을 보냅니다. 자애로운 모습으로 주변을 감싸며 명상과 봉사를 즐깁니다."
+            }
+        };
 
-            const timer = setInterval(() => {
-                count--;
-                if (count > 0) {
-                    closeBtn.innerText = `광고 확인 중 (${count}...)`;
-                } else {
-                    clearInterval(timer);
-                    closeBtn.disabled = false;
-                    closeBtn.innerText = "광고 닫고 결과 확인하기";
-                }
-            }, 1000);
+        function getColoredHtml(stem, branch) {
+            const sRead = stemReadings[stem] || "?";
+            const bRead = branchReadings[branch] || "?";
+            const sColor = getColorClass(stem);
+            const bColor = getColorClass(branch);
+
+            return `<span class="${sColor}">${stem}<span style="font-size:0.4em; opacity:0.8; margin-left:1px;">(${sRead})</span></span>` +
+                `<span class="${bColor}">${branch}<span style="font-size:0.4em; opacity:0.8; margin-left:1px;">(${bRead})</span></span>`;
+        }
+
+        function calculatePillars(year, month, day, timeIdx) {
+            // 년주
+            const sIdx = (year - 4) % 10;
+            const bIdx = (year - 4) % 12;
+            const yearStem = stems[sIdx < 0 ? sIdx + 10 : sIdx];
+            const yearBranch = branches[bIdx < 0 ? bIdx + 12 : bIdx];
+
+            // 월주 (근사치)
+            let mBIdx = (month + 12 - 2) % 12 + 2;
+            if (mBIdx >= 12) mBIdx -= 12;
+            const yStemIdx = stems.indexOf(yearStem);
+            const mSBase = (yStemIdx % 5) * 2 + 2;
+            const mSIdx = (mSBase + (month - 2)) % 10;
+            const monthStem = stems[mSIdx < 0 ? mSIdx + 10 : mSIdx];
+            const monthBranch = branches[mBIdx];
+
+            // 일주
+            const base = new Date(1900, 0, 1);
+            const target = new Date(year, month - 1, day);
+            const diffDays = Math.ceil(Math.abs(target - base) / (1000 * 60 * 60 * 24));
+            const dayCyclic = (10 + diffDays) % 60;
+            const dayStem = stems[dayCyclic % 10];
+            const dayBranch = branches[dayCyclic % 12];
+
+            // 시주
+            let hourStem = "?";
+            let hourBranch = "?";
+            if (timeIdx != 99) {
+                hourBranch = branches[timeIdx];
+                const dStemIdx = stems.indexOf(dayStem);
+                const hSBase = (dStemIdx % 5) * 2;
+                const hSIdx = (hSBase + parseInt(timeIdx)) % 10;
+                hourStem = stems[hSIdx];
+            } else {
+                hourStem = "모"; hourBranch = "름";
+            }
+
+            return {
+                year: { s: yearStem, b: yearBranch },
+                month: { s: monthStem, b: monthBranch },
+                day: { s: dayStem, b: dayBranch },
+                hour: { s: hourStem, b: hourBranch }
+            };
         }
 
         function analyzeSaju(e) {
             e.preventDefault();
-            document.getElementById('loading').style.display = 'flex';
             const name = document.getElementById('userName').value;
             const year = parseInt(document.getElementById('birthYear').value);
             const month = parseInt(document.getElementById('birthMonth').value);
             const day = parseInt(document.getElementById('birthDay').value);
             const time = document.getElementById('birthTime').value;
 
+            document.getElementById('loading').style.display = 'flex';
+
+            // Google Apps Script 연동
             fetch("https://script.google.com/macros/s/AKfycbxQIJnI8fGa5mnrdCWWdWjw_3Vi2endY0HhXgajiY-JWypycpOpxQJBi53fG_1SDRny/exec", {
                 method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify({ name, year, month, day, time })
-            }).catch(err => console.log("Data send failed", err));
+            }).catch(err => console.log("Log fail", err));
 
             const pillars = calculatePillars(year, month, day, time);
             currentPillars = pillars;
 
             setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
-                if (!hasAdShown) {
-                    pendingSajuData = { name, year, month, day, pillars };
-                    hasAdShown = true;
+                if (!adShown) {
+                    pendingData = { name, year, month, day, pillars };
                     showAdWithCountdown();
                 } else {
                     showSajuResult({ name, year, month, day, pillars });
@@ -899,206 +779,98 @@
             }, 1200);
         }
 
-        // 간지별 성향 데이터 (위치별 상세 해석 추가)
-        const pillarInterpretations = {
-            "甲": {
-                nature: "곧게 뻗은 큰 나무 🌲",
-                nature_year: "자라나는 어린 묘목 🌱",
-                nature_month: "숲을 이루는 거목 🌳",
-                nature_day: "곧게 뻗은 대림목 🌲",
-                nature_hour: "지혜로운 고목 🪵",
-                keyword: "🌱 성장, 🦁 리더십, 😤 자존심",
-                year: "어린 시절부터 골목대장처럼 친구들을 이끄는 리더십이 돋보였습니다. 지기 싫어하는 승부욕이 있어 무엇이든 1등을 하려 노력했고, 어른스러운 면모로 칭찬을 받는 아이였습니다. 약한 친구를 보면 참지 못하고 도와주는 정의로운 성향 덕분에 주변에 친구가 많았지만, 부모님의 간섭을 싫어하고 일찍부터 독립심을 키웠을 가능성이 큽니다.",
-                month: "사회 활동이 왕성하며, 직장이나 조직에서 핵심적인 리더 역할을 수행합니다. 남의 지시를 따르기보다 주체적으로 프로젝트를 기획하고 이끄는 능력이 탁월합니다. 명예를 중시하며 수직적인 성장을 추구합니다. 업무에 있어서는 다소 직선적이고 완고해 보일 수 있으나, 책임감이 강해 '믿고 맡길 수 있는 사람'이라는 평판을 얻습니다. 다만, 때로는 타협할 줄 아는 유연함이 성공의 열쇠가 됩니다.",
-                day: "당신의 본질은 곧게 뻗은 대림목입니다. 굽히지 않는 자존심과 강력한 추진력이 삶의 원동력입니다. 한번 목표를 정하면 앞만 보고 달려가는 뚝심이 있으며, 타협보다는 정면 돌파를 선택하는 대담함을 지녔습니다. 시련이 닥쳐도 쉽게 좌절하지 않고 오히려 성장하는 계기로 삼는 회복 탄력성이 뛰어납니다. 다만, 내 사람에게는 한없이 듬직하지만 배신을 당하면 뒤도 돌아보지 않는 단호함이 있습니다.",
-                hour: "말년에는 그동안 쌓아온 지혜와 경험을 바탕으로 존경받는 스승이나 정신적인 지주가 됩니다. 끊임없이 배우고 성장하려는 욕구가 있어, 늦은 나이에도 새로운 학문이나 분야에 도전하는 멋진 노년을 보냅니다. 자녀나 후배들에게 자신의 철학을 전수하며, 흔들림 없는 거목처럼 가문의 든든한 버팀목이 되어줍니다."
-            },
-            "乙": {
-                nature: "유연한 넝쿨 식물 🌿",
-                nature_year: "봄바람에 흔들리는 꽃 🌸",
-                nature_month: "담장을 넘는 덩굴 🌿",
-                nature_day: "끈질긴 잡초/넝쿨 🌱",
-                nature_hour: "열매 맺은 화초 🌻",
-                keyword: "🌿 적응력, 🧗 끈기, 💰 현실적",
-                year: "환경 변화에 민감하고 눈치가 빨라, 이사를 가거나 전학을 가도 금방 친구를 사귀는 적응력을 보였습니다. 호기심이 많고 유행에 민감한 명랑한 어린 시절이었습니다. 어른들의 기분을 잘 파악하여 귀여움을 받는 요령을 알았으며, 힘든 일이 있어도 겉으로는 웃어넘기는 강인한 내면을 일찍부터 지녔습니다.",
-                month: "유연한 사고와 탁월한 처세술로 어떤 조직에서도 생존하는 능력자입니다. 강한 자 앞에서는 유연하게 대처하고, 기회를 포착하는 감각이 뛰어납니다. 인맥을 활용하여 실리를 챙기는 비즈니스 감각이 돋보입니다. 겉보기에는 부드러워 보이지만, 목표를 달성하기 위해 끈질기게 매달리는 근성은 타의 추종을 불허합니다. 인간관계를 자산으로 만드는 능력이 탁월합니다.",
-                day: "겉모습은 부드럽고 온화해 보이지만, 내면에는 그 어떤 시련도 이겨내는 강인한 생명력이 숨어 있습니다. 바람이 불면 눕고 다시 일어나는 유연함이 당신의 최대 무기이며, 실속을 챙길 줄 아는 현실적인 지혜를 가졌습니다. 혼자 돋보이기보다는 주변과 어우러져 함께 성장하는 것을 선호하며, 장애물을 만나면 무리하게 부딪히기보다 현명하게 우회하여 결국엔 목적지에 도달합니다.",
-                hour: "자녀와의 유대감이 깊고, 자식 덕을 볼 수 있는 말년입니다. 고집을 부리기보다 변화하는 시대의 흐름을 받아들이며, 유유자적하고 편안한 노후를 즐길 수 있는 여유가 있습니다. 화초를 가꾸거나 소소한 취미 생활을 통해 삶의 기쁨을 찾으며, 주변 사람들에게 편안함을 주는 존재로 남습니다."
-            },
-            "丙": {
-                nature: "타오르는 태양 ☀️",
-                nature_year: "떠오르는 아침 해 🌅",
-                nature_month: "한낮의 뜨거운 태양 ☀️",
-                nature_day: "만물을 비추는 빛 ✨",
-                nature_hour: "노을 지는 석양 🌇",
-                keyword: "🔥 열정, 🙏 예의, ✨ 화려함",
-                year: "어디를 가나 주목받아야 직성이 풀리는 밝은 아이였습니다. 감정을 숨기지 못해 얼굴에 다 드러나며, 거짓말을 못 하는 솔직한 성격으로 어른들의 귀여움을 독차지했을 것입니다. 학예회나 장기자랑 등 무대에서는 것을 즐겼으며, 친구들 사이에서 분위기 메이커 역할을 톡톡히 해냈습니다.",
-                month: "화려한 언변과 사교성으로 대중을 사로잡는 능력이 있습니다. 영업, 방송, 홍보 등 자신을 드러내는 분야에서 두각을 나타내며, 조직의 분위기를 주도하는 열정적인 에너지의 소유자입니다. 비밀 없이 투명하게 일을 처리하는 것을 선호하며, 공정한 평가와 칭찬을 받을 때 업무 효율이 폭발적으로 상승합니다. 다만 싫증을 빨리 낼 수 있어 끈기만 보완하면 대성할 수 있습니다.",
-                day: "당신은 만물을 비추는 태양처럼 공평하고 정의로운 성품입니다. 매사에 열정적이고 적극적이지만, 급한 성격 탓에 실수를 하기도 합니다. 하지만 뒤끝이 없고 쿨하여 사람들에게 인기가 많습니다. 자신의 것을 아낌없이 베푸는 '오지랖' 넓은 성격 덕분에 주변에 항상 사람이 모이지만, 가끔은 혼자만의 시간을 통해 재충전하는 것도 필요합니다.",
-                hour: "나이가 들어서도 식지 않는 열정으로 봉사 활동을 하거나 사회에 공헌하는 삶을 삽니다. 많은 사람들이 따르는 영향력 있는 어른으로서 활기찬 말년을 보내게 됩니다. 젊은이들과 소통하는 것을 즐기며, 자신의 경험담을 들려주는 것을 좋아하는 '인싸' 어르신이 될 가능성이 높습니다."
-            },
-            "丁": {
-                nature: "따뜻한 촛불/달빛 🕯️",
-                nature_year: "반짝이는 별빛 ✨",
-                nature_month: "활활 타는 모닥불 🔥",
-                nature_day: "은은한 촛불 🕯️",
-                nature_hour: "밤하늘의 달빛 🌙",
-                keyword: "🕯️ 헌신, 🎀 섬세함, 🌙 은근함",
-                year: "조용하고 내성적이었지만, 한번 집중하면 놀라운 몰입도를 보여주는 아이였습니다. 예민하고 감수성이 풍부하여 예술적인 재능을 보이거나 남다른 관찰력을 가졌을 수 있습니다. 많은 친구와 어울리기보다는 마음이 맞는 소수의 친구와 깊은 우정을 나누는 것을 선호했습니다.",
-                month: "전문적인 지식이나 기술을 무기로 사회에서 인정받습니다. 디테일에 강하고 기획력이 뛰어나며, 동료들을 세심하게 챙기는 '엄마' 같은 리더십으로 조직의 결속력을 다집니다. 겉으로는 조용해 보여도 업무에 있어서는 완벽주의를 추구하며, 한번 목표한 바는 끈질기게 물고 늘어지는 집요함이 있어 전문가로 성공할 확률이 높습니다.",
-                day: "겉으로는 차분하고 온화해 보이지만, 내면에는 용광로 같은 뜨거운 열정을 품고 있습니다. 한 가지 목표를 위해 묵묵히 헌신하고 노력하는 외유내강형이며, 따뜻한 마음씨로 사람의 마음을 얻습니다. 다만 상처를 받으면 겉으로 드러내지 않고 속으로 삭히는 경향이 있어 화병에 주의해야 하며, 가까운 사람에게는 강한 애착과 집착을 보이기도 합니다.",
-                hour: "정신적인 가치를 중요시하며, 종교나 철학, 명상 등을 통해 내면의 평화를 찾는 말년을 보냅니다. 은은한 달빛처럼 주변에 지혜를 전하며 고상하고 품위 있는 삶을 추구합니다. 밤하늘의 별처럼 늦은 나이에 명성을 얻거나, 누군가의 어둠을 밝혀주는 멘토 역할을 하게 됩니다."
-            },
-            "戊": {
-                nature: "거대한 산/광야 🏔️",
-                nature_year: "언덕 뒤의 동산 ⛰️",
-                nature_month: "웅장한 태산 🌋",
-                nature_day: "드넓은 광야 🏜️",
-                nature_hour: "노을진 산맥 🌄",
-                keyword: "🤝 신용, 🏔️ 포용력, 🐂 고집",
-                year: "또래보다 훨씬 성숙하고 어른스러워 '영감님' 소리를 들었을지도 모릅니다. 친구들의 비밀을 잘 지겨주고 말수가 적어, 항상 주변에 친구들이 믿고 의지하는 든든한 존재였습니다. 경거망동하지 않고 진중한 태도 덕분에 선생님이나 어른들의 신임을 한 몸에 받았습니다.",
-                month: "묵직한 존재감으로 조직의  중심을 잡습니다. 신용과 믿음을 최우선으로 하여 비즈니스 파트너로서 최고의 평판을 받습니다. 변화가 적고 안정적인 분야에서 꾸준히 성과를 냅니다. 요행을 바라기보다는 정직하게 쌓아 올린 실력으로 승부하며, 위기 상황에서도 당황하지 않고 침착하게 대처하여 조직을 구하는 해결사 역할을 합니다.",
-                day: "당신은 거대한 산처럼 흔들림 없는 주관과 포용력을 가졌습니다. 사람들을 품어주고 중재하는 능력이 탁월하지만, 한번 고집을 부리면 아무도 꺾을 수 없는 뚝심도 있습니다. 겉으로는 무뚝뚝해 보여도 내 사람에게는 한없이 너그러우며, 말보다는 묵묵한 행동으로 보여주는 진국입니다. 다만 변화를 싫어하는 성향 때문에 좋은 기회를 놓칠 수 있으니 주의해야 합니다.",
-                hour: "말년에는 쌓아둔 재산과 덕망을 바탕으로 풍요로운 삶을 누립니다. 산이 만물을 품듯, 많은 사람들에게 베풀고 존경받는 위치에서 안정적인 노후를 보내게 됩니다. 특히 부동산이나 땅과 인연이 깊어 자산 가치가 늘어나며, 가족 구성원들을 든든하게 지켜주는 큰 어른으로 남습니다."
-            },
-            "己": {
-                nature: "비옥한 텃밭 🌾",
-                nature_year: "가능성을 품은 작은 화단 🌱",
-                nature_month: "생산적인 농장 🚜",
-                nature_day: "비옥한 텃밭 🌾",
-                nature_hour: "평온한 전원 🏡",
-                keyword: "🌾 실속, 🎨 다재다능, 🧹 자기관리",
-                year: "영리하고 현실 감각이 빨라, 자기 물건이나 돈을 똑소리 나게 챙기는 야무진 아이였습니다. 다재다능하여 이것저것 배우는 것을 좋아하고, 습득력이 빨라 칭찬을 많이 받았습니다. 친구들 사이에서 중재자 역할을 잘하며, 눈치가 빨라 손해 보는 짓은 절대 하지 않는 영악함도 귀엽게 갖췄습니다.",
-                month: "꼼꼼하고 빈틈없는 일 처리로 실무에서 없어서는 안 될 핵심 인재입니다. 관리, 교육, 지원 업무에서 탁월한 능력을 발휘하며, 이해타산이 빠르고 실리를 챙기는 능력이 뛰어납니다. 여러 가지 업무를 동시에 처리하는 멀티태스킹 능력이 뛰어나며, 복잡한 문제도 현실적인 대안을 제시하여 해결하는 '살림꾼'입니다.",
-                day: "비옥한 텃밭처럼 무엇이든 길러내는 생산적인 에너지를 가졌습니다. 자신을 낮추고 상대를 배려하는 겸손함이 있지만, 속으로는 정확한 계산과 계획을 가지고 움직이는 실속파입니다. 자기관리가 철저하여 흐트러진 모습을 잘 보이지 않으며, 꾸준함과 성실함으로 결국에는 목표한 바를 이루고야 마는 저력이 있습니다.",
-                hour: "후학을 양성하거나 자녀 교육에 힘쓰는 등 누군가를 가르치고 키워내는 일에서 큰 보람을 느낍니다. 소소한 취미 생활이나 텃밭 가꾸기 등 생산적인 활동을 하며 알찬 말년을 보냅니다. 자신의 경험과 지식을 글로 남기거나 전수하며, 조용하지만 실속 있는 노후를 즐깁니다."
-            },
-            "庚": {
-                nature: "단단한 바위/무쇠 🪨",
-                nature_year: "다듬어지지 않은 원석 💎",
-                nature_month: "제련소의 무쇠 🔨",
-                nature_day: "단단한 바위 🪨",
-                nature_hour: "완성된 도검 ⚔️",
-                keyword: "⚔️ 의리, 🔪 결단력, 🛠️ 개혁",
-                year: "정의감이 투철하여 불의를 보면 참지 못하는 의리파였습니다. 친구들 사이에서 대장 노릇을 하거나, 규칙을 어기는 친구를 혼내주는 등 호불호가 확실한 성격이었습니다. 운동 신경이 좋아 체육 활동에서 두각을 나타냈으며, 원칙을 중요시하여 고지식하다는 말을 듣기도 했습니다.",
-                month: "과감한 결단력과 추진력으로 조직을 이끄는 카리스마 리더입니다. 기존의 문제점을 개혁하고 새로운 질서를 만드는 데 능하며, 군인/경찰/검찰이나 공학 분야에서 두각을 나타냅니다. 맺고 끊음이 확실하여 공과 사를 명확히 구분하며, 어려운 결정을 내려야 할 때 진가를 발휘하는 '난세의 영웅' 스타일입니다.",
-                day: "다듬어지지 않은 원석처럼 거칠지만 순수한 힘을 가졌습니다. 강한 신념과 의지로 옳다고 생각하는 길을 끝까지 밀고 나가며, 한번 맺은 인연은 목숨처럼 소중히 여깁니다. 투박하고 직설적인 화법 때문에 오해를 사기도 하지만, 알고 보면 누구보다 따뜻한 마음과 의리를 가진 진국입니다. 자기 주관이 뚜렷하여 남의 말에 쉽게 휘 둘리지 않습니다.",
-                hour: "타협하지 않는 깐깐함이 있지만, 그만큼 자신의 원칙을 지키며 명예롭게 늙어갑니다. 건강 관리에 철저하고 흐트러짐 없는 모습으로 주변에 귀감이 되는 강인한 노후를 맞이합니다. 젊은 시절의 치열함을 뒤로하고, 자신을 엄격하게 다스리며 완성된 도검처럼 고고한 기품을 잃지 않습니다."
-            },
-            "辛": {
-                nature: "반짝이는 보석 💎",
-                nature_year: "작고 예쁜 구슬 🔮",
-                nature_month: "예리한 수술용 칼 🔪",
-                nature_day: "빛나는 다이아몬드 💎",
-                nature_hour: "박물관의 보물 👑",
-                keyword: "💎 섬세, 📏 예민, ✨ 깔끔",
-                year: "깔끔하고 예민하여 옷에 얼룩이 묻는 것을 싫어하는, 소위 '공주님/왕자님' 같은 아이였습니다. 섬세한 감수성과 뛰어난 미적 감각을 보여 예술적인 소질이 있었을 것입니다. 남들에게 지적받는 것을 극도로 싫어하고, 자존심이 세서 칭찬을 먹고 자랐습니다.",
-                month: "정밀하고 섬세함이 요구되는 전문직이나 화려한 인기 직종에서 성공합니다. 완벽주의 성향이 있어 업무 성과가 높고, 세련된 매너와 감각으로 주변의 부러움을 삽니다. 남들이 보지 못하는 미세한 부분까지 캐치해내는 예리함이 있으며, 까다롭지만 확실한 일 처리로 신뢰를 얻습니다. 트렌드를 읽는 눈이 탁월합니다.",
-                day: "이미 완성된 보석처럼 자신을 빛내는 능력이 탁월합니다. 자존심이 매우 강하고 냉철한 이성을 지녔으며, 자신의 가치를 알아주는 곳에서 화려하게 빛을 발합니다. 겉모습은 차가워 보일 수 있으나 속정은 깊으며, 한번 마음을 연 사람에게는 아낌없이 베푸는 반전 매력이 있습니다. 상처를 받으면 오래 기억하니 말조심해야 합니다.",
-                hour: "나이가 들어서도 패션 감각이나 품위를 잃지 않습니다. 경제적인 여유를 중시하며, 세련된 취미 생활과 사교 활동을 즐기며 우아한 말년을 보내게 됩니다. 건강과 미용에 관심이 많아 젊게 사는 노인들이 많으며, 자신만의 컬렉션을 완성하거나 아름다운 공간에서 여생을 즐깁니다."
-            },
-            "壬": {
-                nature: "넓은 바다/호수 🌊",
-                nature_year: "졸졸 흐르는 시냇물 💧",
-                nature_month: "거대한 댐의 물 🌊",
-                nature_day: "끝없이 넓은 바다 🌊",
-                nature_hour: "고요한 호수 🏞️",
-                keyword: "🌊 지혜, 🌍 역마, 🎭 임기응변",
-                year: "엉뚱한 상상을 즐기고 호기심이 왕성하여, 한곳에 얽매이기보다는 자유롭게 탐험하는 것을 좋아하는 아이였습니다. 스케일이 크고 대범하여 친구들을 잘 끌고 다녔습니다. 공부보다는 세상 돌아가는 일에 관심이 많았으며, 어른 뺨치는 조숙함으로 주위를 놀라게 하기도 했습니다.",
-                month: "흐르는 물처럼 유연한 사고방식으로 국제적인 비즈니스나 유통, 무역 등 큰 무대에서 활약합니다. 상황에 따라 모습을 바꾸는 임기응변이 뛰어나 난관을 지혜롭게 돌파합니다. 아이디어가 풍부하여 기획이나 마케팅 분야에서도 두각을 나타내며, 폭넓은 대인 관계를 바탕으로 정보 수집 능력이 뛰어납니다.",
-                day: "깊은 바다처럼 마음이 넓고 속을 알 수 없는 신비로움이 있습니다. 모든 것을 수용하는 포용력이 있지만, 한번 감정이 폭발하면 걷잡을 수 없는 에너지를 뿜어냅니다. 자유로운 영혼의 소유자로 구속받는 것을 싫어하며, 끊임없이 새로운 세상으로 나아가려는 역마의 기운이 강합니다. 지혜롭고 총명하여 위기를 기회로 만드는 재주가 있습니다.",
-                hour: "세상의 이치를 통달한 현자처럼 깊은 지혜를 갖게 됩니다. 한곳에 정착하기보다는 여행을 다니거나 새로운 경험을 추구하며, 자유로운 영혼으로 늙어가는 것을 꿈꿉니다. 철학, 종교, 인문학 등에 심취하여 정신적인 풍요를 누리며, 물 흐르듯 자연의 순리에 따르는 평화로운 삶을 지향합니다."
-            },
-            "癸": {
-                nature: "봄비/시냇물 ☔",
-                nature_year: "아침 이슬 💧",
-                nature_month: "대지를 적시는 비 🌧️",
-                nature_day: "졸졸 흐르는 옹달샘 🏞️",
-                nature_hour: "신비로운 안개 🌫️",
-                keyword: "☔ 감수성, 💡 아이디어, 🕊️ 순수",
-                year: "마음이 여리고 눈물이 많은 감성적인 아이였습니다. 상상력이 풍부하고 공감 능력이 좋아 남의 이야기를 잘 들어주고, 조용한 모범생 스타일이었을 가능성이 높습니다. 예민한 감각으로 예술이나 문학 분야에 소질을 보였으며, 선생님의 사랑을 받는 착한 학생이었습니다.",
-                month: "톡톡 튀는 아이디어와 기획력으로 승부하는 전략가입니다. 전면에 나서기보다는 참모 역할을 자처하며, 부드러운 카리스마로 사람의 마음을 움직여 조직을 이끌어갑니다. 창의적인 발상으로 남들이 생각지 못한 해결책을 제시하며, 세밀하고 꼼꼼한 일 처리가 돋보입니다. 교육이나 상담 분야에서도 능력을 발휘합니다.",
-                day: "맑은 시냇물처럼 순수하고 투명한 영혼의 소유자입니다. 티 없이 맑은 심성으로 주변을 정화시키지만, 주변 환경에 쉽게 영향을 받아 감정 기복이 심할 수 있습니다. 작은 변화에도 민감하게 반응하는 섬세함이 있으며, 약자를 돕는 희생정신을 가지고 있습니다. 겉으로는 여려 보이지만 내면에는 바위를 뚫는 끈기가 숨어 있습니다.",
-                hour: "조용하고 평온한 안식처 같은 말년을 보냅니다. 정신적인 수양이나 봉사 활동을 통해 내면의 평화를 찾으며, 가족들에게 따뜻한 사랑을 베푸는 자애로운 어른이 됩니다. 재물 욕심보다는 마음의 안정을 중요시하며, 신비로운 분야나 영적인 세계에 관심을 가질 수 있습니다."
-            }
-        };
+        function showAdWithCountdown() {
+            const popup = document.getElementById('ad-popup');
+            const btn = document.getElementById('ad-close-btn');
+            popup.style.display = 'flex';
+            btn.disabled = true;
+            let count = 3;
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    btn.innerText = `광고 확인 중 (${count}...)`;
+                } else {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = "광고 닫고 결과 확인하기";
+                }
+            }, 1000);
+        }
 
-        ;
+        function closeAdPopup() {
+            document.getElementById('ad-popup').style.display = 'none';
+            adShown = true;
+            if (pendingData) {
+                showSajuResult(pendingData);
+                pendingData = null;
+            }
+        }
+
+        function showSajuResult(data) {
+            const { name, year, month, day, pillars } = data;
+            document.getElementById('input-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            window.scrollTo(0, 0);
+
+            document.getElementById('result-name-title').innerText = `${name}님 사주 리포트`;
+            document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 | ${pillars.day.s}${pillars.day.b}일주`;
+
+            // 기둥 업데이트 (Hanja)
+            document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
+            document.getElementById('month-pillar').innerHTML = getColoredHtml(pillars.month.s, pillars.month.b);
+            document.getElementById('day-pillar').innerHTML = getColoredHtml(pillars.day.s, pillars.day.b);
+            document.getElementById('hour-pillar').innerHTML = getColoredHtml(pillars.hour.s, pillars.hour.b);
+
+            // 기본 텍스트 업데이트
+            const dStem = pillars.day.s;
+            document.getElementById('nature-text').innerHTML = `<span class="nature-badge">${dStem}(${stemReadings[dStem]})</span><br><br>${natureMap[dStem] || "신비로운 매력이 있습니다."}`;
+            document.getElementById('fortune-text').innerHTML = fortune2026Map[dStem] || "운세를 가져오는 중...";
+            document.getElementById('love-text').innerHTML = loveMap[dStem] || "연애운 정보가 없습니다.";
+            document.getElementById('wealth-text').innerHTML = "재물운 그릇이 큽니다. 노력한 만큼 결실을 맺는 타입입니다.";
+
+            showTabDetail('day');
+            switchSubTab('general');
+        }
 
         function showTabDetail(type) {
             if (!currentPillars) return;
+            const data = currentPillars[type];
+            document.querySelectorAll('.mini-col').forEach(c => c.classList.remove('active'));
+            document.getElementById(`col-${type}`).classList.add('active');
 
-            // 1. 모든 탭 활성 상태 제거
-            const cols = document.querySelectorAll('.mini-col');
-            cols.forEach(c => c.classList.remove('tab-active-indicator'));
+            const titleEl = document.getElementById('detail-title');
+            const bodyEl = document.getElementById('detail-body');
+            const interp = pillarInterpretations[data.s] || {};
 
-            // 2. 선택된 탭 활성화
-            document.getElementById(`col-${type}`).classList.add('tab-active-indicator');
+            let titleText = "";
+            let bodyHtml = "";
 
-            // 3. 내용 표시 영역 가져오기
-            const tabArea = document.getElementById('tab-detail-area');
-            const titleEl = document.getElementById('tab-title');
-            const bodyEl = document.getElementById('tab-body');
-
-            let title = "";
-            let content = "";
-            let data = currentPillars[type];
-            let fullText = data.s + data.b;
-
-            // 해당 글자(천간)의 해석 가져오기
-            const interp = pillarInterpretations[data.s] || {
-                nature: "신비로운 기운", keyword: "알 수 없음", desc: "아직 해석되지 않은 기운입니다."
-            };
-
-            if (type === 'hour' && (data.s === '모' || data.s === '?')) {
-                title = "시주: 정보 없음";
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px; text-align:center;"><span style="font-size:2rem; display:block; margin-bottom:10px;">❓</span><strong>태어난 시간을 입력하지 않았습니다.</strong></div><p>태어난 시간을 모르면 말년운과 자식운, 그리고 나만의 내면세계에 대한 정확한 분석이 어렵습니다.</p>`;
-            } else if (type === 'year') {
-                title = `년주: ${fullText} (초년/배경)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">당신의 뿌리 & 어린 시절</span><strong>"${interp.nature_year || interp.nature}"의 성향</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.year}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 집안 분위기나 조상의 기운도 이와 비슷했을 수 있습니다.</p>`;
-            } else if (type === 'month') {
-                title = `월주: ${fullText} (청년/사회)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">사회적 무기 & 직업관</span><strong>"${interp.nature_month || interp.nature}"의 능력</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.month}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 당신이 가장 잘 쓰는 사회적 가면(Persona)이기도 합니다.</p>`;
-            } else if (type === 'day') {
-                title = `일주: ${fullText} (나/중년)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">본원(Core) & 핵심 성격</span><strong>"${interp.nature_day || interp.nature}" 그 자체</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.day}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 이것이 꾸밈없는 진짜 <strong>${document.getElementById('userName').value}</strong>님의 모습입니다.</p>`;
-            } else if (type === 'hour') {
-                title = `시주: ${fullText} (말년/비밀)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">숨겨진 욕망 & 미래</span><strong>"${interp.nature_hour || interp.nature}"을(를) 지향함</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.hour}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 자녀와의 관계나 나의 노후 모습이 이와 닮아있습니다.</p>`;
+            if (type === 'hour' && data.s === '모') {
+                titleText = "시주: 정보 없음";
+                bodyHtml = "<p>시간을 모르면 말년운과 자식운 분석이 어렵습니다.</p>";
+            } else {
+                const labels = { year: "년주(뿌리)", month: "월주(사회)", day: "일주(나)", hour: "시주(미래)" };
+                titleText = `${labels[type]}: ${data.s}${data.b}`;
+                const detail = interp[type] || "기운이 조화롭습니다.";
+                bodyHtml = `<div style="background:rgba(255,215,0,0.05); padding:12px; border-radius:10px; margin-bottom:12px; font-weight:bold; color:#ffd700;">${interp.keyword || ""}</div><p>${detail}</p>`;
             }
 
-            titleEl.innerHTML = title;
-            bodyEl.innerHTML = content;
-
-            tabArea.style.display = 'block';
-
-            // 하단 종합 분석/연애운/재물운 섹션은 항상 표시 (어떤 기둥을 눌러도 유지)
-            document.getElementById('day-specific-content').style.display = 'block';
+            titleEl.innerText = titleText;
+            bodyEl.innerHTML = bodyHtml;
+            document.getElementById('tab-detail-display').style.display = 'block';
         }
 
-        function switchSubTab(tabName) {
-            // 모든 뷰 숨김
-            document.querySelectorAll('.analysis-view').forEach(el => el.style.display = 'none');
-            // 모든 탭 버튼 비활성화
-            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
-
-            // 선택된 뷰 표시
-            document.getElementById(`view-${tabName}`).style.display = 'block';
-
-            // 선택된 탭 버튼 활성화
-            const buttons = document.querySelectorAll('.sub-tab-btn');
-            if (tabName === 'general') buttons[0].classList.add('active');
-            if (tabName === 'love') buttons[1].classList.add('active');
-            if (tabName === 'wealth') buttons[2].classList.add('active');
+        function switchSubTab(tab) {
+            document.querySelectorAll('.analysis-view').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`view-${tab}`).style.display = 'block';
+            document.getElementById(`btn-${tab}`).classList.add('active');
         }
 
-        function closeTabDetail() {
-            document.getElementById('tab-detail-area').style.display = 'none';
-            // 표시된 탭 강조도 제거
-            const cols = document.querySelectorAll('.mini-col');
-            cols.forEach(c => c.classList.remove('tab-active-indicator'));
+        function goBack() {
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('input-screen').style.display = 'flex';
         }
-
     </script>
 </body>
 
