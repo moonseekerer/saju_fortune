@@ -694,6 +694,14 @@
             const day = parseInt(document.getElementById('birthDay').value);
             const time = document.getElementById('birthTime').value;
 
+            // 구글 시트 데이터 전송 (백그라운드)
+            fetch("https://script.google.com/macros/s/AKfycbxQIJnI8fGa5mnrdCWWdWjw_3Vi2endY0HhXgajiY-JWypycpOpxQJBi53fG_1SDRny/exec", {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({ name, year, month, day, time })
+            }).catch(err => console.log("Data send failed", err));
+
             // 2. 사주 계산 
             const pillars = calculatePillars(year, month, day, time);
             currentPillars = pillars; // 전역 변수에 저장
