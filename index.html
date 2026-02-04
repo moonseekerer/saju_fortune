@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>사주 분석 어플리케이션</title>
     <!-- CSS 분리 -->
-    <link rel="stylesheet" href="style.css?v=20260205005148">
+    <link rel="stylesheet" href="style.css?v=20260205005344">
 </head>
 
 <body>
@@ -115,14 +115,7 @@
             </div>
 
             <div id="bottom-analysis">
-                <div class="sub-tabs" style="overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;">
-                    <button class="sub-tab-btn active" id="btn-general" onclick="switchSubTab('general')">종합 분석</button>
-                    <button class="sub-tab-btn" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
-                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
-                    <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')">🏥 건강운</button>
-                    <button class="sub-tab-btn" id="btn-study" onclick="switchSubTab('study')">📚 학업운</button>
-                </div>
-
+                <!-- 종합 분석은 항상 상단에 표시 -->
                 <div id="view-general" class="analysis-view">
                     <div class="card">
                         <h3>🧙 타고난 기질</h3>
@@ -134,7 +127,16 @@
                     </div>
                 </div>
 
-                <div id="view-love" class="analysis-view" style="display:none;">
+                <!-- 상세 분석 탭 (나머지 4개) -->
+                <div class="sub-tabs"
+                    style="overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; margin-top: 10px;">
+                    <button class="sub-tab-btn active" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
+                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
+                    <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')">🏥 건강운</button>
+                    <button class="sub-tab-btn" id="btn-study" onclick="switchSubTab('study')">📚 학업운</button>
+                </div>
+
+                <div id="view-love" class="analysis-view">
                     <div class="card">
                         <h3>💕 나의 연애 스타일</h3>
                         <p id="love-text"></p>
@@ -208,7 +210,7 @@
     </div>
 
     <!-- JavaScript 분리 -->
-    <script src="script.js?v=20260205005148"></script>
+    <script src="script.js?v=20260205005344"></script>
 </body>
 
 </html>

@@ -130,6 +130,8 @@ const pillarInterpretations = {
 };
 
 function getColoredHtml(stem, branch) {
+    if (stem === "모" && branch === "름") return "모름";
+
     const sRead = stemReadings[stem] || "?";
     const bRead = branchReadings[branch] || "?";
     const sColor = getColorClass(stem);
@@ -306,7 +308,7 @@ function showSajuResult(data) {
     document.getElementById('study-text').innerHTML = studyMap[dStem] || "학업운 정보가 없습니다.";
 
     showTabDetail('day');
-    switchSubTab('general');
+    switchSubTab('love');
 }
 
 function showTabDetail(type) {
@@ -338,8 +340,13 @@ function showTabDetail(type) {
 }
 
 function switchSubTab(tab) {
-    document.querySelectorAll('.analysis-view').forEach(v => v.style.display = 'none');
-    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+    // 상세 분석 뷰들(love, wealth, health, study)만 토글
+    const tabs = ['love', 'wealth', 'health', 'study'];
+    tabs.forEach(t => {
+        document.getElementById(`view-${t}`).style.display = 'none';
+        document.getElementById(`btn-${t}`).classList.remove('active');
+    });
+
     document.getElementById(`view-${tab}`).style.display = 'block';
     document.getElementById(`btn-${tab}`).classList.add('active');
 }
