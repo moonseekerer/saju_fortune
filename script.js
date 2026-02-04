@@ -585,3 +585,118 @@ async function shareApp() {
         console.error('App share failed:', err);
     }
 }
+
+// 사주 계산 함수들
+function calculatePillars(year, month, day, timeStr) {
+    // 시간 파싱
+    let hour = 12; // 기본값 (모름)
+    if (timeStr && timeStr !== "모름") {
+        const match = timeStr.match(/(\d+)/);
+        if (match) hour = parseInt(match[1]);
+    }
+
+    // 년주 계산
+    const yearStemIndex = (year - 4) % 10;
+    const yearBranchIndex = (year - 4) % 12;
+    const yearPillar = { s: stems[yearStemIndex], b: branches[yearBranchIndex] };
+
+    // 월주 계산 (입춘 기준 고려 필요하지만 간단히 처리)
+    const monthStemIndex = (yearStemIndex * 2 + month) % 10;
+    const monthBranchIndex = (month + 1) % 12;
+    const monthPillar = { s: stems[monthStemIndex], b: branches[monthBranchIndex] };
+
+    // 일주 계산 (기준일로부터 계산)
+    const baseDate = new Date(1900, 0, 1);
+    const targetDate = new Date(year, month - 1, day);
+    const daysDiff = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
+    const dayStemIndex = (daysDiff + 6) % 10; // 1900.1.1 = 庚子
+    const dayBranchIndex = (daysDiff + 0) % 12;
+    const dayPillar = { s: stems[dayStemIndex], b: branches[dayBranchIndex] };
+
+    // 시주 계산
+    const hourBranchIndex = Math.floor((hour + 1) / 2) % 12;
+    const hourStemIndex = (dayStemIndex * 2 + hourBranchIndex) % 10;
+    const hourPillar = { s: stems[hourStemIndex], b: branches[hourBranchIndex] };
+
+    return {
+        year: yearPillar,
+        month: monthPillar,
+        day: dayPillar,
+        hour: hourPillar
+    };
+}
+
+// 사주 분석 함수
+function analyzeSaju(e) {
+    e.preventDefault();
+
+    // 개인정보 동의 체크 확인
+    const agree = document.getElementById('privacy-agreement').checked;
+    if (!agree) {
+        alert("개인정보 수집 및 이용에 동의해야 분석이 가능합니다.");
+        return;
+    }
+
+    const name = document.getElementById('userName').value;
+    const gender = document.querySelector('input[name="userGender"]:checked').value;
+    const year = parseInt(document.getElementById('birthYear').value);
+    const month = parseInt(document.getElementById('birthMonth').value);
+    const day = parseInt(document.getElementById('birthDay').value);
+    const time = document.getElementById('birthTime').value;
+
+    // Google Apps Script로 데이터 전송
+    fetch("https://script.google.com/macros/s/AKfycbzLs9NNPH4vYDHjpfo6F3rLvBFket-Xgqtlfcu2EoeOAQr5OXLc0GF6YTtnlnAv66Qz/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, gender, year, month, day, time })
+    }).catch(err => console.log("데이터 전송 실패:", err));
+
+    const pillars = calculatePillars(year, month, day, time);
+    currentPillars = pillars;
+
+    // 로딩 표시
+    document.getElementById('loading').style.display = 'flex';
+
+    setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        if (!adShown) {
+            pendingData = { name, gender, year, month, day, pillars };
+            showAdWithCountdown();
+        } else {
+            showSajuResult({ name, gender, year, month, day, pillars });
+        }
+    }, 1200);
+}
+
+// 광고 표시 및 카운트다운
+function showAdWithCountdown() {
+    document.getElementById('input-screen').style.display = 'none';
+    document.getElementById('ad-screen').style.display = 'flex';
+
+    let countdown = 5;
+    const countdownEl = document.getElementById('countdown-number');
+    const skipBtn = document.getElementById('skip-ad-btn');
+
+    const interval = setInterval(() => {
+        countdown--;
+        countdownEl.textContent = countdown;
+
+        if (countdown <= 0) {
+            clearInterval(interval);
+            skipBtn.disabled = false;
+            skipBtn.textContent = '결과 보기 ✨';
+            skipBtn.classList.add('active');
+            skipBtn.style.opacity = '1';
+        }
+    }, 1000);
+}
+
+function skipAd() {
+    adShown = true;
+    document.getElementById('ad-screen').style.display = 'none';
+    if (pendingData) {
+        showSajuResult(pendingData);
+        pendingData = null;
+    }
+}

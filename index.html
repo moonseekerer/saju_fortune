@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>사주 분석 어플리케이션</title>
     <!-- CSS 분리 -->
-    <link rel="stylesheet" href="style.css?v=20260205015633">
+    <link rel="stylesheet" href="style.css?v=20260205021139">
 </head>
 
 <body>
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">성별 (대운 분석 등에 활용)</label>
+                    <label class="form-label">성별 </label>
                     <div class="gender-selection">
                         <label class="gender-option">
                             <input type="radio" name="userGender" value="male" checked>
@@ -106,6 +106,43 @@
                 style="margin-top: 30px; border-style: dashed; opacity: 0.8;">
                 지인에게 2026년 사주 선물하기 🎁
             </button>
+        </div>
+
+        <!-- 로딩 화면 -->
+        <div id="loading"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
+            <div style="font-size:3rem; margin-bottom:20px;">🔮</div>
+            <div style="color:white; font-size:1.2rem;">사주를 분석하고 있습니다...</div>
+        </div>
+
+        <!-- 광고 화면 -->
+        <div id="ad-screen"
+            style="display:none; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;">
+            <div style="text-align:center; max-width:600px;">
+                <h2 style="margin-bottom:30px;">🎁 잠깐! 오늘의 운세 아이템을 확인해보세요</h2>
+
+                <!-- 쿠팡 파트너스 광고 -->
+                <div
+                    style="margin:20px 0; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; padding:20px;">
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px;">🌟 오늘의 운세 추천 아이템</p>
+                    <div style="min-height: 140px;">
+                        <script src="https://ads-partners.coupang.com/g.js"></script>
+                        <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
+                    </div>
+                    <p style="font-size: 9px; opacity: 0.4; margin-top: 10px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를
+                        제공받습니다.</p>
+                </div>
+
+                <div style="margin:30px 0;">
+                    <div style="font-size:3rem; font-weight:bold; color:var(--primary-color);" id="countdown-number">5
+                    </div>
+                    <p style="color:#666;">초 후에 결과를 볼 수 있습니다</p>
+                </div>
+
+                <button id="skip-ad-btn" class="submit-btn" onclick="skipAd()" disabled style="opacity:0.5;">
+                    기다리는 중...
+                </button>
+            </div>
         </div>
 
         <!-- 2. 결과 화면 -->
@@ -265,7 +302,7 @@
     </div>
 
     <!-- JavaScript 분리 -->
-    <script src="script.js?v=20260205015633"></script>
+    <script src="script.js?v=20260205021139"></script>
 </body>
 
 </html>
