@@ -483,6 +483,17 @@ function showSajuResult(data) {
     updateOhaengChart(pillars);
     showTabDetail('day');
     switchSubTab('love');
+
+    // 공유 버튼 텍스트 업데이트
+    const shareBtn = document.querySelector('.result-share .btn-content');
+    if (shareBtn) {
+        shareBtn.innerHTML = `
+            <div class="btn-text" style="align-items: center; text-align: center; width: 100%;">
+                <span class="main-text" style="font-size: 1.1rem; margin-bottom: 4px;">친구들은 어떤 사주를 가지고 있을까요? 👀</span>
+                <span class="sub-text">친구에게 테스트 공유하기</span>
+            </div>
+        `;
+    }
 }
 
 function showTabDetail(type) {

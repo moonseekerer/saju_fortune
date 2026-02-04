@@ -809,40 +809,62 @@ body::before {
 .premium-share-btn {
     width: 100%;
     margin-top: 30px;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 15px;
-    background: linear-gradient(135deg, #FFD700 0%, #FDB931 50%, #FFD700 100%);
-    color: #4a3b00;
+    padding: 16px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-    transition: all 0.3s ease;
-    animation: pulse 2s infinite;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-share-btn.result-share {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
-    color: #5c282b;
-    box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* 반짝이는 효과 */
-.premium-share-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.4),
-            transparent);
-    transition: 0.5s;
-    animation: shimmer 3s infinite;
+/* 호버 효과 (은은하게 밝아짐) */
+.premium-share-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
+
+.premium-share-btn:active {
+    transform: translateY(0);
+}
+
+/* 아이콘 스타일 */
+.btn-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.main-text {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+}
+
+.sub-text {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
 
 .btn-content {
     display: flex;
@@ -915,4 +937,6 @@ body::before {
     100% {
         transform: scale(1);
     }
-}
+}.result-share
+.btn-icon
+ display: none !important; 
