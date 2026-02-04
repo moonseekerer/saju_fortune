@@ -365,7 +365,7 @@ function updateOhaengChart(pillars) {
     const height = canvas.height;
     const centerX = width / 2;
     const centerY = height / 2;
-    const radius = width * 0.32; // 크기를 살짝 더 줄여서 상단 잘림 방지
+    const radius = width * 0.28; // 크기를 줄여서 상단 이모지 잘림 방지
 
     ctx.clearRect(0, 0, width, height);
 
@@ -403,10 +403,13 @@ function updateOhaengChart(pillars) {
     ctx.fillStyle = "rgba(84, 160, 255, 0.4)";
     ctx.strokeStyle = "rgba(84, 160, 255, 0.8)";
     ctx.lineWidth = 3;
+    const minR = 0.15; // 값이 0이어도 최소 15% 크기는 유지 (뾰족함 방지)
     angles.forEach((angle, i) => {
         const count = counts[labels[i]];
-        // 최대 8글자이지만 가시성을 위해 4를 최대치 정도로 보정 (팔자 중 한 오행이 4개면 매우 강함)
-        const r = (radius / 4) * Math.min(count, 4);
+        const val = Math.min(count, 4);
+        // 0~4 값을 minR ~ 1.0 범위로 매핑
+        const r = radius * (minR + (1 - minR) * (val / 4));
+
         const x = centerX + Math.cos(angle) * r;
         const y = centerY + Math.sin(angle) * r;
         if (i === 0) ctx.moveTo(x, y);
