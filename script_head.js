@@ -268,45 +268,27 @@ function analyzeSaju(e) {
     }, 1200);
 }
 
-// 광고 표시 및 카운트다운 (전체 화면 방식)
 function showAdWithCountdown() {
-    document.getElementById('input-screen').style.display = 'none';
-    const adScreen = document.getElementById('ad-screen');
-    if (adScreen) adScreen.style.display = 'flex';
-
-    let countdown = 5;
-    const countdownEl = document.getElementById('countdown-number');
-    const skipBtn = document.getElementById('skip-ad-btn');
-
-    // 초기화
-    if (countdownEl) countdownEl.textContent = countdown;
-    if (skipBtn) {
-        skipBtn.disabled = true;
-        skipBtn.textContent = '기다리는 중...';
-        skipBtn.style.opacity = '0.5';
-    }
-
-    const interval = setInterval(() => {
-        countdown--;
-        if (countdownEl) countdownEl.textContent = countdown;
-
-        if (countdown <= 0) {
-            clearInterval(interval);
-            if (skipBtn) {
-                skipBtn.disabled = false;
-                skipBtn.textContent = '결과 보기 ✨';
-                skipBtn.classList.add('active');
-                skipBtn.style.opacity = '1';
-            }
+    const popup = document.getElementById('ad-popup');
+    const btn = document.getElementById('ad-close-btn');
+    popup.style.display = 'flex';
+    btn.disabled = true;
+    let count = 3;
+    const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+            btn.innerText = `광고 확인 중 (${count}...)`;
+        } else {
+            clearInterval(timer);
+            btn.disabled = false;
+            btn.innerText = "광고 닫고 결과 확인하기";
         }
     }, 1000);
 }
 
-function skipAd() {
+function closeAdPopup() {
+    document.getElementById('ad-popup').style.display = 'none';
     adShown = true;
-    const adScreen = document.getElementById('ad-screen');
-    if (adScreen) adScreen.style.display = 'none';
-
     if (pendingData) {
         showSajuResult(pendingData);
         pendingData = null;
@@ -667,79 +649,3 @@ function showToast(message) {
     }, 2500);
 }
 
-
-// --- 웹 오디오 API를 이용한 배경음악 생성 ---
-
-let audioCtx = null;
-let isPlaying = false;
-let nextNoteTime = 0;
-let soundTimer = null;
-
-// 동양적인 느낌의 5음계 (Pentatonic Scale)
-// C4, D4, E4, G4, A4, C5...
-const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00];
-
-function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
-
-function playNote() {
-    if (!isPlaying) return;
-
-    const osc = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-
-    // 부드러운 사인파 (풍경 소리 느낌)
-    osc.type = 'sine';
-
-    // 랜덤 음계 선택
-    const note = scale[Math.floor(Math.random() * scale.length)];
-    // 약간의 피치 변화로 자연스러움 추가
-    const detune = (Math.random() - 0.5) * 10;
-
-    osc.frequency.value = note + detune;
-
-    // 엔벨로프 (부드럽게 시작해서 길게 사라짐)
-    const now = audioCtx.currentTime;
-    const attack = 0.05;
-    const release = 4.0; // 긴 여운
-
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.1, now + attack); // 볼륨을 너무 크지 않게
-    gainNode.gain.exponentialRampToValueAtTime(0.001, now + attack + release);
-
-    osc.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    osc.start(now);
-    osc.stop(now + attack + release);
-
-    // 다음 음 재생 스케줄링 (랜덤 간격)
-    const delay = 1000 + Math.random() * 3000; // 1~4초 간격
-    soundTimer = setTimeout(playNote, delay);
-}
-
-function toggleSound() {
-    const btn = document.getElementById('sound-btn');
-
-    if (isPlaying) {
-        // 끄기
-        isPlaying = false;
-        if (soundTimer) clearTimeout(soundTimer);
-        if (audioCtx) audioCtx.suspend();
-        btn.innerText = '🔇';
-        btn.classList.remove('playing');
-    } else {
-        // 켜기
-        initAudio();
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-        isPlaying = true;
-        playNote(); // 첫 음 재생
-        btn.innerText = '🔊';
-        btn.classList.add('playing');
-    }
-}
