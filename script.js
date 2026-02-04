@@ -1,6 +1,6 @@
-// 전역 상태
 let currentPillars = null;
 let pendingData = null;
+let lastResultData = null;
 let adShown = false;
 
 const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
@@ -241,7 +241,21 @@ function closeAdPopup() {
     }
 }
 
+const wealthMap = {
+    "甲": "당신에게 재물은 '흙'의 기운입니다. 넓은 대지에 뿌리를 내리듯, 부동산이나 안정적인 자산 관리에 소질이 있습니다. 한꺼번에 큰돈을 노리기보다는 성실하게 일구어가는 재물이 결국 큰 산을 이룹니다. <br><br>명예를 쫓다 보면 재물이 따르는 격이니, 자신의 가치를 높이는 데 투자하세요. 인색하기보다는 적절히 베풀 때 더 큰 부가 돌아오는 명량한 재물운을 가졌습니다.",
+    "乙": "당신에게 재물은 '비옥한 땅'입니다. 작은 풀이 넓은 벌판을 덮듯, 꾸준하고 끈기 있게 재산을 모으는 능력이 탁월합니다. 정보력이 좋고 현실적인 감각이 뛰어나 주식이나 유동 자산 투자에도 소질이 있습니다. <br><br>동업보다는 단독으로 결정할 때 실속을 챙길 수 있습니다. 겉으로 드러나는 화려함보다는 내실 있는 알부자가 되는 경우가 많으며, 생활력이 매우 강합니다.",
+    "丙": "당신에게 재물은 '쇠'의 기운입니다. 용광로에서 금속을 제련하듯, 과감하고 스케일 큰 투자로 큰 부를 거머쥐기도 합니다. 결단력이 좋아 기회를 포착하는 능력이 뛰어나지만, 한꺼번에 크게 잃을 위험도 있으니 리스크 관리가 필수입니다. <br><br>사업가 기질이 다분하며, 막힌 돈의 흐름을 뚫는 수완이 좋습니다. 재물에 대한 집착보다는 성취감을 중시할 때 더 큰 부가 따라옵니다.",
+    "丁": "당신에게 재물은 '반짝이는 보석'입니다. 섬세하고 꼼꼼한 자산 관리가 특징입니다. 남들이 보지 못하는 틈새시장을 노리거나 전문 지식을 활용한 재테크에 강점이 있습니다. 큰 리스크를 지기보다는 안정적이고 확실한 수익을 선호합니다. <br><br>사소한 지출을 아껴 큰돈을 만드는 형국입니다. 문서나 자격증 등 자신의 전문성을 바탕으로 한 소득이 안정적이며, 중년 이후 재무 상태가 급격히 좋아지는 대기만성형입니다.",
+    "戊": "당신에게 재물은 '맑은 물'입니다. 마르지 않는 샘물처럼 끊임없이 재물이 들어오는 운을 가졌습니다. 큰 산이 물을 가두어 호수를 만들듯, 번 돈을 잘 지키고 관리하는 수성(守城) 능력이 매우 뛰어납니다. <br><br>유통, 서비스, 혹은 흐름을 이용한 사업에서 큰 성과를 냅니다. 고집을 조금 내려놓고 변화하는 트렌드에 발맞춘다면 거부(巨富)가 될 수 있는 그릇을 가졌습니다.",
+    "己": "당신에게 재물은 '넓은 바다'입니다. 모든 물이 바다로 모이듯, 다양한 경로를 통해 재물을 끌어당기는 힘이 있습니다. 포용력이 좋아 사람들을 통해 돈이 들어오는 인덕(人德)이 따릅니다. 겉으로는 소박해 보이지만 속으로는 큰 야망과 치밀한 계산을 품고 있습니다. <br><br>성실함을 바탕으로 한 월급 소득도 좋지만, 임대 소득이나 권리 소득 등 가만히 있어도 들어오는 구조를 만드는 데 재능이 있습니다.",
+    "庚": "당신에게 재물은 '푸른 나무'입니다. 단단한 도끼로 나무를 다듬어 가구를 만들듯, 원자재를 가공하여 고부가가치를 창출하는 데 능합니다. 결과 중심적인 사고방식으로 목표한 금액은 반드시 달성하고야 마는 집념이 있습니다. <br><br>강한 추진력으로 자수성가하여 부를 이루는 경우가 많습니다. 다만 동료나 친구에게 의리를 지키다 손해를 볼 수 있으니 공과 사를 명확히 구분하는 것이 좋습니다.",
+    "辛": "당신에게 재물은 '화초와 숲'입니다. 예리한 가위로 정원을 가꾸듯, 세밀하고 감각적인 분야에서 재물을 얻습니다. 취향이 고급스럽고 눈이 높아 고가의 물건이나 예술품, 혹은 트렌디한 아이템 투자에 강점이 있습니다. <br><br>작은 돈은 과감히 쓰고 큰돈을 끌어오는 '하이 리스크 하이 리턴' 성향이 있습니다. 자신의 매력과 브랜드를 활용한 소득이 매우 좋으며, 인맥이 곧 재산인 타입입니다.",
+    "壬": "당신에게 재물은 '뜨거운 불'입니다. 차가운 바닷물이 태양을 받아 수증기를 만들듯, 역동적이고 변화무쌍한 재물운을 가셨습니다. 해외 운이 있어 국경을 넘나드는 비즈니스나 무역, 혹은 온라인 기반의 사업에서 큰 부를 쌓습니다. <br><br>한곳에 머물러 있기보다 바쁘게 움직일수록 돈이 쌓입니다. 화술이 좋고 임기응변이 뛰어나 협상을 통해 이득을 취하는 데 천부적인 소질이 있습니다.",
+    "癸": "당신에게 재물은 '은은한 등불'입니다. 비가 내려 만물을 적시듯, 조용하면서도 실속 있게 부를 축적합니다. 기발한 아이디어나 지적 재산권을 활용한 소득에 강점이 있습니다. 겉으로 부를 과시하기보다는 남모르게 알토란 같은 자산을 늘려가는 스타일입니다. <br><br>치밀한 분석력으로 소액 투자를 반복하여 목돈을 만드는 데 능하며, 인내심을 가지고 장기 투자할 때 가장 큰 결실을 봅니다."
+};
+
 function showSajuResult(data) {
+    lastResultData = data;
     const { name, year, month, day, pillars } = data;
     document.getElementById('input-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
@@ -261,7 +275,7 @@ function showSajuResult(data) {
     document.getElementById('nature-text').innerHTML = `<span class="nature-badge">${dStem}(${stemReadings[dStem]})</span><br><br>${natureMap[dStem] || "신비로운 매력이 있습니다."}`;
     document.getElementById('fortune-text').innerHTML = fortune2026Map[dStem] || "운세를 가져오는 중...";
     document.getElementById('love-text').innerHTML = loveMap[dStem] || "연애운 정보가 없습니다.";
-    document.getElementById('wealth-text').innerHTML = "재물운 그릇이 큽니다. 노력한 만큼 결실을 맺는 타입입니다.";
+    document.getElementById('wealth-text').innerHTML = wealthMap[dStem] || "재물운 그릇이 큽니다. 노력한 만큼 결실을 맺는 타입입니다.";
 
     showTabDetail('day');
     switchSubTab('general');
@@ -305,4 +319,35 @@ function switchSubTab(tab) {
 function goBack() {
     document.getElementById('result-screen').style.display = 'none';
     document.getElementById('input-screen').style.display = 'flex';
+}
+
+async function shareResult() {
+    if (!lastResultData) return;
+    const { name, pillars } = lastResultData;
+    const dStem = pillars.day.s;
+    const dBranch = pillars.day.b;
+    const reading = `${dStem}${dBranch}(${stemReadings[dStem]}${branchReadings[dBranch]})`;
+
+    const shareText = `🔮 [${name}]님의 사주 분석 리포트\n\n` +
+        `✨ 일주: ${reading}\n` +
+        `✨ 기질: ${natureMap[dStem].split('.')[0]}...\n\n` +
+        `지금 바로 당신의 운명을 확인해보세요! 👇`;
+
+    const shareData = {
+        title: '사주 분석 리포트',
+        text: shareText,
+        url: window.location.href
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // Web Share API 미지원 시 클립보드 복사
+            await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+            alert('결과가 클립보드에 복사되었습니다! 원하시는 곳에 붙여넣어 공유하세요.');
+        }
+    } catch (err) {
+        console.error('Share failed:', err);
+    }
 }
