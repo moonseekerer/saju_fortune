@@ -19,7 +19,7 @@ const TRANSLATIONS = {
     ko: {
         app_title: "2026년 나의 사주",
         app_desc: "생년월일을 입력하면 당신의 사주를 분석해드립니다.",
-        label_name: "이름 또는 닉네임",
+        label_name: "이름 또는 닉네임 (선택)",
         placeholder_name: "예 : 홍길동",
         label_gender: "성별",
         gender_male: "남성",
@@ -45,7 +45,8 @@ const TRANSLATIONS = {
         time_11: "해시 (21:30 ~ 23:29)",
         privacy_agree: "개인정보 수집 및 이용 동의 (필수)",
         privacy_details: "자세히 보기",
-        privacy_content: "• 수집 목적: 사주 분석 결과 제공 및 서비스 이용 통계 분석<br>• 수집 항목: 이름(또는 닉네임), 생년월일, 성별, 태어난 시간<br>• 보유 기간: 3년 (통계 분석 목적, 개인 식별 정보 비식별화 처리)<br><strong>* 실명 대신 닉네임 사용을 권장합니다.</strong><br>* 동의를 거부할 권리가 있으며, 거부 시 서비스 이용이 제한됩니다.<br><br><strong>❓ 닉네임으로 적어도 괜찮은가요?</strong><br>네, 본 서비스는 이름의 획수를 보는 성명학이 아닌 태어난 날짜 기운을 분석하는 명리학을 기반으로 합니다. 닉네임을 사용하셔도 분석 결과에는 아무런 영향이 없으니 안심하세요!",
+        privacy_details_hide: "간략히",
+        privacy_content: "• 수집 목적: 사주 분석 결과 제공 및 서비스 이용 통계 분석<br>• 수집 항목: 이름(또는 닉네임, 선택), 생년월일, 성별, 태어난 시간<br>• 보유 기간: 3년 (통계 분석 목적, 개인 식별 정보 비식별화 처리)<br><strong>* 이름/닉네임은 선택사항이며, 입력하지 않아도 분석이 가능합니다.</strong><br><strong>* 실명 대신 닉네임 사용을 권장합니다.</strong><br>* 동의를 거부할 권리가 있으며, 거부 시 서비스 이용이 제한됩니다.<br><br><strong>❓ 닉네임으로 적어도 괜찮은가요?</strong><br>네, 본 서비스는 이름의 획수를 보는 성명학이 아닌 태어난 날짜 기운을 분석하는 명리학을 기반으로 합니다. 닉네임을 사용하셔도 분석 결과에는 아무런 영향이 없으니 안심하세요!",
         btn_submit: "분석 시작하기 ✨",
         share_test_title: "친구에게 테스트 공유하기",
         share_test_desc: "2026년 운세를 무료로 확인해보세요",
@@ -88,7 +89,7 @@ const TRANSLATIONS = {
     en: {
         app_title: "2026 Fortune Analysis",
         app_desc: "Enter your birth date to analyze your Saju (destiny).",
-        label_name: "Name or Nickname",
+        label_name: "Name or Nickname (Optional)",
         placeholder_name: "e.g. John Doe",
         label_gender: "Gender",
         gender_male: "Male",
@@ -114,7 +115,8 @@ const TRANSLATIONS = {
         time_11: "Pig (21:30 ~ 23:29)",
         privacy_agree: "Agree to Privacy Policy (Required)",
         privacy_details: "View Details",
-        privacy_content: "• Purpose: Provide Saju analysis and usage statistics<br>• Items: Name (or Nickname), Date of Birth, Gender, Birth Time<br>• Retention: 3 years for statistical analysis (Personally identifiable information is anonymized)<br><strong>* Nickname is recommended over real name.</strong><br>* You have the right to refuse, but service will be limited.<br><br><strong>❓ Is it okay to use a nickname?</strong><br>Yes! This service is based on Saju (Four Pillars), which analyzes the energy of your birth date, not Name Analysis. Using a nickname does not affect the result at all!",
+        privacy_details_hide: "Hide Details",
+        privacy_content: "• Purpose: Provide Saju analysis and usage statistics<br>• Items: Name (or Nickname, Optional), Date of Birth, Gender, Birth Time<br>• Retention: 3 years for statistical analysis (Personally identifiable information is anonymized)<br><strong>* Name/Nickname is optional. You can proceed without entering it.</strong><br><strong>* Nickname is recommended over real name.</strong><br>* You have the right to refuse, but service will be limited.<br><br><strong>❓ Is it okay to use a nickname?</strong><br>Yes! This service is based on Saju (Four Pillars), which analyzes the energy of your birth date, not Name Analysis. Using a nickname does not affect the result at all!",
         btn_submit: "Start Analysis ✨",
         share_test_title: "Share with Friends",
         share_test_desc: "Check your 2026 fortune for free",
@@ -196,8 +198,26 @@ function setLanguage(lang) {
         if (typeof updateResultTexts === 'function') updateResultTexts();
     }
 
+
     populateDateOptions();
 }
+
+// Add event listener for privacy details toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const privacyDetails = document.querySelector('.privacy-details');
+    if (privacyDetails) {
+        privacyDetails.addEventListener('toggle', function () {
+            const summary = this.querySelector('summary');
+            if (summary) {
+                if (this.open) {
+                    summary.textContent = TRANSLATIONS[currentLang].privacy_details_hide;
+                } else {
+                    summary.textContent = TRANSLATIONS[currentLang].privacy_details;
+                }
+            }
+        });
+    }
+});
 
 function populateDateOptions() {
     const yearSelect = document.getElementById('birthYear');
@@ -498,7 +518,8 @@ function calculatePillars(year, month, day, timeIdx) {
     };
 }
 
-function analyzeSaju(e) {
+
+async function analyzeSaju(e) {
     e.preventDefault();
 
     // 개인정보 동의 체크 확인
@@ -512,33 +533,88 @@ function analyzeSaju(e) {
     if (!name) {
         name = currentLang === 'en' ? "Guest" : "방문자";
     }
-    const gender = document.querySelector('input[name="userGender"]:checked').value;
+
+    const gender = document.querySelector('input[name="userGender"]:checked')?.value;
     const year = parseInt(document.getElementById('birthYear').value);
     const month = parseInt(document.getElementById('birthMonth').value);
     const day = parseInt(document.getElementById('birthDay').value);
     const time = document.getElementById('birthTime').value;
 
+    // ✅ 입력값 검증
+    if (!gender) {
+        alert(currentLang === 'en' ? 'Please select gender.' : '성별을 선택해주세요.');
+        return;
+    }
+
+    if (isNaN(year) || year < 1900 || year > 2100) {
+        alert(currentLang === 'en' ? 'Please enter a valid birth year (1900-2100).' : '올바른 생년을 입력해주세요 (1900-2100).');
+        return;
+    }
+
+    if (isNaN(month) || month < 1 || month > 12) {
+        alert(currentLang === 'en' ? 'Please select a valid month.' : '올바른 월을 선택해주세요.');
+        return;
+    }
+
+    if (isNaN(day) || day < 1 || day > 31) {
+        alert(currentLang === 'en' ? 'Please select a valid day.' : '올바른 일을 선택해주세요.');
+        return;
+    }
+
+    // 월별 일수 체크
+    const daysInMonth = new Date(year, month, 0).getDate();
+    if (day > daysInMonth) {
+        alert(currentLang === 'en'
+            ? `${month} month has only ${daysInMonth} days.`
+            : `${month}월은 ${daysInMonth}일까지만 있습니다.`);
+        return;
+    }
+
+    if (!time) {
+        alert(currentLang === 'en' ? 'Please select birth time.' : '태어난 시간을 선택해주세요.');
+        return;
+    }
+
     document.getElementById('loading').style.display = 'flex';
 
-    // Google Apps Script 연동
-    fetch("https://script.google.com/macros/s/AKfycbxQIJnI8fGa5mnrdCWWdWjw_3Vi2endY0HhXgajiY-JWypycpOpxQJBi53fG_1SDRny/exec", {
-        method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ name, gender, year, month, day, time })
-    }).catch(err => console.log("Log fail", err));
+    try {
+        // 🔐 이름 간단 암호화 (Base64 + 타임스탬프)
+        const timestamp = new Date().getTime();
+        const nameToEncrypt = name + '|' + timestamp;
+        const encryptedName = btoa(unescape(encodeURIComponent(nameToEncrypt)));
 
-    const pillars = calculatePillars(year, month, day, time);
-    currentPillars = pillars;
+        // Google Apps Script 연동 (암호화된 이름 전송)
+        fetch("https://script.google.com/macros/s/AKfycbww-jTAJsHmkyMnbPdkBJBr8vKaeuoMe1vPv_8z-siuB2gPNMTy-GRCvS2QoVmARPPt/exec", {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ name: encryptedName, gender, year, month, day, time })
+        }).catch(err => {
+            console.error("데이터 전송 실패:", err);
+            // 전송 실패해도 분석은 계속 진행 (통계 수집 실패만)
+        });
 
-    setTimeout(() => {
+        const pillars = calculatePillars(year, month, day, time);
+        currentPillars = pillars;
+
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none';
+            if (!adShown) {
+                pendingData = { name, gender, year, month, day, pillars };
+                showAdWithCountdown();
+            } else {
+                showSajuResult({ name, gender, year, month, day, pillars });
+            }
+        }, 1200);
+    } catch (error) {
+        console.error("분석 오류:", error);
         document.getElementById('loading').style.display = 'none';
-        if (!adShown) {
-            pendingData = { name, gender, year, month, day, pillars };
-            showAdWithCountdown();
-        } else {
-            showSajuResult({ name, gender, year, month, day, pillars });
-        }
-    }, 1200);
+        alert(currentLang === 'en'
+            ? 'An error occurred. Please try again.'
+            : '오류가 발생했습니다. 다시 시도해주세요.');
+    }
 }
+
 
 // 광고 표시 및 카운트다운 (전체 화면 방식)
 function showAdWithCountdown() {
