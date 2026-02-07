@@ -15,6 +15,258 @@ document.addEventListener('keydown', e => {
     }
 });
 
+const TRANSLATIONS = {
+    ko: {
+        app_title: "2026년 나의 사주",
+        app_desc: "생년월일을 입력하면 당신의 사주를 분석해드립니다.",
+        label_name: "이름 또는 닉네임",
+        placeholder_name: "예 : 홍길동",
+        label_gender: "성별",
+        gender_male: "남성",
+        gender_female: "여성",
+        label_year: "생년",
+        placeholder_year: "1990",
+        label_month: "월",
+        label_day: "일",
+        label_time: "태어난 시간",
+        select_default: "선택",
+        time_unknown: "모름",
+        time_0: "자시 (23:30 ~ 01:29)",
+        time_1: "축시 (01:30 ~ 03:29)",
+        time_2: "인시 (03:30 ~ 05:29)",
+        time_3: "묘시 (05:30 ~ 07:29)",
+        time_4: "진시 (07:30 ~ 09:29)",
+        time_5: "사시 (09:30 ~ 11:29)",
+        time_6: "오시 (11:30 ~ 13:29)",
+        time_7: "미시 (13:30 ~ 15:29)",
+        time_8: "신시 (15:30 ~ 17:29)",
+        time_9: "유시 (17:30 ~ 19:29)",
+        time_10: "술시 (19:30 ~ 21:29)",
+        time_11: "해시 (21:30 ~ 23:29)",
+        privacy_agree: "개인정보 수집 및 이용 동의 (필수)",
+        privacy_details: "자세히 보기",
+        privacy_content: "• 수집 목적: 사주 분석 결과 제공 및 서비스 이용 통계 분석<br>• 수집 항목: 이름(또는 닉네임), 생년월일, 성별, 태어난 시간<br>• 보유 기간: 3년 (통계 분석 목적, 개인 식별 정보 비식별화 처리)<br><strong>* 실명 대신 닉네임 사용을 권장합니다.</strong><br>* 동의를 거부할 권리가 있으며, 거부 시 서비스 이용이 제한됩니다.<br><br><strong>❓ 닉네임으로 적어도 괜찮은가요?</strong><br>네, 본 서비스는 이름의 획수를 보는 성명학이 아닌 태어난 날짜 기운을 분석하는 명리학을 기반으로 합니다. 닉네임을 사용하셔도 분석 결과에는 아무런 영향이 없으니 안심하세요!",
+        btn_submit: "분석 시작하기 ✨",
+        share_test_title: "친구에게 테스트 공유하기",
+        share_test_desc: "2026년 운세를 무료로 확인해보세요",
+        loading_msg: "사주를 분석하고 있습니다...",
+        ad_title: "🎁 잠깐! 오늘의 운세 아이템을 확인해보세요",
+        ad_desc: "👇 이 링크를 클릭해주시면<br>제작자에게 큰 도움이 됩니다 🙇‍♂️",
+        ad_disclaimer: "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
+        ad_wait_msg: "초 후에 결과를 볼 수 있습니다",
+        btn_wait: "기다리는 중...",
+        btn_view_result: "결과 보기 ✨",
+        btn_back: "← 다시 입력하기",
+        analysis_report: "Analysis Report",
+        tab_hour: "시주", tab_hour_sub: "말년/자식",
+        tab_day: "일주(나)", tab_day_sub: "본원/배우자",
+        tab_month: "월주", tab_month_sub: "사회/부모",
+        tab_year: "년주", tab_year_sub: "초년/조상",
+        card_nature: "🧙 타고난 기질",
+        card_fortune: "🌟 2026년 운세 미리보기",
+        subtab_love: "💕 연애운",
+        subtab_wealth: "💰 재물운",
+        subtab_health: "🏥 건강운",
+        subtab_study: "📚 학업운",
+        card_love: "💕 나의 연애 스타일",
+        card_wealth: "💰 나의 재물 그릇",
+        card_health: "🏥 나의 건강 관리",
+        card_study: "📚 나의 학습 스타일",
+        ohaeng_title: "☯️ 오행 분포 (에너지 균형)",
+        ohaeng_scaling_title: "🧐 오행 분포는 어떻게 계산되나요?",
+        ohaeng_desc: "<p>사주(四柱)는 태어난 년, 월, 일, 시를 일컫는 4개의 기둥이며, 각 기둥은 위(천간)와 아래(지지) 두 글자로 이루어져 총 <strong>8글자(팔자)</strong>가 됩니다.</p><ul><li><strong>분석 방식:</strong> 이 8글자 각각이 가진 고유한 오행(나무, 불, 흙, 쇠, 물) 성질을 모두 분석합니다.</li><li><strong>그래프 의미:</strong> 오각형 그래프는 나를 구성하는 8가지 기운의 분포를 보여줍니다.</li><li><strong>균형의 중요성:</strong> 어떤 기운이 많고 적음에 따라 개인의 성정이나 건강, 운의 흐름이 달라집니다. 골고루 분포되어 있을수록 기운이 조화롭다고 봅니다.</li></ul>",
+        share_result_title: "내 결과 친구에게 공유하기",
+        share_result_desc: "친구들은 어떤 사주를 가지고 있을까요? 👀",
+        footer_ad: "🙇‍♂️ 아래 링크 클릭은<br>개발자에게 큰 힘이 됩니다!",
+        footer_disclaimer: "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
+        alert_privacy: "개인정보 수집 및 이용에 동의해야 분석이 가능합니다.",
+        toast_copy: "링크가 복사되었습니다! 📋",
+        toast_share_fail: "공유하기 실패 😢",
+        toast_share_unsupported: "이 브라우저에서는 공유 기능을 지원하지 않습니다.",
+        btn_lang: "🇰🇷 KO"
+    },
+    en: {
+        app_title: "2026 Fortune Analysis",
+        app_desc: "Enter your birth date to analyze your Saju (destiny).",
+        label_name: "Name or Nickname",
+        placeholder_name: "e.g. John Doe",
+        label_gender: "Gender",
+        gender_male: "Male",
+        gender_female: "Female",
+        label_year: "Birth Year",
+        placeholder_year: "1990",
+        label_month: "Month",
+        label_day: "Day",
+        label_time: "Birth Time",
+        select_default: "Select",
+        time_unknown: "Unknown",
+        time_0: "Rat (23:30 ~ 01:29)",
+        time_1: "Ox (01:30 ~ 03:29)",
+        time_2: "Tiger (03:30 ~ 05:29)",
+        time_3: "Rabbit (05:30 ~ 07:29)",
+        time_4: "Dragon (07:30 ~ 09:29)",
+        time_5: "Snake (09:30 ~ 11:29)",
+        time_6: "Horse (11:30 ~ 13:29)",
+        time_7: "Sheep (13:30 ~ 15:29)",
+        time_8: "Monkey (15:30 ~ 17:29)",
+        time_9: "Rooster (17:30 ~ 19:29)",
+        time_10: "Dog (19:30 ~ 21:29)",
+        time_11: "Pig (21:30 ~ 23:29)",
+        privacy_agree: "Agree to Privacy Policy (Required)",
+        privacy_details: "View Details",
+        privacy_content: "• Purpose: Provide Saju analysis and usage statistics<br>• Items: Name (or Nickname), Date of Birth, Gender, Birth Time<br>• Retention: 3 years for statistical analysis (Personally identifiable information is anonymized)<br><strong>* Nickname is recommended over real name.</strong><br>* You have the right to refuse, but service will be limited.<br><br><strong>❓ Is it okay to use a nickname?</strong><br>Yes! This service is based on Saju (Four Pillars), which analyzes the energy of your birth date, not Name Analysis. Using a nickname does not affect the result at all!",
+        btn_submit: "Start Analysis ✨",
+        share_test_title: "Share with Friends",
+        share_test_desc: "Check your 2026 fortune for free",
+        loading_msg: "Analyzing your destiny...",
+        ad_title: "🎁 Wait! Check out today's lucky item",
+        ad_desc: "👇 Clicking this link<br>is a great help to the developer 🙇‍♂️",
+        ad_disclaimer: "This post is part of Coupang Partners activity, and we receive a small commission.",
+        ad_wait_msg: "seconds to see results",
+        btn_wait: "Waiting...",
+        btn_view_result: "View Result ✨",
+        btn_back: "← Enter Again",
+        analysis_report: "Analysis Report",
+        tab_hour: "Hour Pillar", tab_hour_sub: "Late Life/Children",
+        tab_day: "Day Pillar", tab_day_sub: "Self/Spouse",
+        tab_month: "Month Pillar", tab_month_sub: "Society/Parents",
+        tab_year: "Year Pillar", tab_year_sub: "Early Life/Ancestors",
+        card_nature: "🧙 Innate Nature",
+        card_fortune: "🌟 2026 Fortune Preview",
+        subtab_love: "💕 Love",
+        subtab_wealth: "💰 Wealth",
+        subtab_health: "🏥 Health",
+        subtab_study: "📚 Study",
+        card_love: "💕 My Love Style",
+        card_wealth: "💰 My Wealth Pot",
+        card_health: "🏥 My Health Care",
+        card_study: "📚 My Study Style",
+        ohaeng_title: "☯️ 5 Elements Distribution",
+        ohaeng_scaling_title: "🧐 How is it calculated?",
+        ohaeng_desc: "<p>Saju (Four Pillars) consists of 4 pillars representing Year, Month, Day, and Hour. Each pillar has a Heaven (top) and Earth (bottom) character, totaling <strong>8 characters</strong>.</p><ul><li><strong>Analysis:</strong> We analyze the Five Elements (Wood, Fire, Earth, Metal, Water) of these 8 characters.</li><li><strong>Graph:</strong> The chart shows the distribution of your energy.</li><li><strong>Balance:</strong> The balance of these elements influences your personality, health, and fortune. A balanced distribution is considered harmonious.</li></ul>",
+        share_result_title: "Share My Result",
+        share_result_desc: "What destiny do your friends have? 👀",
+        footer_ad: "🙇‍♂️ Clicking the link below<br>is a big support for the developer!",
+        footer_disclaimer: "This post is part of Coupang Partners activity, and we receive a small commission.",
+        alert_privacy: "You must agree to the Privacy Policy to proceed.",
+        toast_copy: "Link copied to clipboard! 📋",
+        toast_share_fail: "Sharing failed 😢",
+        toast_share_unsupported: "Web Share API not supported on this browser.",
+        btn_lang: "🇺🇸 EN"
+    }
+};
+
+let currentLang = 'ko';
+
+function toggleLanguage() {
+    const newLang = currentLang === 'ko' ? 'en' : 'ko';
+    setLanguage(newLang);
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+
+    // Update Toggle Button Text/Icon
+    const langBtn = document.getElementById('lang-btn');
+    if (langBtn) {
+        langBtn.textContent = lang === 'ko' ? "🇰🇷" : "🇺🇸"; // Or use emoji flag directly if preferred
+    }
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (TRANSLATIONS[lang][key]) {
+            if (el.tagName === 'INPUT' && el.placeholder) {
+                el.placeholder = TRANSLATIONS[lang][key];
+            } else {
+                el.innerHTML = TRANSLATIONS[lang][key];
+            }
+        }
+    });
+
+    // Update select default option
+    const selects = document.querySelectorAll('select');
+    selects.forEach(s => {
+        if (s.options[0].value === "") {
+            s.options[0].text = TRANSLATIONS[lang].select_default;
+        }
+    });
+
+    // Refresh Result if visible
+    if (document.getElementById('result-screen').style.display === 'block') {
+        if (typeof updateResultTexts === 'function') updateResultTexts();
+    }
+
+    populateDateOptions();
+}
+
+function populateDateOptions() {
+    const yearSelect = document.getElementById('birthYear');
+    const monthSelect = document.getElementById('birthMonth');
+    const daySelect = document.getElementById('birthDay');
+
+    if (!yearSelect || !monthSelect || !daySelect) return;
+
+    const selectedYear = parseInt(yearSelect.value);
+    const selectedMonth = parseInt(monthSelect.value);
+    const selectedDay = parseInt(daySelect.value);
+
+    // Populate Month Options
+    const currentMonthVal = monthSelect.value;
+    monthSelect.innerHTML = `<option value="" data-i18n="select_default">${TRANSLATIONS[currentLang].select_default}</option>`;
+    for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = currentLang === 'en' ? `${i}` : `${i}월`;
+        if (i === parseInt(currentMonthVal)) option.selected = true;
+        monthSelect.appendChild(option);
+    }
+
+    // Populate Day Options based on Year and Month
+    let daysInMonth = 31;
+    if (selectedMonth === 4 || selectedMonth === 6 || selectedMonth === 9 || selectedMonth === 11) {
+        daysInMonth = 30;
+    } else if (selectedMonth === 2) {
+        const isLeap = (selectedYear % 4 === 0 && selectedYear % 100 !== 0) || (selectedYear % 400 === 0);
+        daysInMonth = isLeap ? 29 : 28;
+    }
+
+    const currentDayVal = daySelect.value;
+    daySelect.innerHTML = `<option value="" data-i18n="select_default">${TRANSLATIONS[currentLang].select_default}</option>`;
+    for (let i = 1; i <= daysInMonth; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = currentLang === 'en' ? `${i}` : `${i}일`;
+        if (i === parseInt(currentDayVal)) option.selected = true;
+        daySelect.appendChild(option);
+    }
+}
+
+// Event Listeners for Date Changes
+document.addEventListener('DOMContentLoaded', () => {
+    const yearSelect = document.getElementById('birthYear');
+    const monthSelect = document.getElementById('birthMonth');
+
+    if (yearSelect && monthSelect) {
+        yearSelect.addEventListener('change', populateDateOptions);
+        monthSelect.addEventListener('change', populateDateOptions);
+    }
+    populateDateOptions(); // Initial population
+
+    // Set validation messages
+    const requiredInputs = document.querySelectorAll('select[required], input[required]');
+    requiredInputs.forEach(input => {
+        input.addEventListener('invalid', function () {
+            if (this.value === "") {
+                const msg = currentLang === 'en' ? "Please select an item in the list." : "목록에서 항목을 선택하세요.";
+                this.setCustomValidity(msg);
+            }
+        });
+        input.addEventListener('input', function () {
+            this.setCustomValidity("");
+        });
+    });
+});
+
 const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 const stemReadings = { "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무", "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계" };
@@ -167,11 +419,16 @@ const pillarInterpretations = {
     }
 };
 
-function getColoredHtml(stem, branch) {
-    if (stem === "모" && branch === "름") return `<div class="pillar-box"><span class="unknown-pillar">모름</span></div>`;
 
-    const sRead = stemReadings[stem] || "?";
-    const bRead = branchReadings[branch] || "?";
+
+
+function getColoredHtml(stem, branch) {
+    if (stem === "모" && branch === "름") return `<div class="pillar-box"><span class="unknown-pillar">${TRANSLATIONS[currentLang].time_unknown}</span></div>`;
+
+    const sMap = currentLang === 'en' ? stemReadings_en : stemReadings_ko;
+    const bMap = currentLang === 'en' ? branchReadings_en : branchReadings_ko;
+    const sRead = sMap[stem] || "?";
+    const bRead = bMap[branch] || "?";
     const sColor = getColorClass(stem);
     const bColor = getColorClass(branch);
 
@@ -247,11 +504,14 @@ function analyzeSaju(e) {
     // 개인정보 동의 체크 확인
     const agree = document.getElementById('privacy-agreement').checked;
     if (!agree) {
-        alert("개인정보 수집 및 이용에 동의해야 분석이 가능합니다.");
+        alert(TRANSLATIONS[currentLang].alert_privacy);
         return;
     }
 
-    const name = document.getElementById('userName').value;
+    let name = document.getElementById('userName').value.trim();
+    if (!name) {
+        name = currentLang === 'en' ? "Guest" : "방문자";
+    }
     const gender = document.querySelector('input[name="userGender"]:checked').value;
     const year = parseInt(document.getElementById('birthYear').value);
     const month = parseInt(document.getElementById('birthMonth').value);
@@ -294,7 +554,7 @@ function showAdWithCountdown() {
     if (countdownEl) countdownEl.textContent = countdown;
     if (skipBtn) {
         skipBtn.disabled = true;
-        skipBtn.textContent = '기다리는 중...';
+        skipBtn.textContent = TRANSLATIONS[currentLang].btn_wait;
         skipBtn.style.opacity = '0.5';
     }
 
@@ -306,7 +566,7 @@ function showAdWithCountdown() {
             clearInterval(interval);
             if (skipBtn) {
                 skipBtn.disabled = false;
-                skipBtn.textContent = '결과 보기 ✨';
+                skipBtn.textContent = TRANSLATIONS[currentLang].btn_view_result;
                 skipBtn.classList.add('active');
                 skipBtn.style.opacity = '1';
             }
@@ -491,6 +751,72 @@ function updateOhaengChart(pillars) {
     });
 }
 
+function updateResultTexts() {
+    if (!lastResultData || !currentPillars) return;
+    const { name, gender, year, month, day, pillars } = lastResultData;
+    const isMale = gender === 'male';
+    const lang = currentLang;
+
+    // Maps
+    // Maps
+    const currentLoveMap = lang === 'en' ? (isMale ? loveMapMale_en : loveMapFemale_en) : (isMale ? loveMapMale : loveMapFemale);
+    const currentNatureMap = lang === 'en' ? (isMale ? natureMapMale_en : natureMapFemale_en) : (isMale ? natureMapMale : natureMapFemale);
+    const currentFortuneMap = lang === 'en' ? fortune2026Map_en : fortune2026Map;
+    const currentWealthMap = lang === 'en' ? wealthMap_en : wealthMap;
+    const currentHealthMap = lang === 'en' ? healthMap_en : healthMap;
+    const currentStudyMap = lang === 'en' ? studyMap_en : studyMap;
+
+    // Title & Desc
+    const today = new Date();
+    let age = today.getFullYear() - year;
+    const m = today.getMonth() - (month - 1);
+    if (m < 0 || (m === 0 && today.getDate() < day)) age--;
+
+    if (lang === 'en') {
+        document.getElementById('result-name-title').innerText = `${name}'s Fortune`;
+        document.getElementById('result-desc').innerText = `Born ${year}.${month}.${day} (Age ${age}) | ${pillars.day.s}${pillars.day.b}`;
+    } else {
+        document.getElementById('result-name-title').innerText = `${name}님 사주 리포트`;
+        const genderText = gender === 'male' ? '남' : '여';
+        document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 (만 ${age}세, ${genderText}) | ${pillars.day.s}${pillars.day.b}일주`;
+    }
+
+    // Texts
+    const dStem = pillars.day.s;
+    const sMap = lang === 'en' ? stemReadings_en : stemReadings_ko;
+    document.getElementById('nature-text').innerHTML = `<span class="nature-badge">${dStem}(${sMap[dStem]})</span><br><br>${currentNatureMap[dStem] || ""}`;
+    document.getElementById('fortune-text').innerHTML = currentFortuneMap[dStem] || "";
+    document.getElementById('love-text').innerHTML = currentLoveMap[dStem] || "";
+    document.getElementById('wealth-text').innerHTML = currentWealthMap[dStem] || "";
+    document.getElementById('health-text').innerHTML = currentHealthMap[dStem] || "";
+    document.getElementById('study-text').innerHTML = currentStudyMap[dStem] || "";
+
+    // Update Pillars (to refresh language)
+    if (pillars) {
+        document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
+        document.getElementById('month-pillar').innerHTML = getColoredHtml(pillars.month.s, pillars.month.b);
+        document.getElementById('day-pillar').innerHTML = getColoredHtml(pillars.day.s, pillars.day.b);
+        document.getElementById('hour-pillar').innerHTML = getColoredHtml(pillars.hour.s, pillars.hour.b);
+    }
+
+    // Refresh current tab detail
+    const activeTab = document.querySelector('.mini-col.active');
+    if (activeTab) {
+        showTabDetail(activeTab.id.split('-')[1]);
+    }
+
+    // Update share button text
+    const shareBtn = document.querySelector('.result-share .btn-content');
+    if (shareBtn) {
+        shareBtn.innerHTML = `
+            <div class="btn-text" style="align-items: center; text-align: center; width: 100%;">
+                <span class="main-text" style="font-size: 1.1rem; margin-bottom: 4px;">${TRANSLATIONS[lang].share_result_desc}</span>
+                <span class="sub-text">${TRANSLATIONS[lang].share_result_title}</span>
+            </div>
+        `;
+    }
+}
+
 function showSajuResult(data) {
     lastResultData = data;
     const { name, gender, year, month, day, pillars } = data;
@@ -510,26 +836,17 @@ function showSajuResult(data) {
     const genderText = gender === 'male' ? '남' : '여';
     document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 (만 ${age}세, ${genderText}) | ${pillars.day.s}${pillars.day.b}일주`;
 
+    updateResultTexts(); // Use the unified function to handle language and text updates correctly
+
     // 기둥 업데이트 (Hanja)
     document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
     document.getElementById('month-pillar').innerHTML = getColoredHtml(pillars.month.s, pillars.month.b);
     document.getElementById('day-pillar').innerHTML = getColoredHtml(pillars.day.s, pillars.day.b);
     document.getElementById('hour-pillar').innerHTML = getColoredHtml(pillars.hour.s, pillars.hour.b);
 
-    // 기본 텍스트 업데이트 (성별에 따른 맵 분기 적용)
-    const dStem = pillars.day.s;
-    const isMale = gender === 'male';
-    const natureMap = isMale ? natureMapMale : natureMapFemale;
-    const loveMap = isMale ? loveMapMale : loveMapFemale;
 
-    document.getElementById('nature-text').innerHTML = `<span class="nature-badge">${dStem}(${stemReadings[dStem]})</span><br><br>${natureMap[dStem] || "신비로운 매력이 있습니다."}`;
-    document.getElementById('fortune-text').innerHTML = fortune2026Map[dStem] || "운세를 가져오는 중...";
-    document.getElementById('love-text').innerHTML = loveMap[dStem] || "연애운 정보가 없습니다.";
-    document.getElementById('wealth-text').innerHTML = wealthMap[dStem] || "재물운 정보가 없습니다.";
-    document.getElementById('health-text').innerHTML = healthMap[dStem] || "건강운 정보가 없습니다.";
-    document.getElementById('study-text').innerHTML = studyMap[dStem] || "학업운 정보가 없습니다.";
 
-    updateBackground(dStem);
+    updateBackground(pillars.day.s);
     updateOhaengChart(pillars);
     showTabDetail('day');
     switchSubTab('love');
@@ -539,8 +856,8 @@ function showSajuResult(data) {
     if (shareBtn) {
         shareBtn.innerHTML = `
             <div class="btn-text" style="align-items: center; text-align: center; width: 100%;">
-                <span class="main-text" style="font-size: 1.1rem; margin-bottom: 4px;">친구들은 어떤 사주를 가지고 있을까요? 👀</span>
-                <span class="sub-text">친구에게 테스트 공유하기</span>
+                <span class="main-text" style="font-size: 1.1rem; margin-bottom: 4px;">${TRANSLATIONS[currentLang].share_result_desc}</span>
+                <span class="sub-text">${TRANSLATIONS[currentLang].share_result_title}</span>
             </div>
         `;
     }
@@ -549,6 +866,8 @@ function showSajuResult(data) {
 function showTabDetail(type) {
     if (!currentPillars) return;
     const data = currentPillars[type];
+    const lang = currentLang;
+
     document.querySelectorAll('.mini-col').forEach(c => c.classList.remove('active'));
     document.getElementById(`col-${type}`).classList.add('active');
 
@@ -559,14 +878,32 @@ function showTabDetail(type) {
 
     const titleEl = document.getElementById('detail-title');
     const bodyEl = document.getElementById('detail-body');
-    const interp = pillarInterpretations[data.s] || {};
+    // Select Map
+    const interpMap = lang === 'en' ? pillarInterpretations_en : pillarInterpretations;
+    const interp = interpMap[data.s] || {};
 
     let titleText = "";
     let bodyHtml = "";
 
     if (type === 'hour' && data.s === '모') {
-        titleText = "시주(시간): 정보 없음";
-        bodyHtml = `
+        titleText = lang === 'en' ? "Hour (Time): Unknown" : "시주(시간): 정보 없음";
+        if (lang === 'en') {
+            bodyHtml = `
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; margin-top:10px;">
+                <h4 style="color:#ffd700; margin-top:0;">❓ Is it okay if time is unknown?</h4>
+                <p style="font-size:0.9rem; line-height:1.6; margin-bottom:10px;">
+                    Strictly speaking, we handle it as 'Three Pillars' analysis. But don't worry!
+                </p>
+                <ul style="font-size:0.85rem; padding-left:20px; line-height:1.7; opacity:0.9;">
+                    <li><strong>Flow of Luck:</strong> The major flow of life leads can be analyzed with Year, Month, and Day.</li>
+                    <li><strong>Late Life/Children:</strong> Hour pillar symbolizes life after 50s and relationship with children.</li>
+                    <li><strong>Supplement:</strong> 80% of core analysis including innate nature and 2026 fortune is already covered.</li>
+                </ul>
+                <p style="font-size:0.85rem; margin-top:10px; color:var(--primary-color);">* If you find out the exact time later, input again to see the full result!</p>
+            </div>
+        `;
+        } else {
+            bodyHtml = `
             <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; margin-top:10px;">
                 <h4 style="color:#ffd700; margin-top:0;">❓ 시간을 몰라도 괜찮나요?</h4>
                 <p style="font-size:0.9rem; line-height:1.6; margin-bottom:10px;">
@@ -580,17 +917,27 @@ function showTabDetail(type) {
                 <p style="font-size:0.85rem; margin-top:10px; color:var(--primary-color);">* 정확한 시간을 나중에 알게 되시면 다시 입력하여 보완된 결과를 확인해 보세요!</p>
             </div>
         `;
+        }
     } else {
-        const labels = { year: "년주(뿌리)", month: "월주(사회)", day: "일주(나)", hour: "시주(미래)" };
+        const labels = lang === 'en' ?
+            { year: "Year Pillar (Root)", month: "Month Pillar (Society)", day: "Day Pillar (Self)", hour: "Hour Pillar (Future)" } :
+            { year: "년주(뿌리)", month: "월주(사회)", day: "일주(나)", hour: "시주(미래)" };
+
         titleText = `${labels[type]}: ${data.s}${data.b}`;
-        const detail = interp[type] || "기운이 조화롭습니다.";
-        bodyHtml = `<div style="background:rgba(255,215,0,0.05); padding:12px; border-radius:10px; margin-bottom:12px; font-weight:bold; color:#ffd700;">${interp.keyword || ""}</div><p>${detail}</p>`;
+        const detail = interp[type] || (lang === 'en' ? "Energy is harmonious." : "기운이 조화롭습니다.");
+        const keyword = interp.keyword || "";
+        bodyHtml = `<div style="background:rgba(255,215,0,0.05); padding:12px; border-radius:10px; margin-bottom:12px; font-weight:bold; color:#ffd700;">${keyword}</div><p>${detail}</p>`;
     }
 
     titleEl.innerText = titleText;
     bodyEl.innerHTML = bodyHtml;
     document.getElementById('tab-detail-display').style.display = 'block';
 }
+
+
+
+
+
 
 function switchSubTab(tab) {
     // 상세 분석 뷰들(love, wealth, health, study)만 토글
@@ -612,19 +959,38 @@ function goBack() {
 
 async function shareResult() {
     if (!lastResultData) return;
-    const { name, pillars } = lastResultData;
+    const { name, gender, pillars } = lastResultData;
     const dStem = pillars.day.s;
     const dBranch = pillars.day.b;
     const reading = `${dStem}${dBranch}(${stemReadings[dStem]}${branchReadings[dBranch]})`;
+    const lang = currentLang;
+    const isMale = gender === 'male';
+    const natureMap = lang === 'en' ? (isMale ? natureMapMale_en : natureMapFemale_en) : (isMale ? natureMapMale : natureMapFemale);
 
-    const shareText = `🦄 [${name}]님의 타고난 본캐는?\n\n` +
-        `🔖 타고난 기운: ${reading}\n` +
-        `"${natureMap[dStem].split('.')[0]}"\n\n` +
-        `💬 "와... 소름 돋게 맞는데? 😲"\n` +
-        `내 2026년 운세가 궁금하다면? 👇`;
+    let shareTitle, shareText, successMsg;
+
+    if (lang === 'en') {
+        shareTitle = "Fortune Analysis Report";
+        const nature = natureMap[dStem].split('.')[0];
+        shareText = `🦄 [${name}]'s Innate Nature?\n\n` +
+            `🔖 Energy: ${reading}\n` +
+            `"${nature}"\n\n` +
+            `💬 "Wow... this is so accurate! 😲"\n` +
+            `Curious about your 2026 fortune? 👇`;
+        successMsg = "Result copied! ✨";
+    } else {
+        shareTitle = "사주 분석 리포트";
+        const nature = natureMap[dStem].split('.')[0];
+        shareText = `🦄 [${name}]님의 타고난 본캐는?\n\n` +
+            `🔖 타고난 기운: ${reading}\n` +
+            `"${nature}"\n\n` +
+            `💬 "와... 소름 돋게 맞는데? 😲"\n` +
+            `내 2026년 운세가 궁금하다면? 👇`;
+        successMsg = "결과가 복사되었습니다! ✨";
+    }
 
     const shareData = {
-        title: '사주 분석 리포트',
+        title: shareTitle,
         text: shareText,
         url: window.location.href
     };
@@ -635,22 +1001,39 @@ async function shareResult() {
         } else {
             // Web Share API 미지원 시 클립보드 복사
             await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-            showToast('결과가 복사되었습니다! ✨');
+            showToast(TRANSLATIONS[currentLang].toast_copy);
         }
     } catch (err) {
         console.error('Share failed:', err);
+        showToast(TRANSLATIONS[currentLang].toast_share_fail);
     }
 }
 
+
 async function shareApp() {
-    const shareText = `🔮 2026년 내 운명은 어떨까?\n\n` +
-        `소름 돋는 정확도! 😱\n` +
-        `나의 타고난 성향부터 대운의 흐름까지\n` +
-        `무료로 완벽하게 분석해 드려요. ✨\n\n` +
-        `👇 1분 만에 내 사주 확인하기`;
+    const lang = currentLang;
+    let shareTitle, shareText, successMsg;
+
+    if (lang === 'en') {
+        shareTitle = "2026 Fortune Analysis";
+        shareText = `🔮 How is my destiny in 2026?\n\n` +
+            `Shockingly accurate! 😱\n` +
+            `From innate nature to fortune flow\n` +
+            `Get your full analysis for free. ✨\n\n` +
+            `👇 Check your Saju in 1 minute`;
+        successMsg = "Link copied! ✨";
+    } else {
+        shareTitle = "2026년 나의 사주";
+        shareText = `🔮 2026년 내 운명은 어떨까?\n\n` +
+            `소름 돋는 정확도! 😱\n` +
+            `나의 타고난 성향부터 대운의 흐름까지\n` +
+            `무료로 완벽하게 분석해 드려요. ✨\n\n` +
+            `👇 1분 만에 내 사주 확인하기`;
+        successMsg = "링크가 복사되었습니다! ✨";
+    }
 
     const shareData = {
-        title: '2026년 나의 사주',
+        title: shareTitle,
         text: shareText,
         url: window.location.href
     };
@@ -660,12 +1043,14 @@ async function shareApp() {
             await navigator.share(shareData);
         } else {
             await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-            showToast('링크가 복사되었습니다! ✨');
+            showToast(TRANSLATIONS[currentLang].toast_copy);
         }
     } catch (err) {
         console.error('App share failed:', err);
+        showToast(TRANSLATIONS[currentLang].toast_share_fail);
     }
 }
+
 
 function showToast(message) {
     const msgEl = document.getElementById('toast-message');
@@ -755,3 +1140,196 @@ function toggleSound() {
         btn.classList.add('playing');
     }
 }
+
+// --- 🇺🇸 English Interpretation Maps ---
+
+const natureMapMale_en = {
+    "甲": "You are like a tall, straight tree 🌲. You possess a strong mentality that remains unshaken even in storms. <br><br>Though you may seem reserved on the outside, a strong desire for 'growth' and 'pride' burns within. You dislike being ordered around and shine brightest when leading. <br><br><strong>💡 Tip:</strong> You are like a sturdy bamboo. Sometimes, learning to bend slightly like a reed is wisdom you need.",
+    "乙": "You are a vine with tenacious vitality 🌿. Whether a rose or a weed, you survive anywhere. You appear soft on the outside but possess a scary persistence inside. <br><br>Your adaptability is second to none. Like the wind that lies down and rises again, you are a master of survival. <br><br><strong>💡 Tip:</strong> You are practical and social. Your delicate observation skills help you make the best choices.",
+    "丙": "You are the Sun in the sky ☀️. Your presence is undeniable and brilliant. You are passionate, active, and love to share with others. <br><br>You are honest and cannot hide your emotions. You value manners and justice, but your temper can flare up. <br><br><strong>💡 Tip:</strong> You are a mood maker. If you can control your sudden anger, you will be respected by all like the warm sun.",
+    "丁": "You are like a candle or moonlight 🕯️. Quiet and calm on the outside, but holding a furnace of passion inside. You are a 'craftsman' type who focuses intensely on what you love. <br><br>You are sensitive and empathetic, taking care of others like a mother. <br><br><strong>💡 Tip:</strong> You tend to hold grudges. Try to let go of hurt feelings. You have a gentle but deep charisma.",
+    "戊": "You are a magnificent mountain ⛰️. Reliable and trustworthy, people naturally lean on you. You are heavy and serious, keeping secrets well. <br><br>You embrace various people, but you can be stubborn and dislike change. <br><br><strong>💡 Tip:</strong> Once you decide, you don't change your mind. Showing some flexibility can lead you to greater achievements.",
+    "己": "You are fertile soil 🌱. You may look simple, but you have the talent to nurture life. You prefer stable and practical paths over reckless challenges. <br><br>You are quick-witted and good at social life. You take care of your own interests while matching others. <br><br><strong>💡 Tip:</strong> You are detailed and caring. Try not to be too suspicious of opportunities. You are a practical realist.",
+    "庚": "You are raw metal or a sword ⚔️. You have powerful charisma and decisiveness. You value loyalty above all and are a 'man's man' who takes responsibility. <br><br>You like to break old customs and create new orders. <br><br><strong>💡 Tip:</strong> You can be too strong and break. Learning soft conversation skills will smooth your relationships.",
+    "辛": "You are a shining jewel 💎. You are delicate, sharp, and seek perfection. You care about your image and have excellent aesthetic sense. <br><br>You have high self-esteem and dislike interference. <br><br><strong>💡 Tip:</strong> You can be cold when hurt. Your ability to shine is unmatched. You are a sophisticated perfectionist.",
+    "壬": "You are a vast ocean 🌊. You have a broad mind and innate wisdom. You are a free spirit who flows like water and adapts to any situation. <br><br>You are ambitious and often connected to overseas opportunities. <br><br><strong>💡 Tip:</strong> You are mysterious and hard to read. Sometimes showing your true heart is necessary. You are a strategist with a big scale.",
+    "癸": "You are spring rain or a stream 🌧️. You are pure, sensitive, and empathetic. You have brilliant ideas and imagination that surprise others. <br><br>Like water dripping through rock, you have incredible patience. <br><br><strong>💡 Tip:</strong> You can be moody. Practicing expressing your feelings honestly is good. You are a creative idea bank."
+};
+
+const natureMapFemale_en = {
+    "甲": "You are a career woman like a straight tree 🌲. You have high self-esteem and distinct subjectivity. You are a strong woman who leads rather than relies on others. <br><br>You are just and principled. <br><br><strong>💡 Tip:</strong> Sometimes, being soft is stronger than being hard. You are a leader who leads with confidence.",
+    "乙": "You are a beautiful flower 🌸. You have great adaptability and charm that captures hearts. Soft on the outside, but tough on the inside. <br><br>You are a survivor with wisdom and flexibility. <br><br><strong>💡 Tip:</strong> You are realistic and practical. Your soft charisma naturally leads people.",
+    "丙": "You are the passionate Sun ☀️. You like to lead the atmosphere like a queen. You are honest, active, and love to give. <br><br>You have a strong sense of justice and cannot stand unfairness. <br><br><strong>💡 Tip:</strong> You are a mood maker. Controlling your temper makes you even more perfect.",
+    "丁": "You are elegant moonlight 🌙. You are caring and warm. Quiet on the outside, but passionate inside. <br><br>You have a craftsman spirit and are sensitive to others' pain. <br><br><strong>💡 Tip:</strong> Don't hold grudges for too long. Your quiet charisma is elegant and deep.",
+    "戊": "You are a broad mountain ⛰️. You have a wide heart that embraces everyone. You are reliable and trustworthy. <br><br>You are realistic and responsible, perfect for building a stable family. <br><br><strong>💡 Tip:</strong> Being too stubborn can block you. Being flexible will make you even better.",
+    "己": "You are the rich earth 🌾. You are a practical leader who takes care of substance and people. You are multi-talented and quick-witted. <br><br>You find joy in nurturing others. <br><br><strong>💡 Tip:</strong> You are wise and frugal. You have the best qualities as a spouse and mother.",
+    "庚": "You are a decisive heroine ⚔️. You solve complex problems at once and value loyalty. You are a reformer who likes new things. <br><br>You are clear about what is right and wrong. <br><br><strong>💡 Tip:</strong> Your strong assertion can cause friction. Soft speech will make you a perfect leader.",
+    "辛": "You are a shining jewel 💎. You are delicate, aesthetic, and always maintain a sophisticated image. <br><br>You have high standards and are sensitive. <br><br><strong>💡 Tip:</strong> Let go of perfectionism a little for a more comfortable life. You are like an elegant princess.",
+    "壬": "You are a deep lake 🌊. You are mysterious, wise, and have great insight. You accept everything with a broad mind. <br><br>You are a free spirit with a large scale of thinking. <br><br><strong>💡 Tip:</strong> You are an intellectual woman who constantly explores new worlds.",
+    "癸": "You are warm spring rain 🌧️. You have excellent empathy and are clever. You are pure and sensitive to others' emotions. <br><br>You have brilliant ideas and imagination. <br><br><strong>💡 Tip:</strong> Express your feelings honestly. You are a woman with pure and creative charm."
+};
+
+const loveMapMale_en = {
+    "甲": "To you, love is a 'precious flower to protect'. You are a reliable shade for your person. <br><br>You are direct in expression and devoted. <br><br><strong>💡 Love Tip:</strong> You like a partner you can respect. Sometimes a soft word strengthens the relationship.",
+    "乙": "You are a delicate and sweet lover. You notice subtle emotional changes well. You give comfort like a friend. <br><br>You have strong jealousy and possessiveness inside. <br><br><strong>💡 Love Tip:</strong> Maintain your own hobbies to be independent. You have the power to continue relationships steadily.",
+    "丙": "You love passionately like fire. You fall in love at first sight and express affections boldly. <br><br>You can cool down quickly, so effort is needed for long-term relationships. <br><br><strong>💡 Love Tip:</strong> Listen to your partner more. You are a mood maker who delights your lover.",
+    "丁": "You love quietly like a lamp. You prefer love that permeates slowly over time. You remember small details. <br><br>You are single-minded but can hold grudges inside. <br><br><strong>💡 Love Tip:</strong> Solve feelings through conversation. You have a maternal/paternal charm.",
+    "戊": "You are a reliable rock-like lover. You are not good at sweet words but show love through actions. You prefer serious relationships. <br><br>You can be stubborn and frustrating. <br><br><strong>💡 Love Tip:</strong> Express your heart with small gifts. You give great trust with stability.",
+    "己": "You love like an embracing earth. You take care of your partner frugally. You value practical and helpful relationships. <br><br>You take time to open your heart but become very close. <br><br><strong>💡 Love Tip:</strong> Opening your heart helps. You have a great ability to make your partner comfortable.",
+    "庚": "You are a charismatic leader type. You dislike ambiguous relationships and take responsibility for your people. <br><br>You are too strong and blunt which can hurt others. <br><br><strong>💡 Love Tip:</strong> Soften your stubbornness. Listening to your partner is necessary.",
+    "辛": "You are a romanticist with delicate taste. You have high standards for style and manners. <br><br>You are sensitive and can be easily hurt. <br><br><strong>💡 Love Tip:</strong> You need a partner who empathizes with your sensitivity. Let go of perfectionism for comfort.",
+    "壬": "You are a free spirit like the sea. You dislike being bound and want a cool relationship respecting privacy. <br><br>You value mental connection over physical. <br><br><strong>💡 Love Tip:</strong> Show your sincerity sometimes. You match well with international connections.",
+    "癸": "You love sweetly like spring rain. You have strong maternal love and want to be loved like a child. <br><br>You match your partner's mood well but have mood swings. <br><br><strong>💡 Love Tip:</strong> Emotional communion is key. You capture hearts with protective instincts."
+};
+
+const loveMapFemale_en = {
+    "甲": "You are attracted to dignified people you can learn from. You are independent and lead the relationship. <br><br>You want an equal relationship of mutual respect. <br><br><strong>💡 Love Tip:</strong> Showing soft sides helps. You are a career woman style.",
+    "乙": "You have a great desire to be loved. You stimulate protective instincts. You are delicate and sweet. <br><br>You have strong jealousy inside. <br><br><strong>💡 Love Tip:</strong> Beware of obsession. Showing independence makes the relationship healthier.",
+    "丙": "You love brightly like the sun. You are popular and express emotions honestly. <br><br>You are passionate but can be hot-tempered. <br><br><strong>💡 Love Tip:</strong> Listen to your partner. You are a mood maker who prefers cool relationships.",
+    "丁": "You are elegant and mysterious like moonlight. You find joy in taking care of your partner. <br><br>You are single-minded but can hold grudges. <br><br><strong>💡 Love Tip:</strong> Express your feelings honestly. You melt hearts with deep love.",
+    "戊": "You want a reliable and stable partner. You prefer serious relationships leading to marriage. <br><br>You are trustworthy and realistic. <br><br><strong>💡 Love Tip:</strong> Bending your stubbornness smoothes things. You give family-like comfort.",
+    "己": "You are a mom-like lover who takes care of everything. You have the best qualities as a spouse. <br><br>You value practical relationships. <br><br><strong>💡 Love Tip:</strong>Avoid nagging too much. You are excellent at building a stable family.",
+    "庚": "You are a loyal and decisive strong woman. You resolve complex matters at once. <br><br>You are reformative and responsible. <br><br><strong>💡 Love Tip:</strong> Show the warmth hidden inside. Soft conversation is needed.",
+    "辛": "You are elegant and high-self-esteem. You prefer partners who treat you strictly. <br><br>You have high standards and are sensitive. <br><br><strong>💡 Love Tip:</strong> You need a partner who empathizes. You are attracted to those who make you shine.",
+    "壬": "You are wise and insightful. You match well with free spirits. <br><br>You value mental connection and conversation. <br><br><strong>💡 Love Tip:</strong> You have mysterious charm. You seek large-scale love.",
+    "癸": "You love kindly like spring rain. You have strong maternal love and act cute. <br><br>You are sensitive to your partner's mood. <br><br><strong>💡 Love Tip:</strong> Control your mood swings. You capture hearts with mysterious charm."
+};
+
+const fortune2026Map_en = {
+    "甲": "2026 is a year for your talents to bloom 🌸. The Sun shines on the Tree, revealing your preparations to the world. <br><br>Your desire to express yourself increases. <br><br><strong>💡 Lucky Tip:</strong> Promote your ideas actively. SNS or YouTube is good.",
+    "乙": "A splendid year like the highlight of life ✨. Your charm spreads, and you get a stage to show off. <br><br>Artistic activities can hit the jackpot. <br><br><strong>💡 Lucky Tip:</strong> Fancy clothes or accessories bring luck.",
+    "丙": "A year of burning competition 🔥. You can achieve great things through cooperation or face fierce competition. <br><br>Focus on gaining honor or people rather than money. <br><br><strong>💡 Lucky Tip:</strong> Value teamwork over independent action.",
+    "丁": "A time to meet strong helpers 🤝. It seems like your light is lost in the sun, but it's a chance to grow your power. <br><br>Get help from others for difficult tasks. <br><br><strong>💡 Lucky Tip:</strong> Giving to others returns as great blessing.",
+    "戊": "A great year for documents and studies 📚. The sun shines on your vast land. Good for contracts, exams, and promotions. <br><br>You build a stable foundation with help. <br><br><strong>💡 Lucky Tip:</strong> Review important contracts carefully.",
+    "己": "A honest year where you get rewarded for efforts 🎁. Your skills and status become solid like pottery fired in a kiln. <br><br>Academic achievements follow. <br><br><strong>💡 Lucky Tip:</strong> Challenge yourself with new learning or certifications.",
+    "庚": "Career and honor luck rises 🏆. The strong fire refines you into a fine sword. Big changes in career like promotion or job change. <br><br>Manage stress well. <br><br><strong>💡 Lucky Tip:</strong> Manage stamina with regular exercise.",
+    "辛": "New love or recognition comes 💖. You shine brightly receiving the spotlight. <br><br>Avoid greed or emotional responses. <br><br><strong>💡 Lucky Tip:</strong> Avoid red-colored accessories if possible.",
+    "壬": "Dynamic financial luck flows 💸. Money comes and goes like steam. Good for business expansion or investment, but manage risks. <br><br>Windfall is possible but greed brings disaster. <br><br><strong>💡 Lucky Tip:</strong> No investment without thorough analysis.",
+    "癸": "Stable income and results follow 🏠. Like rain cooling the heat, you are welcomed everywhere. <br><br>Good for accumulating assets steadily. <br><br><strong>💡 Lucky Tip:</strong> Stable asset management like savings is good."
+};
+
+const wealthMap_en = {
+    "甲": "Wealth is 'Earth' to you. Like rooting in a vast land, you are good at real estate or stable asset management. <br><br><strong>💡 Wealth Tip:</strong> Instead of aiming for a jackpot, steady accumulation builds a mountain. Investing in your own value brings wealth. Generosity returns as fortune.",
+    "乙": "Wealth is 'Fertile Land' to you. You have excellent ability to gather wealth steadily like grass covering a field. You are good at information and realistic investments. <br><br><strong>💡 Wealth Tip:</strong> You gain more substance when deciding alone rather than in partnership. You have strong survival skills for building wealth.",
+    "丙": "Wealth is 'Metal' to you. Like smelting metal in a furnace, you can make a fortune with bold and large-scale investments. <br><br><strong>💡 Wealth Tip:</strong> You have strong decisiveness but need risk management. Focus on the sense of achievement rather than obsession with money.",
+    "丁": "Wealth is a 'Shining Jewel' to you. You are strong in delicate and meticulous asset management. You prefer stable and certain returns. <br><br><strong>💡 Wealth Tip:</strong> You save small expenses to make big money. Your professional knowledge or certifications become stable assets.",
+    "戊": "Wealth is 'Clear Water' to you. You have a fortune where wealth flows in endlessly like a spring. You are excellent at keeping and defending money. <br><br><strong>💡 Wealth Tip:</strong> You shine in distribution or flow-based businesses. Letting go of stubbornness and following trends can make you huge wealth.",
+    "己": "Wealth is the 'Vast Ocean' to you. Like water flowing to the sea, you have the power to attract wealth from various paths. People bring you money. <br><br><strong>💡 Wealth Tip:</strong> Systems like rental or passive income suit you well. You hide big ambitions inside a modest exterior.",
+    "庚": "Wealth is a 'Green Tree' to you. Like crafting furniture from wood, you are good at creating value from raw materials. You are result-oriented. <br><br><strong>💡 Wealth Tip:</strong> You often succeed by self-made efforts. Be careful of losing money due to loyalty to friends. Distinguish public and private matters.",
+    "辛": "Wealth is 'Plants and Forests' to you. You gain wealth in sensitive and sensory fields. You have high taste and are good at investing in trends or art. <br><br><strong>💡 Wealth Tip:</strong> High risk, high return. Utilizing your personal brand and charm brings great income. Connections are your assets.",
+    "壬": "Wealth is 'Hot Fire' to you. Your wealth luck is dynamic and changeable like steam. You can build wealth in cross-border business or online. <br><br><strong>💡 Wealth Tip:</strong> The more you move, the more money piles up. You have a natural talent for negotiation and improvisation.",
+    "癸": "Wealth is a 'Soft Lamp' to you. You accumulate wealth quietly and substantially. You are strong in income using ideas or intellectual property. <br><br><strong>💡 Wealth Tip:</strong> You are good at making seed money through detailed analysis. Patience and long-term investment bring the biggest fruits."
+};
+
+const healthMap_en = {
+    "甲": "You have the surging energy of a tree. Watch your gallbladder and nervous system. Stress can cause migraines or muscle pain. <br><br><strong>💡 Health Tip:</strong> Active exercise like hiking helps. Sour fruits and green vegetables are good for you.",
+    "乙": "You have flexible plant energy. Watch your liver and peripheral circulation (numbness). Keep your joints warm. <br><br><strong>💡 Health Tip:</strong> Yoga or Pilates is best for flexibility. Stretching should be a daily habit.",
+    "丙": "You have intense sun energy. Watch your cardiovascular system and eyes. Heat rises easily causing insomnia. <br><br><strong>💡 Health Tip:</strong> Avoid spicy/hot food. Eat bitter greens. Avoiding smartphones at night protects your eyes and sleep.",
+    "丁": "You have subtle lamp energy. Your heart and small intestine are sensitive. Stress shows up physically immediately. <br><br><strong>💡 Health Tip:</strong> Quiet meditation or tea time is essential. Red grains (red bean, sorghum) help. Regular sleep is the best medicine.",
+    "戊": "You have reliable mountain energy, but your stomach and digestive system can be weak. Indigestion leads to skin trouble. <br><br><strong>💡 Health Tip:</strong> Regular eating habits are a must. Abdominal massage and yellow foods (pumpkin, sweet potato) represent your energy.",
+    "己": "You have fertile garden energy. Your spleen and stomach are sensitive. Too much thinking causes indigestion. <br><br><strong>💡 Health Tip:</strong> Keep your belly warm. Ginger tea is good. Walking barefoot on soil (Earthing) works wonders.",
+    "庚": "You have hard rock energy. Lung and large intestine health is key. Dryness hurts your respiratory system. <br><br><strong>💡 Health Tip:</strong> Hydration and humidity control are essential. White vegetables (radish, pear) help. Cardio increases lung capacity.",
+    "辛": "You have delicate jewel energy. Your respiratory system and skin are very sensitive to environment/dust. <br><br><strong>💡 Health Tip:</strong> Ventilate often and keep bedding clean. Avoid harsh cosmetics. Spicy food like garlic helps immunity.",
+    "壬": "You have vast ocean energy. Watch your kidney, bladder, and circulation. Swelling indicates waste accumulation. <br><br><strong>💡 Health Tip:</strong> Low-salt diet and drinking water. Swimming or half-bath helps detoxify your body.",
+    "癸": "You have clear spring energy. Watch your kidney function and blood circulation. Cold body is your enemy. <br><br><strong>💡 Health Tip:</strong> Keep your lower body warm. Foot baths are recommended. Black foods (black beans, sesame) boost your energy."
+};
+
+const studyMap_en = {
+    "甲": "You are goal-oriented. You focus best when you have clear motivation. You learn best when you plan and lead rather than being ordered. <br><br><strong>💡 Study Tip:</strong> Read success stories or study in a competitive environment. The goal of 'becoming a leader' moves you.",
+    "乙": "You have flexible and creative thinking. Application over rote memorization works for you. <br><br><strong>💡 Study Tip:</strong> Share ideas in study groups or use mind maps. Nice stationery and a pleasant environment boost your mood.",
+    "丙": "You are energetic and visual. 'Short-term intense focus' suits you better than sitting long hours boringly. <br><br><strong>💡 Study Tip:</strong> Watch lectures at 1.25x speed or use colorful highlighters. Explaining what you learned to others makes it yours.",
+    "丁": "You are optimized for deep and detailed study. You perform best in quiet places like libraries digging into one topic. <br><br><strong>💡 Study Tip:</strong> Use late night or dawn. Making your own meticulous summary notes is the best learning process.",
+    "戊": "You have endurance and steadiness. You might start slow but overtake everyone at the end with persistence. <br><br><strong>💡 Study Tip:</strong> Macro approach understanding the big picture first. Believe that 'consistency beats genius'.",
+    "己": "You are excellent at recording and organizing. Structuring vast info into your own system perfects your knowledge. <br><br><strong>💡 Study Tip:</strong> Put effort into wrong answer notes. Self-summary time should be 70% vs listening 30%.",
+    "庚": "You are strong in logical and analytical thinking. You forget rote memorization but never forget once you understand the 'Why'. <br><br><strong>💡 Study Tip:</strong> Understand the table of contents and causality. Difficult problems ignite your desire to conquer.",
+    "辛": "You are a perfectionist who doesn't miss details. You show talent in math requiring precision or languages. <br><br><strong>💡 Study Tip:</strong> Create a solitary, clean environment. Give yourself clear rewards to prevent burnout.",
+    "壬": "You have great insight and read the flow. You enjoy connecting contexts like humanities/society rather than memorization. <br><br><strong>💡 Study Tip:</strong> Read foreign books or grand maps. Open libraries or cafes that don't block free thinking are good.",
+    "癸": "You have great intuition and ideas. You are often an 'auditory learner' who memorizes well by listening or reciting. <br><br><strong>💡 Study Tip:</strong> Ask questions to grasp principles or meditate before studying. Mental management is key as mood affects grades."
+};
+
+const pillarInterpretations_en = {
+    "甲": {
+        nature_year: "Growing Sapling 🌱", nature_month: "Giant Tree forming a forest 🌳", nature_day: "Upright Big Tree 🌲", nature_hour: "Wise Old Tree 🪵", keyword: "🌱 Growth, 🦁 Leadership, 😤 Pride",
+        year: "Stood out with leadership since childhood. Competitive and strove to be number one, with a strong sense of justice.",
+        month: "Active in society and plays a key leader role in organizations. Values honor and has a strong sense of responsibility.",
+        day: "Unbending pride and powerful drive are the driving forces of life. Like a roly-poly toy, you rise again even after hardships.",
+        hour: "In later years, you become a respected teacher or spiritual pillar with accumulated wisdom. You spend your old age constantly learning."
+    },
+    "乙": {
+        nature_year: "Flower swaying in spring breeze 🌸", nature_month: "Vine climbing over a wall 🌿", nature_day: "Persistent Weed/Vine 🌱", nature_hour: "Flowering Plant bearing fruit 🌻", keyword: "🌿 Adaptability, 🧗 Persistence, 💰 Realistic",
+        year: "Excellent adaptability and quick wit. Acquired the strength to laugh off difficulties early on.",
+        month: "Survives in any organization with flexible social skills. Has great sense for spotting opportunities and tenacity.",
+        day: "Flexibility is your greatest weapon, and you know how to be practical. You detour around obstacles to bear fruit.",
+        hour: "Enjoy a comfortable old age with deep bonds with children. Find joy in life through small hobbies."
+    },
+    "丙": {
+        nature_year: "Rising Morning Sun 🌅", nature_month: "Hot Midday Sun ☀️", nature_day: "Light illuminating all things ✨", nature_hour: "Setting Sun at Sunset 🌇", keyword: "🔥 Passion, 🙏 Manners, ✨ Splendor",
+        year: "A bright child who attracted attention everywhere. Honest with emotions and very affectionate.",
+        month: "Captivates the public with eloquence and sociability. Overflowing with energy and prefers fair work processing.",
+        day: "Fair and just character. Passionate about everything, holds no grudges, and is popular for being cool.",
+        hour: "Lives a life contributing to society with undying passion. Becomes an influential elder followed by those around."
+    },
+    "丁": {
+        nature_year: "Twinkling Starlight ✨", nature_month: "Blazing Bonfire 🔥", nature_day: "Subtle Candlelight 🕯️", nature_hour: "Moonlight in the Night Sky 🌙", keyword: "🕯️ Devotion, 🎀 Delicacy, 🌙 Subtlety",
+        year: "A quiet but highly focused child. Rich in sensitivity and shared deep friendships with a few.",
+        month: "Recognized for professional knowledge. Strong in details and takes good care of colleagues.",
+        day: "Iron hand in a velvet glove type with hot passion inside. Wins people's hearts with silent devotion.",
+        hour: "Values spiritual values like religion or philosophy. Spends a noble and dignified later life sharing wisdom."
+    },
+    "戊": {
+        nature_year: "Hill behind the village ⛰️", nature_month: "Magnificent Mountain 🌋", nature_day: "Vast Wilderness 🏜️", nature_hour: "Mountain Range at Sunset 🌄", keyword: "🤝 Trust, 🏔️ Tolerance, 🐂 Stubbornness",
+        year: "More mature and serious than peers. A reliable lighthouse-like child whom friends trusted and relied on.",
+        month: "Prioritizes credit and holds the center of the organization. Consistently produces results in stable fields.",
+        day: "Has unwavering subjectivity and tolerance. Has a heavy charm shown through actions rather than words.",
+        hour: "Enjoys a prosperous old age based on wealth and virtue. A great elder who becomes a strong support for the family."
+    },
+    "己": {
+        nature_year: "Small Flower Bed 🌱", nature_month: "Productive Farm 🚜", nature_day: "Fertile Garden 🌾", nature_hour: "Peaceful Countryside 🏡", keyword: "🌾 Practicality, 🎨 Versatility, 🧹 Self-management",
+        year: "A clever and smart child. Versatile with quick learning and played a good mediator role.",
+        month: "Shows the best practical ability with meticulous work. Shines especially in management and education fields.",
+        day: "A practical person with detailed plans hidden in humility. Thorough self-management and faithfully achieves goals.",
+        hour: "Finds reward in training juniors or educating children. Lives a quiet but practical life with fruitful activities in old age."
+    },
+    "庚": {
+        nature_year: "Gemstone 💎", nature_month: "Iron in Smelter 🔨", nature_day: "Solid Rock 🪨", nature_hour: "Completed Sword ⚔️", keyword: "⚔️ Loyalty, 🔪 Decisiveness, 🛠️ Reform",
+        year: "A loyal leader style full of justice. Stood out in sports or active fields.",
+        month: "A charismatic leader with strong drive. Distinguishes public and private matters clearly and shines in moments requiring decision.",
+        day: "Possesses rough but pure power. Strong convictions and cherishes relationships once formed to the end.",
+        hour: "Ages honorably while keeping own principles. An old age that benefits those around with strict self-management."
+    },
+    "辛": {
+        nature_year: "Pretty Bead 🔮", nature_month: "Surgical Scalpel 🔪", nature_day: "Shining Diamond 💎", nature_hour: "Treasure 👑", keyword: "💎 Delicacy, 📏 Sensitivity, ✨ Neatness",
+        year: "A sensitive child with excellent aesthetic sense. Had strong pride and liked a sophisticated atmosphere.",
+        month: "Succeeds in precise and delicate professions. Perfectionist tendency and has a keen eye for reading trends.",
+        day: "Excellent ability to make oneself shine. Has cool reason but gives unsparingly to own people.",
+        hour: "Enjoys an elegant later life without losing dignity and leisure. Maintains a young sense with sophisticated hobbies."
+    },
+    "壬": {
+        nature_year: "Stream 💧", nature_month: "Water in Dam 🌊", nature_day: "Wide Sea 🌊", nature_hour: "Calm Lake 🏞️", keyword: "🌊 Wisdom, 🌍 Wanderlust, 🎭 Improvisation",
+        year: "A child who enjoyed free exploration. Had a large scale, was bold, and had a precocious side.",
+        month: "Plays an active part on a big stage with flexible thinking. Rich in ideas and excellent information gathering ability.",
+        day: "Deep heart and wide tolerance. Not bound by any situation and overcomes difficulties wisely.",
+        hour: "Possesses deep wisdom like a sage who has mastered the principles of the world. Spends a peaceful old age flowing like water."
+    },
+    "癸": {
+        nature_year: "Morning Dew 💧", nature_month: "Rain wetting the earth 🌧️", nature_day: "Spring 🏞️", nature_hour: "Mysterious Fog 🌫️", keyword: "☔ Sensitivity, 💡 Idea, 🕊️ Purity",
+        year: "A pure boy/girl with a tender heart and rich imagination. Popular due to good empathy ability.",
+        month: "A strategist who wins with ideas. Shows soft charisma in a staff role rather than the front.",
+        day: "A transparent and clear guardian angel-like soul. Looks fragile on the outside but has the tenacity to pierce rocks.",
+        hour: "Spends a peaceful later life like a sanctuary. Enjoys meditation and service while embracing those around with a benevolent appearance."
+    }
+};
+
+
+const stemReadings_ko = { "甲": "갑", "乙": "을", "丙": "병", "丁": "정", "戊": "무", "己": "기", "庚": "경", "辛": "신", "壬": "임", "癸": "계" };
+const branchReadings_ko = { "子": "자", "丑": "축", "寅": "인", "卯": "묘", "辰": "진", "巳": "사", "午": "오", "未": "미", "申": "신", "酉": "유", "戌": "술", "亥": "해" };
+
+const stemReadings_en = {
+    "甲": "Yang Wood", "乙": "Yin Wood", "丙": "Yang Fire", "丁": "Yin Fire", "戊": "Yang Earth",
+    "己": "Yin Earth", "庚": "Yang Metal", "辛": "Yin Metal", "壬": "Yang Water", "癸": "Yin Water"
+};
+
+const branchReadings_en = {
+    "子": "Rat", "丑": "Ox", "寅": "Tiger", "卯": "Rabbit", "辰": "Dragon", "巳": "Snake",
+    "午": "Horse", "未": "Sheep", "申": "Monkey", "酉": "Rooster", "戌": "Dog", "亥": "Pig"
+};

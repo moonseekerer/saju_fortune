@@ -381,6 +381,33 @@
             font-size: 0.95rem;
         }
 
+        /* Language Toggle Switch */
+        .lang-toggle-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 5px;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
         .sub-tab-btn.active {
             background: rgba(255, 255, 255, 0.1);
             color: var(--primary-color);
@@ -388,49 +415,183 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
     </style>
-</head>
+    <script>
+        const TRANSLATIONS = {
+            ko: {
+                app_title: "운세 APP",
+                app_desc: "생년월일을 입력하면 당신의 사주를 분석해드립니다.",
+                label_name: "이름 (닉네임)",
+                placeholder_name: "예: 홍길동",
+                label_year: "생년",
+                placeholder_year: "1990",
+                label_month: "월",
+                default_select: "선택",
+                label_day: "일",
+                label_time: "태어난 시간",
+                time_unknown: "모름",
+                btn_submit: "분석 시작하기 ✨",
+                btn_back: "← 다시 입력하기",
+                report_title: "님 사주 리포트",
+                analysis_report: "Analysis Report",
+                tab_hour: "시주",
+                tab_hour_sub: "말년/자식",
+                tab_day: "일주(나)",
+                tab_day_sub: "본원/배우자",
+                tab_month: "월주",
+                tab_month_sub: "사회/부모",
+                tab_year: "년주",
+                tab_year_sub: "초년/조상",
+                subtab_general: "종합 분석",
+                subtab_love: "💕 연애운",
+                subtab_wealth: "💰 재물운",
+                card_nature: "🧙 타고난 기질",
+                card_fortune: "🌟 2026년 운세 미리보기",
+                card_love: "💕 나의 연애 스타일",
+                card_wealth: "💰 나의 재물 그릇",
+                loading_msg: "사주 명식을 분석 중입니다...",
+                ad_msg_title: "🔮 운명을 분석 중입니다...",
+                ad_msg_desc: "분석이 완료되는 동안<br>본인에게 맞는 행운의 아이템을 확인해 보세요!",
+                ad_close_btn: "광고 닫고 결과 확인하기",
+                ad_wait_btn: "광고 확인 중",
+                footer_ad: "🎁 오늘의 운세 추천 아이템",
+                footer_disclaimer: "이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다."
+            },
+            en: {
+                app_title: "Fortune Teller",
+                app_desc: "Enter your birth details to analyze your destiny.",
+                label_name: "Name (Nickname)",
+                placeholder_name: "Ex: John Doe",
+                label_year: "Year",
+                placeholder_year: "1990",
+                label_month: "Month",
+                default_select: "Select",
+                label_day: "Day",
+                label_time: "Birth Time",
+                time_unknown: "Unknown",
+                btn_submit: "Start Analysis ✨",
+                btn_back: "← Analyze Again",
+                report_title: "'s Report",
+                analysis_report: "Analysis Report",
+                tab_hour: "Hour Pillar",
+                tab_hour_sub: "Late Life/Children",
+                tab_day: "Day Pillar (Me)",
+                tab_day_sub: "Self/Spouse",
+                tab_month: "Month Pillar",
+                tab_month_sub: "Society/Parents",
+                tab_year: "Year Pillar",
+                tab_year_sub: "Early Life/Ancestors",
+                subtab_general: "General Analysis",
+                subtab_love: "💕 Love Luck",
+                subtab_wealth: "💰 Wealth Luck",
+                card_nature: "🧙 Innate Nature",
+                card_fortune: "🌟 2026 Fortune Preview",
+                card_love: "💕 My Love Style",
+                card_wealth: "💰 My Wealth Pot",
+                loading_msg: "Analyzing your destiny matrix...",
+                ad_msg_title: "🔮 Analyzing your destiny...",
+                ad_msg_desc: "While we analyze,<br>check out these lucky items for you!",
+                ad_close_btn: "Close Ad & View Result",
+                ad_wait_btn: "Checking Ad",
+                footer_ad: "🎁 Recommended Lucky Items",
+                footer_disclaimer: "This post is part of Coupang Partners activity,<br>and we receive a small commission."
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Update static text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (TRANSLATIONS[lang][key]) {
+                    if (el.tagName === 'INPUT') {
+                        el.placeholder = TRANSLATIONS[lang][key];
+                    } else {
+                        // Preserve HTML content if needed, or just text? 
+                        // Most extend use innerHTML.
+                        el.innerHTML = TRANSLATIONS[lang][key];
+                    }
+                }
+            });
+
+            // Update default select option text
+            const t = TRANSLATIONS[lang];
+            const selects = document.querySelectorAll('select');
+            selects.forEach(s => {
+                if (s.options[0].value === "") s.options[0].text = t.default_select;
+            });
+
+            // Update Result Screen Content if visible
+            if (document.getElementById('result-screen').style.display === 'block') {
+                if (typeof updateResultTexts === 'function') {
+                    updateResultTexts();
+                }
+
+                // Refresh current tab content
+                const activeTab = document.querySelector('.mini-col.tab-active-indicator');
+                if (activeTab) {
+                    const type = activeTab.id.split('-')[1];
+                    if (typeof showTabDetail === 'function') {
+                        showTabDetail(type);
+                    }
+                }
+            }
+        }
+    </script>
 
 <body>
     <div class="app-container">
+        <!-- Language Toggle -->
+        <div class="lang-toggle-container">
+            <button class="lang-btn active" data-lang="ko" onclick="setLanguage('ko')">🇰🇷 KO</button>
+            <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">🇺🇸 EN</button>
+        </div>
+
         <!-- 1. 입력 화면 -->
         <div id="input-screen" class="input-section">
             <div class="logo-area">
-                <h1>운세 APP</h1>
-                <p>생년월일을 입력하면 당신의 사주를 분석해드립니다.</p>
+                <h1 data-i18n="app_title">운세 APP</h1>
+                <p data-i18n="app_desc">생년월일을 입력하면 당신의 사주를 분석해드립니다.</p>
             </div>
 
             <form onsubmit="analyzeSaju(event)">
                 <div class="form-group">
-                    <label class="form-label">이름 (닉네임)</label>
-                    <input type="text" id="userName" class="form-input" placeholder="예: 홍길동" required>
+                    <label class="form-label" data-i18n="label_name">이름 (닉네임)</label>
+                    <input type="text" id="userName" class="form-input" placeholder="예: 홍길동"
+                        data-i18n="placeholder_name" required>
                 </div>
 
                 <div class="row">
                     <div class="col form-group">
-                        <label class="form-label">생년</label>
-                        <input type="number" id="birthYear" class="form-input" placeholder="1990" min="1900" max="2100"
-                            required>
+                        <label class="form-label" data-i18n="label_year">생년</label>
+                        <input type="number" id="birthYear" class="form-input" placeholder="1990"
+                            data-i18n="placeholder_year" min="1900" max="2100" required>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">월</label>
+                        <label class="form-label" data-i18n="label_month">월</label>
                         <select id="birthMonth" class="form-select" required>
-                            <option value="">선택</option>
+                            <option value="" data-i18n="default_select">선택</option>
                             <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}월</option>`);</script>
                         </select>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">일</label>
+                        <label class="form-label" data-i18n="label_day">일</label>
                         <select id="birthDay" class="form-select" required>
-                            <option value="">선택</option>
+                            <option value="" data-i18n="default_select">선택</option>
                             <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}일</option>`);</script>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">태어난 시간</label>
+                    <label class="form-label" data-i18n="label_time">태어난 시간</label>
                     <select id="birthTime" class="form-select">
-                        <option value="99">모름</option>
+                        <option value="99" data-i18n="time_unknown">모름</option>
                         <option value="0">자시 (23:30 ~ 01:29)</option>
                         <option value="1">축시 (01:30 ~ 03:29)</option>
                         <option value="2">인시 (03:30 ~ 05:29)</option>
@@ -446,15 +607,16 @@
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn">분석 시작하기 ✨</button>
+                <button type="submit" class="submit-btn" data-i18n="btn_submit">분석 시작하기 ✨</button>
             </form>
         </div>
 
         <!-- 2. 결과 화면 -->
         <div id="result-screen" class="result-section" style="display:none;">
-            <button class="back-btn" onclick="goBack()">← 다시 입력하기</button>
+            <button class="back-btn" onclick="goBack()" data-i18n="btn_back">← 다시 입력하기</button>
             <header style="text-align: center; margin-bottom: 20px;">
-                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Analysis Report</div>
+                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;" data-i18n="analysis_report">Analysis
+                    Report</div>
                 <h1 id="result-name"
                     style="margin: 0; background: linear-gradient(to right, #54a0ff, #00d2d3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
                     님 사주 리포트</h1>
@@ -464,23 +626,23 @@
             <div class="mini-grid">
                 <div id="col-hour" class="mini-col" onclick="showTabDetail('hour')">
                     <span id="hour-pillar" class="mini-char">-</span>
-                    <div class="col-label">시주</div>
-                    <div class="col-sub">말년/자식</div>
+                    <div class="col-label" data-i18n="tab_hour">시주</div>
+                    <div class="col-sub" data-i18n="tab_hour_sub">말년/자식</div>
                 </div>
                 <div id="col-day" class="mini-col" onclick="showTabDetail('day')">
                     <span id="day-pillar" class="mini-char">-</span>
-                    <div class="col-label">일주(나)</div>
-                    <div class="col-sub">본원/배우자</div>
+                    <div class="col-label" data-i18n="tab_day">일주(나)</div>
+                    <div class="col-sub" data-i18n="tab_day_sub">본원/배우자</div>
                 </div>
                 <div id="col-month" class="mini-col" onclick="showTabDetail('month')">
                     <span id="month-pillar" class="mini-char">-</span>
-                    <div class="col-label">월주</div>
-                    <div class="col-sub">사회/부모</div>
+                    <div class="col-label" data-i18n="tab_month">월주</div>
+                    <div class="col-sub" data-i18n="tab_month_sub">사회/부모</div>
                 </div>
                 <div id="col-year" class="mini-col" onclick="showTabDetail('year')">
                     <span id="year-pillar" class="mini-char">-</span>
-                    <div class="col-label">년주</div>
-                    <div class="col-sub">초년/조상</div>
+                    <div class="col-label" data-i18n="tab_year">년주</div>
+                    <div class="col-sub" data-i18n="tab_year_sub">초년/조상</div>
                 </div>
             </div>
 
@@ -499,19 +661,21 @@
             <div id="day-specific-content">
                 <!-- 서브 탭 네비게이션 -->
                 <div class="sub-tabs">
-                    <button class="sub-tab-btn active" onclick="switchSubTab('general')">종합 분석</button>
-                    <button class="sub-tab-btn" onclick="switchSubTab('love')">💕 연애운</button>
-                    <button class="sub-tab-btn" onclick="switchSubTab('wealth')">💰 재물운</button>
+                    <button class="sub-tab-btn active" onclick="switchSubTab('general')" data-i18n="subtab_general">종합
+                        분석</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab('love')" data-i18n="subtab_love">💕 연애운</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab('wealth')" data-i18n="subtab_wealth">💰
+                        재물운</button>
                 </div>
 
                 <!-- 1. 종합 분석 -->
                 <div id="view-general" class="analysis-view">
                     <div class="card">
-                        <h3>🧙 타고난 기질</h3>
+                        <h3 data-i18n="card_nature">🧙 타고난 기질</h3>
                         <p id="nature-text">분석 중...</p>
                     </div>
                     <div class="card">
-                        <h3>🌟 2026년 운세 미리보기</h3>
+                        <h3 data-i18n="card_fortune">🌟 2026년 운세 미리보기</h3>
                         <p id="fortune-text">분석 중...</p>
                     </div>
                 </div>
@@ -519,7 +683,7 @@
                 <!-- 2. 연애운 -->
                 <div id="view-love" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>💕 나의 연애 스타일</h3>
+                        <h3 data-i18n="card_love">💕 나의 연애 스타일</h3>
                         <p id="love-text">분석 중...</p>
                     </div>
                     <div style="font-size:0.85rem; opacity:0.7; padding:0 10px;">
@@ -530,7 +694,7 @@
                 <!-- 3. 재물운 -->
                 <div id="view-wealth" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>💰 나의 재물 그릇</h3>
+                        <h3 data-i18n="card_wealth">💰 나의 재물 그릇</h3>
                         <p id="wealth-text">분석 중...</p>
                     </div>
                     <div style="font-size:0.85rem; opacity:0.7; padding:0 10px;">
@@ -544,7 +708,8 @@
         <!-- 쿠팡 파트너스 사주페이지 광고 (시작/결과 공통 노출) -->
         <div class="ad-section"
             style="margin-top: 40px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 20px; text-align: center;">
-            <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px; color: white;">🎁 오늘의 운세 추천 아이템</p>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 10px; color: white;" data-i18n="footer_ad">🎁 오늘의
+                운세 추천 아이템</p>
             <div id="saju-coupang-ad"
                 style="min-height: 140px; background: rgba(255,255,255,0.05); border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                 <script src="https://ads-partners.coupang.com/g.js"></script>
@@ -552,7 +717,8 @@
                     new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140", "tsource": "" });
                 </script>
             </div>
-            <p style="font-size: 10px; opacity: 0.4; margin-top: 10px; line-height: 1.4; color: white;">
+            <p style="font-size: 10px; opacity: 0.4; margin-top: 10px; line-height: 1.4; color: white;"
+                data-i18n="footer_disclaimer">
                 이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.
             </p>
         </div>
@@ -560,8 +726,9 @@
 
     <div id="ad-popup" class="ad-popup-overlay" style="display:none;">
         <div class="ad-popup-content">
-            <h2 style="color: #fab1a0; margin-bottom: 20px;">🔮 운명을 분석 중입니다...</h2>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">분석이 완료되는 동안<br>본인에게 맞는 행운의 아이템을 확인해 보세요!
+            <h2 style="color: #fab1a0; margin-bottom: 20px;" data-i18n="ad_msg_title">🔮 운명을 분석 중입니다...</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;" data-i18n="ad_msg_desc">분석이 완료되는 동안<br>본인에게
+                맞는 행운의 아이템을 확인해 보세요!
             </p>
 
             <div id="popup-coupang-ad"
@@ -572,8 +739,10 @@
                 </script>
             </div>
 
-            <button class="submit-btn" onclick="closeAdPopup()" style="margin-top: 0;">광고 닫고 결과 확인하기</button>
-            <p style="font-size: 10px; opacity: 0.4; margin-top: 15px;">이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를
+            <button class="submit-btn" onclick="closeAdPopup()" style="margin-top: 0;" data-i18n="ad_close_btn">광고 닫고 결과
+                확인하기</button>
+            <p style="font-size: 10px; opacity: 0.4; margin-top: 15px;" data-i18n="footer_disclaimer">이 포스팅은 쿠팡 파트너스 활동의
+                일환으로,<br>이에 따른 일정액의 수수료를
                 제공받습니다.</p>
         </div>
     </div>
@@ -581,7 +750,8 @@
     <!-- 로딩 오버레이 -->
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
-        <div style="color: white; font-weight: 300; letter-spacing: 1px;">사주 명식을 분석 중입니다...</div>
+        <div style="color: white; font-weight: 300; letter-spacing: 1px;" data-i18n="loading_msg">사주 명식을 분석 중입니다...
+        </div>
     </div>
 
     <!-- 상세 내용 모달 삭제됨 (탭 방식 사용) -->
@@ -787,13 +957,8 @@
             document.getElementById('result-screen').style.display = 'block';
 
             document.getElementById('result-name').innerText = name;
-            document.getElementById('result-desc').innerText = `${year}.${month}.${day}생 | ${pillars.day.s}${pillars.day.b}일주`;
 
-            const dayStem = pillars.day.s;
-            document.getElementById('nature-text').innerText = `${name}님은 '${dayStem}(${stemReadings[dayStem]})'(으)로 태어나셨군요!\n\n${natureMap[dayStem] || "신비로운 매력이 있습니다."}`;
-            document.getElementById('fortune-text').innerHTML = fortune2026Map[dayStem] || "알 수 없음";
-            document.getElementById('love-text').innerHTML = loveMap[dayStem] || "알 수 없음";
-            document.getElementById('wealth-text').innerHTML = wealthMap[dayStem] || "알 수 없음";
+            updateResultTexts();
 
             document.getElementById('year-pillar').innerHTML = getColoredHtml(pillars.year.s, pillars.year.b);
             document.getElementById('month-pillar').innerHTML = getColoredHtml(pillars.month.s, pillars.month.b);
@@ -802,6 +967,36 @@
 
             showTabDetail('day');
             switchSubTab('general');
+        }
+
+        function updateResultTexts() {
+            if (!currentPillars) return;
+            const name = document.getElementById('userName').value;
+            const dayStem = currentPillars.day.s;
+            const t = TRANSLATIONS[currentLang];
+
+            // Description under title
+            const year = document.getElementById('birthYear').value;
+            const month = document.getElementById('birthMonth').value;
+            const day = document.getElementById('birthDay').value;
+            document.getElementById('result-desc').innerText = `${year}.${month}.${day} | ${currentPillars.day.s}${currentPillars.day.b}`;
+
+            const maps = currentLang === 'en' ?
+                { love: loveMap_en, nature: natureMap_en, fortune: fortune2026Map_en, wealth: wealthMap_en } :
+                { love: loveMap, nature: natureMap, fortune: fortune2026Map, wealth: wealthMap };
+
+            // Nature Text
+            let natureMsg = maps.nature[dayStem] || "";
+            if (currentLang === 'ko') {
+                natureMsg = `${name}님은 '${dayStem}(${stemReadings[dayStem]})'(으)로 태어나셨군요!\n\n` + natureMsg;
+            } else {
+                natureMsg = `${name}, you were born with '${dayStem}'!\n\n` + natureMsg;
+            }
+            document.getElementById('nature-text').innerText = natureMsg;
+
+            document.getElementById('fortune-text').innerHTML = maps.fortune[dayStem] || (currentLang === 'en' ? "Unknown" : "알 수 없음");
+            document.getElementById('love-text').innerHTML = maps.love[dayStem] || (currentLang === 'en' ? "Unknown" : "알 수 없음");
+            document.getElementById('wealth-text').innerHTML = maps.wealth[dayStem] || (currentLang === 'en' ? "Unknown" : "알 수 없음");
         }
 
         function goBack() {
@@ -1023,6 +1218,157 @@
             }
         };
 
+        // 💰 재물운 데이터 (Missing in original, added for completeness)
+        const wealthMap = {
+            "甲": "명예를 중시하며 리더십으로 부를 쟁취하는 스타일입니다.",
+            "乙": "실속파로 알뜰살뜰하게 재물을 모으는 능력이 있습니다.",
+            "丙": "화려한 언변과 활동성으로 재물을 창출합니다.",
+            "丁": "꼼꼼한 재테크와 전문 기술로 부를 축적합니다.",
+            "戊": "부동산이나 신용을 바탕으로 큰 부를 이룰 그릇입니다.",
+            "己": "안정적인 자산 관리와 저축에 강점이 있습니다.",
+            "庚": "과감한 결단력으로 투자나 사업에서 성과를 냅니다.",
+            "辛": "섬세한 감각과 정확성으로 가치를 창출합니다.",
+            "壬": "유통이나 무역 등 큰 물에서 노는 스케일이 있습니다.",
+            "癸": "지혜와 아이디어로 부가가치를 만드는 능력자입니다."
+        };
+
+        // --- English Translations ---
+
+        const loveMap_en = {
+            "甲": "Like a sturdy tree, you have strong pride and prefer to lead. You express feelings directly.",
+            "乙": "Like a vine, you are gentle and adaptable. You are considerate but can be possessive.",
+            "丙": "Like the sun, you are passionate and open. You fall in love quickly and are the life of the party.",
+            "丁": "Like a candle, you are subtle and devoted. You value deep connections and are very caring.",
+            "戊": "Like a mountain, you are reliable and steady. You show love through actions rather than words.",
+            "己": "Like fertile soil, you are practical and stable. You value mutually beneficial relationships.",
+            "庚": "Like a rock, you value loyalty above all. You are decisive and responsible.",
+            "辛": "Like a jewel, you have high standards and delicate taste. You are sensitive and romantic.",
+            "壬": "Like the ocean, you value freedom and deep connection. You dislike being tied down.",
+            "癸": "Like rain, you are tender and emotional. You are empathetic but can be moody."
+        };
+
+        const natureMap_en = {
+            "甲": "You are like a tall tree 🌲. You have strong roots and a resilient mental fortitude. You have a strong desire for growth and leadership.",
+            "乙": "You are like a vine 🌿. You have incredible adaptability and survival instincts. You are flexible and practical.",
+            "丙": "You are like the sun ☀️. You have a bright presence and are passionate. You are honest and impulsive.",
+            "丁": "You are like a candle 🕯️. You are warm and dedicated. You have great focus and are detail-oriented.",
+            "戊": "You are like a mountain 🏔️. You are trustworthy and have great tolerance. You can be stubborn but reliable.",
+            "己": "You are like fertile soil 🌾. You are productive and versatile. You are practical and good at nurturing others.",
+            "庚": "You are like iron 🪨. You are strong and charismatic. You value justice and are decisive.",
+            "辛": "You are like a jewel 💎. You are delicate and perfectionist. You like to shine and be appreciated.",
+            "壬": "You are like the ocean 🌊. You are broad-minded and wise. You love freedom and are adaptable.",
+            "癸": "You are like rain ☔. You are pure and sensitive. You are creative and intuitive."
+        };
+
+        const fortune2026Map_en = {
+            "甲": "2026 is a year to blossom. Your talents will be recognized. 💡 Tip: Promote your ideas actively.",
+            "乙": "A highlight year for you. Your popularity will rise. 💡 Tip: Dress up to attract luck.",
+            "丙": "A year of competition and passion. Cooperate with others. 💡 Tip: Value teamwork over solo play.",
+            "丁": "A year of growth through help and competition. 💡 Tip: Being generous brings good fortune.",
+            "戊": "Great luck in documents and study. Good for contracts. 💡 Tip: Check details carefully.",
+            "己": "Honest rewards for your efforts. Your status will solidify. 💡 Tip: Try learning something new.",
+            "庚": "Career and honor luck is high. You will be refined like steel. 💡 Tip: Exercise regularly.",
+            "辛": "New love or recognition awaits. Don't be too emotional. 💡 Tip: Avoid red accessories.",
+            "壬": "Dynamic financial luck. Great changes in money flow. 💡 Tip: Analyze before investing.",
+            "癸": "Stable income and results. You will be welcomed. 💡 Tip: Save and manage assets."
+        };
+
+        const wealthMap_en = {
+            "甲": "You gain wealth through leadership and honor.",
+            "乙": "You are practical and good at saving money.",
+            "丙": "You create wealth through speech and activity.",
+            "丁": "You accumulate wealth through detailed skills.",
+            "戊": "You have a destiny for big wealth through real estate or trust.",
+            "己": "You are good at stable asset management.",
+            "庚": "You take bold risks for high returns.",
+            "辛": "You create value through precision and sense.",
+            "壬": "You deal with wealth on a large scale, like trade.",
+            "癸": "You create wealth through ideas and wisdom."
+        };
+
+        const pillarInterpretations_en = {
+            "甲": {
+                nature: "Tall Tree 🌲", nature_year: "Sapling 🌱", nature_month: "Forest Tree 🌳", nature_day: "Tall Tree 🌲", nature_hour: "Old Tree 🪵",
+                keyword: "🌱 Growth, 🦁 Leadership, 😤 Pride",
+                year: "You were a leader among friends in childhood.",
+                month: "You are a proactive leader in society.",
+                day: "You have strong pride and drive for growth.",
+                hour: "You will be a respected mentor in later life."
+            },
+            "乙": {
+                nature: "Vine 🌿", nature_year: "Flower 🌸", nature_month: "Climbing Vine 🌿", nature_day: "Resilient Weed 🌱", nature_hour: "Blooming Flower 🌻",
+                keyword: "🌿 Adaptation, 🧗 Persistence, 💰 Practicality",
+                year: "You were popular and adaptable.",
+                month: "You have great survival skills in any organization.",
+                day: "You are flexible and resilient.",
+                hour: "You will have a comfortable and peaceful old age."
+            },
+            "丙": {
+                nature: "Sun ☀️", nature_year: "Morning Sun 🌅", nature_month: "Midday Sun ☀️", nature_day: "Shining Light ✨", nature_hour: "Sunset 🌇",
+                keyword: "🔥 Passion, 🙏 Manners, ✨ Brilliance",
+                year: "You loved attention and were bright.",
+                month: "You captivate people with your speech.",
+                day: "You are fair, passionate, and open.",
+                hour: "You will be an influential elder."
+            },
+            "丁": {
+                nature: "Candle 🕯️", nature_year: "Star ✨", nature_month: "Bonfire 🔥", nature_day: "Candle 🕯️", nature_hour: "Moonlight 🌙",
+                keyword: "🕯️ Dedication, 🎀 Delicate, 🌙 Subtle",
+                year: "You were quiet but focused.",
+                month: "You are a detailed professional.",
+                day: "You are warm and devoted.",
+                hour: "You will find spiritual peace."
+            },
+            "戊": {
+                nature: "Mountain 🏔️", nature_year: "Hill ⛰️", nature_month: "Volcano 🌋", nature_day: "Wilderness 🏜️", nature_hour: "Sunset Mountain 🌄",
+                keyword: "🤝 Trust, 🏔️ Tolerance, 🐂 Stubbornness",
+                year: "You were mature and trustworthy.",
+                month: "You are a reliable pillar of your organization.",
+                day: "You are steady and accepting.",
+                hour: "You will have a wealthy and respected old age."
+            },
+            "己": {
+                nature: "Soil 🌾", nature_year: "Garden 🌱", nature_month: "Farm 🚜", nature_day: "Field 🌾", nature_hour: "Countryside 🏡",
+                keyword: "🌾 Practical, 🎨 Versatile, 🧹 Self-care",
+                year: "You were smart and practical.",
+                month: "You are an essential multi-tasker.",
+                day: "You are productive and modest.",
+                hour: "You will enjoy nurturing the next generation."
+            },
+            "庚": {
+                nature: "Iron/Rock 🪨", nature_year: "Raw Gem 💎", nature_month: "Steel 🔨", nature_day: "Rock 🪨", nature_hour: "Sword ⚔️",
+                keyword: "⚔️ Loyalty, 🔪 Decisiveness, 🛠️ Reform",
+                year: "You had a strong sense of justice.",
+                month: "You are a charismatic leader.",
+                day: "You are strong-willed and loyal.",
+                hour: "You will maintain your principles."
+            },
+            "辛": {
+                nature: "Jewel 💎", nature_year: "Bead 🔮", nature_month: "Scalpel 🔪", nature_day: "Diamond 💎", nature_hour: "Treasure 👑",
+                keyword: "💎 Delicate, 📏 Sensitive, ✨ Clean",
+                year: "You were sensitive and neat.",
+                month: "You are a perfectionist professional.",
+                day: "You shine and have high standards.",
+                hour: "You will live an elegant and stylish life."
+            },
+            "壬": {
+                nature: "Ocean 🌊", nature_year: "Stream 💧", nature_month: "Dam 🌊", nature_day: "Ocean 🌊", nature_hour: "Lake 🏞️",
+                keyword: "🌊 Wisdom, 🌍 Freedom, 🎭 Adaptability",
+                year: "You were curious and imaginative.",
+                month: "You work on a large scale.",
+                day: "You are broad-minded and mysterious.",
+                hour: "You will be wise and free-spirited."
+            },
+            "癸": {
+                nature: "Rain ☔", nature_year: "Dew 💧", nature_month: "Rain 🌧️", nature_day: "Spring 🏞️", nature_hour: "Mist 🌫️",
+                keyword: "☔ Sensitivity, 💡 Idea, 🕊️ Purity",
+                year: "You were emotional and kind.",
+                month: "You are a creative strategist.",
+                day: "You are pure and intuitive.",
+                hour: "You will find peace and tranquility."
+            }
+        };
+
         ;
 
         function showTabDetail(type) {
@@ -1045,26 +1391,52 @@
             let data = currentPillars[type];
             let fullText = data.s + data.b;
 
+            const t = TRANSLATIONS[currentLang];
+            const pillarMap = currentLang === 'en' ? pillarInterpretations_en : pillarInterpretations;
+
             // 해당 글자(천간)의 해석 가져오기
-            const interp = pillarInterpretations[data.s] || {
-                nature: "신비로운 기운", keyword: "알 수 없음", desc: "아직 해석되지 않은 기운입니다."
+            const interp = pillarMap[data.s] || {
+                nature: "Unknown", keyword: "Unknown", desc: ""
             };
 
+            // Helper for pillar title
+            const getPillarTitle = (key) => t[`tab_${key}`];
+            const getPillarSub = (key) => t[`tab_${key}_sub`];
+
             if (type === 'hour' && (data.s === '모' || data.s === '?')) {
-                title = "시주: 정보 없음";
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px; text-align:center;"><span style="font-size:2rem; display:block; margin-bottom:10px;">❓</span><strong>태어난 시간을 입력하지 않았습니다.</strong></div><p>태어난 시간을 모르면 말년운과 자식운, 그리고 나만의 내면세계에 대한 정확한 분석이 어렵습니다.</p>`;
+                title = `${getPillarTitle('hour')}: ${t.time_unknown}`; // 시주: 모름
+                const unknownMsg = currentLang === 'en' ?
+                    `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px; text-align:center;"><span style="font-size:2rem; display:block; margin-bottom:10px;">❓</span><strong>Birth time unknown.</strong></div><p>Without birth time, analysis of late life and children is limited.</p>` :
+                    `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px; text-align:center;"><span style="font-size:2rem; display:block; margin-bottom:10px;">❓</span><strong>태어난 시간을 입력하지 않았습니다.</strong></div><p>태어난 시간을 모르면 말년운과 자식운, 그리고 나만의 내면세계에 대한 정확한 분석이 어렵습니다.</p>`;
+                content = unknownMsg;
             } else if (type === 'year') {
-                title = `년주: ${fullText} (초년/배경)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">당신의 뿌리 & 어린 시절</span><strong>"${interp.nature_year || interp.nature}"의 성향</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.year}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 집안 분위기나 조상의 기운도 이와 비슷했을 수 있습니다.</p>`;
+                title = `${getPillarTitle('year')}: ${fullText} (${getPillarSub('year')})`;
+                const subTitle = currentLang === 'en' ? "Roots & Early Life" : "당신의 뿌리 & 어린 시절";
+                const traitTitle = currentLang === 'en' ? "Trait" : "성향";
+                const footerMsg = currentLang === 'en' ? "* Related to family atmosphere and ancestors." : "* 집안 분위기나 조상의 기운도 이와 비슷했을 수 있습니다.";
+
+                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">${subTitle}</span><strong>"${interp.nature_year || interp.nature}" ${traitTitle}</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.year}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">${footerMsg}</p>`;
             } else if (type === 'month') {
-                title = `월주: ${fullText} (청년/사회)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">사회적 무기 & 직업관</span><strong>"${interp.nature_month || interp.nature}"의 능력</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.month}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 당신이 가장 잘 쓰는 사회적 가면(Persona)이기도 합니다.</p>`;
+                title = `${getPillarTitle('month')}: ${fullText} (${getPillarSub('month')})`;
+                const subTitle = currentLang === 'en' ? "Social Weapon & Career" : "사회적 무기 & 직업관";
+                const traitTitle = currentLang === 'en' ? "Ability" : "의 능력";
+                const footerMsg = currentLang === 'en' ? "* This is your social persona." : "* 당신이 가장 잘 쓰는 사회적 가면(Persona)이기도 합니다.";
+
+                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">${subTitle}</span><strong>"${interp.nature_month || interp.nature}" ${traitTitle}</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.month}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">${footerMsg}</p>`;
             } else if (type === 'day') {
-                title = `일주: ${fullText} (나/중년)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">본원(Core) & 핵심 성격</span><strong>"${interp.nature_day || interp.nature}" 그 자체</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.day}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 이것이 꾸밈없는 진짜 <strong>${document.getElementById('userName').value}</strong>님의 모습입니다.</p>`;
+                title = `${getPillarTitle('day')}: ${fullText} (${getPillarSub('day')})`;
+                const subTitle = currentLang === 'en' ? "Core Self" : "본원(Core) & 핵심 성격";
+                const traitTitle = currentLang === 'en' ? "Itself" : "그 자체";
+                const footerMsg = currentLang === 'en' ? `* This is the real <strong>${document.getElementById('userName').value}</strong>.` : `* 이것이 꾸밈없는 진짜 <strong>${document.getElementById('userName').value}</strong>님의 모습입니다.`;
+
+                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">${subTitle}</span><strong>"${interp.nature_day || interp.nature}" ${traitTitle}</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.day}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">${footerMsg}</p>`;
             } else if (type === 'hour') {
-                title = `시주: ${fullText} (말년/비밀)`;
-                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">숨겨진 욕망 & 미래</span><strong>"${interp.nature_hour || interp.nature}"을(를) 지향함</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.hour}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">* 자녀와의 관계나 나의 노후 모습이 이와 닮아있습니다.</p>`;
+                title = `${getPillarTitle('hour')}: ${fullText} (${getPillarSub('hour')})`;
+                const subTitle = currentLang === 'en' ? "Hidden Desire & Future" : "숨겨진 욕망 & 미래";
+                const traitTitle = currentLang === 'en' ? "Oriented" : "을(를) 지향함";
+                const footerMsg = currentLang === 'en' ? "* Resembles your relationship with children or late life." : "* 자녀와의 관계나 나의 노후 모습이 이와 닮아있습니다.";
+
+                content = `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;"><span style="display:block; font-size:0.85em; opacity:0.7; margin-bottom:5px;">${subTitle}</span><strong>"${interp.nature_hour || interp.nature}" ${traitTitle}</strong><div style="margin-top:8px; font-size:0.9rem; color:#ffd700; font-weight:bold;">${interp.keyword}</div></div><p>${interp.hour}</p><p style="font-size:0.9em; opacity:0.8; margin-top:10px;">${footerMsg}</p>`;
             }
 
             titleEl.innerHTML = title;

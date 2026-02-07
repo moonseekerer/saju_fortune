@@ -13,90 +13,151 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <!-- CSS 분리 -->
-    <link rel="stylesheet" href="style.css?v=20260205033917">
+    <link rel="stylesheet" href="style.css?v=20260207225028">
 </head>
 
 <body>
     <div class="app-container">
         <!-- 1. 입력 화면 -->
         <div id="input-screen" class="input-section">
-            <div class="logo-area">
-                <h1>2026년 나의 사주</h1>
-                <p>생년월일을 입력하면 당신의 사주를 분석해드립니다.</p>
-                <button id="sound-btn" class="sound-toggle" onclick="toggleSound()" aria-label="배경음악 켜기/끄기">
-                    🔇
-                </button>
+            <div class="logo-area" style="position: relative;">
+                <h1 data-i18n="app_title">2026년 나의 사주</h1>
+                <p data-i18n="app_desc">생년월일을 입력하면 당신의 사주를 분석해드립니다.</p>
+
+                <!-- Floating Buttons -->
+                <div class="floating-buttons">
+                    <button id="lang-btn-old" class="float-btn" onclick="toggleLanguage()"
+                        aria-label="언어 변경/Change Language">
+                        🌐�
+                    </button>
+                    <button id="sound-btn-old" class="float-btn" onclick="toggleSound()" aria-label="배경음악 켜기/끄기">
+                        🔇
+                    </button>
+                </div>
+
+                <style>
+                    .floating-buttons {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                        /* Increase gap to prevent overlap */
+                        z-index: 10;
+                    }
+
+                    .float-btn {
+                        width: 40px;
+                        /* Slightly smaller for header integration */
+                        height: 40px;
+                        border-radius: 50%;
+                        border: none;
+                        background: rgba(255, 255, 255, 0.2);
+                        backdrop-filter: blur(10px);
+                        color: white;
+                        font-size: 20px;
+                        cursor: pointer;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .float-btn:hover {
+                        background: rgba(255, 255, 255, 0.3);
+                        transform: scale(1.1);
+                    }
+
+                    /* Mobile adjustment */
+                    @media (max-width: 768px) {
+                        .floating-buttons {
+                            /* Keep at top relative to header */
+                            top: 0;
+                            right: 0;
+                            bottom: auto;
+                        }
+
+                        .float-btn {
+                            width: 36px;
+                            height: 36px;
+                            font-size: 18px;
+                        }
+                    }
+                </style>
             </div>
 
             <form onsubmit="analyzeSaju(event)">
                 <div class="form-group">
-                    <label class="form-label" for="userName">이름 또는 닉네임</label>
-                    <input type="text" id="userName" class="form-input" placeholder="이름을 입력하세요 (닉네임 권장)" required>
+                    <label class="form-label" for="userName" data-i18n="label_name">이름 또는 닉네임</label>
+                    <input type="text" id="userName" class="form-input" placeholder="예 : 홍길동"
+                        data-i18n="placeholder_name">
                 </div>
 
+
                 <div class="form-group">
-                    <label class="form-label">성별 </label>
+                    <label class="form-label" data-i18n="label_gender">성별 </label>
                     <div class="gender-selection">
                         <label class="gender-option">
                             <input type="radio" name="userGender" value="male" checked>
-                            <span class="gender-btn">남성</span>
+                            <span class="gender-btn" data-i18n="gender_male">남성</span>
                         </label>
                         <label class="gender-option">
                             <input type="radio" name="userGender" value="female">
-                            <span class="gender-btn">여성</span>
+                            <span class="gender-btn" data-i18n="gender_female">여성</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col form-group">
-                        <label class="form-label">생년</label>
-                        <input type="number" id="birthYear" class="form-input" placeholder="1990" min="1900" max="2100"
-                            required>
+                        <label class="form-label" data-i18n="label_year">생년</label>
+                        <input type="number" id="birthYear" class="form-input" placeholder="1990"
+                            data-i18n="placeholder_year" min="1900" max="2100" required>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">월</label>
+                        <label class="form-label" data-i18n="label_month">월</label>
                         <select id="birthMonth" class="form-select" required>
-                            <option value="">선택</option>
-                            <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}월</option>`);</script>
+                            <option value="" data-i18n="select_default">선택</option>
                         </select>
                     </div>
                     <div class="col form-group">
-                        <label class="form-label">일</label>
+                        <label class="form-label" data-i18n="label_day">일</label>
                         <select id="birthDay" class="form-select" required>
-                            <option value="">선택</option>
-                            <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}일</option>`);</script>
+                            <option value="" data-i18n="select_default">선택</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">태어난 시간</label>
+                    <label class="form-label" data-i18n="label_time">태어난 시간</label>
                     <select id="birthTime" class="form-select">
-                        <option value="99">모름</option>
-                        <option value="0">자시 (23:30 ~ 01:29)</option>
-                        <option value="1">축시 (01:30 ~ 03:29)</option>
-                        <option value="2">인시 (03:30 ~ 05:29)</option>
-                        <option value="3">묘시 (05:30 ~ 07:29)</option>
-                        <option value="4">진시 (07:30 ~ 09:29)</option>
-                        <option value="5">사시 (09:30 ~ 11:29)</option>
-                        <option value="6">오시 (11:30 ~ 13:29)</option>
-                        <option value="7">미시 (13:30 ~ 15:29)</option>
-                        <option value="8">신시 (15:30 ~ 17:29)</option>
-                        <option value="9">유시 (17:30 ~ 19:29)</option>
-                        <option value="10">술시 (19:30 ~ 21:29)</option>
-                        <option value="11">해시 (21:30 ~ 23:29)</option>
+                        <option value="99" data-i18n="time_unknown">모름</option>
+                        <option value="0" data-i18n="time_0">자시 (23:30 ~ 01:29)</option>
+                        <option value="1" data-i18n="time_1">축시 (01:30 ~ 03:29)</option>
+                        <option value="2" data-i18n="time_2">인시 (03:30 ~ 05:29)</option>
+                        <option value="3" data-i18n="time_3">묘시 (05:30 ~ 07:29)</option>
+                        <option value="4" data-i18n="time_4">진시 (07:30 ~ 09:29)</option>
+                        <option value="5" data-i18n="time_5">사시 (09:30 ~ 11:29)</option>
+                        <option value="6" data-i18n="time_6">오시 (11:30 ~ 13:29)</option>
+                        <option value="7" data-i18n="time_7">미시 (13:30 ~ 15:29)</option>
+                        <option value="8" data-i18n="time_8">신시 (15:30 ~ 17:29)</option>
+                        <option value="9" data-i18n="time_9">유시 (17:30 ~ 19:29)</option>
+                        <option value="10" data-i18n="time_10">술시 (19:30 ~ 21:29)</option>
+                        <option value="11" data-i18n="time_11">해시 (21:30 ~ 23:29)</option>
                     </select>
                 </div>
 
                 <div class="privacy-agreement-section">
                     <div class="privacy-checkbox-wrapper">
                         <input type="checkbox" id="privacy-agreement" class="privacy-input">
-                        <label for="privacy-agreement" class="privacy-label">개인정보 수집 및 이용 동의 (필수)</label>
+                        <label for="privacy-agreement" class="privacy-label" data-i18n="privacy_agree">개인정보 수집 및 이용 동의
+                            (필수)</label>
                     </div>
                     <details class="privacy-details">
-                        <summary>자세히 보기</summary>
-                        <div class="privacy-content">
+                        <summary data-i18n="privacy_details">자세히 보기</summary>
+                        <div class="privacy-content" data-i18n="privacy_content">
                             • 수집 목적: 사주 분석 결과 제공 및 이용 통계<br>
                             • 수집 항목: 이름(또는 닉네임), 생년월일, 성별, 태어난 시간<br>
                             • 보유 기간: 분석 결과 제공 후 즉시 파기<br>
@@ -109,15 +170,15 @@
                     </details>
                 </div>
 
-                <button type="submit" class="submit-btn" id="main-submit-btn">분석 시작하기 ✨</button>
+                <button type="submit" class="submit-btn" id="main-submit-btn" data-i18n="btn_submit">분석 시작하기 ✨</button>
             </form>
 
             <button class="premium-share-btn" onclick="shareApp()">
                 <div class="btn-content">
                     <span class="btn-icon">🔗</span>
                     <div class="btn-text">
-                        <span class="main-text">친구에게 테스트 공유하기</span>
-                        <span class="sub-text">2026년 운세를 무료로 확인해보세요</span>
+                        <span class="main-text" data-i18n="share_test_title">친구에게 테스트 공유하기</span>
+                        <span class="sub-text" data-i18n="share_test_desc">2026년 운세를 무료로 확인해보세요</span>
                     </div>
                 </div>
             </button>
@@ -127,37 +188,38 @@
         <div id="loading"
             style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
             <div style="font-size:3rem; margin-bottom:20px;">🔮</div>
-            <div style="color:white; font-size:1.2rem;">사주를 분석하고 있습니다...</div>
+            <div style="color:white; font-size:1.2rem;" data-i18n="loading_msg">사주를 분석하고 있습니다...</div>
         </div>
 
         <!-- 광고 화면 -->
         <div id="ad-screen"
             style="display:none; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px;">
             <div style="text-align:center; max-width:600px;">
-                <h2 style="margin-bottom:30px;">🎁 잠깐! 오늘의 운세 아이템을 확인해보세요</h2>
+                <h2 style="margin-bottom:30px;" data-i18n="ad_title">🎁 잠깐! 오늘의 운세 아이템을 확인해보세요</h2>
 
-                <!-- 쿠팡 파트너스 광고 -->
                 <!-- 쿠팡 파트너스 광고 -->
                 <div
                     style="margin:20px 0; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; padding:20px;">
-                    <p
-                        style="font-size: 0.9rem; margin-bottom: 15px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">
+                    <p style="font-size: 0.9rem; margin-bottom: 15px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.5);"
+                        data-i18n="ad_desc">
                         👇 이 링크를 클릭해주시면<br>제작자에게 큰 도움이 됩니다 🙇‍♂️</p>
                     <div style="min-height: 140px;">
                         <script src="https://ads-partners.coupang.com/g.js"></script>
                         <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
                     </div>
-                    <p style="font-size: 11px; margin-top: 15px; color: #aaa;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를
+                    <p style="font-size: 11px; margin-top: 15px; color: #aaa;" data-i18n="ad_disclaimer">이 포스팅은 쿠팡 파트너스
+                        활동의 일환으로, 이에 따른 일정액의 수수료를
                         제공받습니다.</p>
                 </div>
 
                 <div style="margin:30px 0;">
                     <div style="font-size:3rem; font-weight:bold; color:var(--primary-color);" id="countdown-number">5
                     </div>
-                    <p style="color:#666;">초 후에 결과를 볼 수 있습니다</p>
+                    <p style="color:#666;" data-i18n="ad_wait_msg">초 후에 결과를 볼 수 있습니다</p>
                 </div>
 
-                <button id="skip-ad-btn" class="submit-btn" onclick="skipAd()" disabled style="opacity:0.5;">
+                <button id="skip-ad-btn" class="submit-btn" onclick="skipAd()" disabled style="opacity:0.5;"
+                    data-i18n="btn_wait">
                     기다리는 중...
                 </button>
             </div>
@@ -165,9 +227,10 @@
 
         <!-- 2. 결과 화면 -->
         <div id="result-screen" class="result-section">
-            <button class="back-btn" onclick="goBack()">← 다시 입력하기</button>
+            <button class="back-btn" onclick="goBack()" data-i18n="btn_back">← 다시 입력하기</button>
             <header style="text-align: center; margin-bottom: 20px;">
-                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Analysis Report</div>
+                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;" data-i18n="analysis_report">Analysis
+                    Report</div>
                 <h1 id="result-name-title"
                     style="margin: 0; background: linear-gradient(to right, #54a0ff, #00d2d3); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
                     님 사주 리포트</h1>
@@ -177,23 +240,23 @@
             <div class="mini-grid">
                 <div id="col-hour" class="mini-col" onclick="showTabDetail('hour')">
                     <div id="hour-pillar" class="mini-char">-</div>
-                    <div class="col-label">시주</div>
-                    <div class="col-sub">말년/자식</div>
+                    <div class="col-label" data-i18n="tab_hour">시주</div>
+                    <div class="col-sub" data-i18n="tab_hour_sub">말년/자식</div>
                 </div>
                 <div id="col-day" class="mini-col" onclick="showTabDetail('day')">
                     <div id="day-pillar" class="mini-char">-</div>
-                    <div class="col-label">일주(나)</div>
-                    <div class="col-sub">본원/배우자</div>
+                    <div class="col-label" data-i18n="tab_day">일주(나)</div>
+                    <div class="col-sub" data-i18n="tab_day_sub">본원/배우자</div>
                 </div>
                 <div id="col-month" class="mini-col" onclick="showTabDetail('month')">
                     <div id="month-pillar" class="mini-char">-</div>
-                    <div class="col-label">월주</div>
-                    <div class="col-sub">사회/부모</div>
+                    <div class="col-label" data-i18n="tab_month">월주</div>
+                    <div class="col-sub" data-i18n="tab_month_sub">사회/부모</div>
                 </div>
                 <div id="col-year" class="mini-col" onclick="showTabDetail('year')">
                     <div id="year-pillar" class="mini-char">-</div>
-                    <div class="col-label">년주</div>
-                    <div class="col-sub">초년/조상</div>
+                    <div class="col-label" data-i18n="tab_year">년주</div>
+                    <div class="col-sub" data-i18n="tab_year_sub">초년/조상</div>
                 </div>
             </div>
 
@@ -207,47 +270,51 @@
                 <!-- 종합 분석은 항상 상단에 표시 -->
                 <div id="view-general" class="analysis-view">
                     <div class="card">
-                        <h3>🧙 타고난 기질</h3>
+                        <h3 data-i18n="card_nature">🧙 타고난 기질</h3>
                         <p id="nature-text"></p>
                     </div>
                     <div class="card">
-                        <h3>🌟 2026년 운세 미리보기</h3>
+                        <h3 data-i18n="card_fortune">🌟 2026년 운세 미리보기</h3>
                         <p id="fortune-text"></p>
                     </div>
                 </div>
 
                 <!-- 상세 분석 탭 (나머지 4개) -->
                 <div class="sub-tabs">
-                    <button class="sub-tab-btn active" id="btn-love" onclick="switchSubTab('love')">💕 연애운</button>
-                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')">💰 재물운</button>
-                    <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')">🏥 건강운</button>
-                    <button class="sub-tab-btn" id="btn-study" onclick="switchSubTab('study')">📚 학업운</button>
+                    <button class="sub-tab-btn active" id="btn-love" onclick="switchSubTab('love')"
+                        data-i18n="subtab_love">💕 연애운</button>
+                    <button class="sub-tab-btn" id="btn-wealth" onclick="switchSubTab('wealth')"
+                        data-i18n="subtab_wealth">💰 재물운</button>
+                    <button class="sub-tab-btn" id="btn-health" onclick="switchSubTab('health')"
+                        data-i18n="subtab_health">🏥 건강운</button>
+                    <button class="sub-tab-btn" id="btn-study" onclick="switchSubTab('study')"
+                        data-i18n="subtab_study">📚 학업운</button>
                 </div>
 
                 <div id="view-love" class="analysis-view">
                     <div class="card">
-                        <h3>💕 나의 연애 스타일</h3>
+                        <h3 data-i18n="card_love">💕 나의 연애 스타일</h3>
                         <p id="love-text"></p>
                     </div>
                 </div>
 
                 <div id="view-wealth" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>💰 나의 재물 그릇</h3>
+                        <h3 data-i18n="card_wealth">💰 나의 재물 그릇</h3>
                         <p id="wealth-text"></p>
                     </div>
                 </div>
 
                 <div id="view-health" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>🏥 나의 건강 관리</h3>
+                        <h3 data-i18n="card_health">🏥 나의 건강 관리</h3>
                         <p id="health-text"></p>
                     </div>
                 </div>
 
                 <div id="view-study" class="analysis-view" style="display:none;">
                     <div class="card">
-                        <h3>📚 나의 학습 스타일</h3>
+                        <h3 data-i18n="card_study">📚 나의 학습 스타일</h3>
                         <p id="study-text"></p>
                     </div>
                 </div>
@@ -255,14 +322,14 @@
 
             <!-- 오행 시각화 분석 -->
             <div class="ohaeng-section">
-                <h3>☯️ 오행 분포 (에너지 균형)</h3>
+                <h3 data-i18n="ohaeng_title">☯️ 오행 분포 (에너지 균형)</h3>
                 <div class="ohaeng-chart-container">
                     <canvas id="ohaengRadarChart" width="300" height="300"></canvas>
                 </div>
 
                 <details class="ohaeng-info">
-                    <summary>🧐 오행 분포는 어떻게 계산되나요?</summary>
-                    <div class="info-content">
+                    <summary data-i18n="ohaeng_scaling_title">🧐 오행 분포는 어떻게 계산되나요?</summary>
+                    <div class="info-content" data-i18n="ohaeng_desc">
                         <p>사주(四柱)는 태어난 년, 월, 일, 시를 일컫는 4개의 기둥이며, 각 기둥은 위(천간)와 아래(지지) 두 글자로 이루어져 총
                             <strong>8글자(팔자)</strong>가 됩니다.
                         </p>
@@ -279,10 +346,10 @@
             <div style="margin-top: 20px;">
                 <button class="premium-share-btn result-share" onclick="shareApp()">
                     <div class="btn-content">
-                        <span class="btn-icon">�</span>
+                        <span class="btn-icon">🔗</span>
                         <div class="btn-text">
-                            <span class="main-text">내 결과 친구에게 공유하기</span>
-                            <span class="sub-text">친구들은 어떤 사주를 가지고 있을까요? 👀</span>
+                            <span class="main-text" data-i18n="share_result_title">내 결과 친구에게 공유하기</span>
+                            <span class="sub-text" data-i18n="share_result_desc">친구들은 어떤 사주를 가지고 있을까요? 👀</span>
                         </div>
                     </div>
                 </button>
@@ -291,27 +358,38 @@
             <!-- 하단 광고 -->
             <div class="ad-section"
                 style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <p style="font-size: 0.9rem; margin-bottom: 15px; color: #fff;">🙇‍♂️ 아래 링크 클릭은<br>개발자에게 큰 힘이 됩니다!</p>
+                <p style="font-size: 0.9rem; margin-bottom: 15px; color: #fff;" data-i18n="footer_ad">🙇‍♂️ 아래 링크
+                    클릭은<br>개발자에게 큰 힘이 됩니다!</p>
                 <div
                     style="min-height: 140px; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden;">
                     <script src="https://ads-partners.coupang.com/g.js"></script>
                     <script>new PartnersCoupang.G({ "id": 963044, "template": "carousel", "trackingCode": "AF6477058", "width": "100%", "height": "140" });</script>
                 </div>
-                <p style="font-size: 11px; margin-top: 15px; color: #aaa;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를
+                <p style="font-size: 11px; margin-top: 15px; color: #aaa;" data-i18n="footer_disclaimer">이 포스팅은 쿠팡 파트너스
+                    활동의 일환으로, 이에 따른 일정액의 수수료를
                     제공받습니다.</p>
             </div>
         </div>
         <footer
             style="width: 100%; text-align: center; padding: 40px 0 20px; font-size: 0.7rem; color: rgba(255,255,255,0.3); clear: both;">
-            <p style="margin: 0;">Ver 1.2.0</p>
+            <p style="margin: 0;">Ver 2026.02.07</p>
             <p style="margin: 4px 0 0;">Copyright &copy; moonseeker. All rights reserved.</p>
         </footer>
     </div>
 
 
 
-    <!-- JavaScript 분리 -->
-    <script src="script.js?v=20260205033917"></script>
+    <!-- Global Floating Buttons -->
+    <div class="global-floating-buttons">
+        <button id="lang-btn" class="float-btn" onclick="toggleLanguage()" aria-label="언어 변경/Change Language">
+            🌐
+        </button>
+        <button id="sound-btn" class="float-btn" onclick="toggleSound()" aria-label="배경음악 켜기/끄기">
+            🔇
+        </button>
+    </div>
+
+    <script src="script.js?v=20260207225028"></script>
 </body>
 
 </html>
