@@ -50,6 +50,13 @@ const TRANSLATIONS = {
         btn_submit: "분석 시작하기 ✨",
         share_test_title: "친구에게 테스트 공유하기",
         share_test_desc: "2026년 운세를 무료로 확인해보세요",
+        lunar_converter_title: "음력/양력 변환기",
+        lunar_converter_desc: "생년월일을 음력↔양력으로 변환하세요",
+        history_title: "최근 분석 기록",
+        history_desc: "이전에 분석한 사주를 다시 확인하세요",
+        history_modal_title: "📜 최근 분석 기록",
+        history_empty: "기록이 없습니다.",
+        history_date: "분석일: ",
         loading_msg: "사주를 분석하고 있습니다...",
         ad_title: "🎁 잠깐! 오늘의 운세 아이템을 확인해보세요",
         ad_desc: "👇 이 링크를 클릭해주시면<br>제작자에게 큰 도움이 됩니다 🙇‍♂️",
@@ -120,6 +127,13 @@ const TRANSLATIONS = {
         btn_submit: "Start Analysis ✨",
         share_test_title: "Share with Friends",
         share_test_desc: "Check your 2026 fortune for free",
+        lunar_converter_title: "Lunar/Solar Converter",
+        lunar_converter_desc: "Convert birth date between Lunar↔Solar",
+        history_title: "Recent History",
+        history_desc: "Check your previous Saju results",
+        history_modal_title: "📜 Recent Analysis",
+        history_empty: "No records found.",
+        history_date: "Result on: ",
         loading_msg: "Analyzing your destiny...",
         ad_title: "🎁 Wait! Check out today's lucky item",
         ad_desc: "👇 Clicking this link<br>is a great help to the developer 🙇‍♂️",
@@ -576,6 +590,10 @@ async function analyzeSaju(e) {
     }
 
     document.getElementById('loading').style.display = 'flex';
+
+    // 💾 로컬 저장소에 저장 (최근 히스토리)
+    saveToHistory({ name, gender, year, month, day, time });
+
 
     try {
         // 🔐 이름 간단 암호화 (Base64 + 타임스탬프)
@@ -1409,3 +1427,100 @@ const branchReadings_en = {
     "子": "Rat", "丑": "Ox", "寅": "Tiger", "卯": "Rabbit", "辰": "Dragon", "巳": "Snake",
     "午": "Horse", "未": "Sheep", "申": "Monkey", "酉": "Rooster", "戌": "Dog", "亥": "Pig"
 };
+
+/**
+ * 💾 로컬 저장소 기능 (히스토리)
+ */
+function saveToHistory(data) {
+    try {
+        let history = JSON.parse(localStorage.getItem('saju_history') || '[]');
+
+        // 중복 제거 (이름과 생년월일이 같으면 제거 후 최신으로 추가)
+        history = history.filter(item => !(item.name === data.name && item.year === data.year && item.month === data.month && item.day === data.day));
+
+        // 데이터 추가 (저장 시간 포함)
+        data.id = Date.now();
+        data.saveDate = new Date().toLocaleDateString();
+        history.unshift(data);
+
+        // 최대 5개 유지
+        if (history.length > 5) history.pop();
+
+        localStorage.setItem('saju_history', JSON.stringify(history));
+    } catch (e) {
+        console.error("히스토리 저장 실패:", e);
+    }
+}
+
+function showHistoryList() {
+    const history = JSON.parse(localStorage.getItem('saju_history') || '[]');
+    const listEl = document.getElementById('history-list');
+    const emptyEl = document.getElementById('empty-history');
+
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (history.length === 0) {
+        emptyEl.style.display = 'block';
+    } else {
+        emptyEl.style.display = 'none';
+        history.forEach(item => {
+            const div = document.createElement('div');
+            div.style.cssText = 'background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:15px; margin-bottom:10px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:0.2s;';
+            div.onmouseover = () => div.style.background = 'rgba(255,255,255,0.1)';
+            div.onmouseout = () => div.style.background = 'rgba(255,255,255,0.05)';
+
+            const genderSymbol = item.gender === 'male' ? '♂️' : '♀️';
+
+            div.innerHTML = `
+                <div onclick="loadFromHistory(${item.id})" style="flex:1; text-align:left;">
+                    <div style="font-weight:bold; font-size:1.1rem; color:#54a0ff;">${item.name} ${genderSymbol}</div>
+                    <div style="font-size:0.85rem; opacity:0.7; margin-top:4px;">${item.year}.${item.month}.${item.day}</div>
+                </div>
+                <button onclick="deleteHistory(${item.id})" style="background:none; border:none; color:#ff6b6b; cursor:pointer; padding:5px; font-size:1.5rem; line-height:1;">&times;</button>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+
+    document.getElementById('history-modal').style.display = 'flex';
+}
+
+function closeHistoryModal() {
+    document.getElementById('history-modal').style.display = 'none';
+}
+
+function loadFromHistory(id) {
+    const history = JSON.parse(localStorage.getItem('saju_history') || '[]');
+    const item = history.find(i => i.id === id);
+
+    if (item) {
+        document.getElementById('userName').value = item.name;
+        const genderRadio = document.querySelector(`input[name="userGender"][value="${item.gender}"]`);
+        if (genderRadio) genderRadio.checked = true;
+        document.getElementById('birthYear').value = item.year;
+        document.getElementById('birthMonth').value = item.month;
+
+        // 일(Day) 선택박스 업데이트 후 값 설정
+        if (typeof updateDays === 'function') updateDays();
+        document.getElementById('birthDay').value = item.day;
+        document.getElementById('birthTime').value = item.time;
+
+        // ✅ 개인정보 동의 체크박스 자동 체크
+        const privacyCheck = document.getElementById('privacy-agreement');
+        if (privacyCheck) privacyCheck.checked = true;
+
+        closeHistoryModal();
+
+        // 자동으로 분석 버튼 클릭 효과 (event 객체 없이 호출 가능하도록 처리)
+        const fakeEvent = { preventDefault: () => { } };
+        analyzeSaju(fakeEvent);
+    }
+}
+
+function deleteHistory(id) {
+    let history = JSON.parse(localStorage.getItem('saju_history') || '[]');
+    history = history.filter(item => item.id !== id);
+    localStorage.setItem('saju_history', JSON.stringify(history));
+    showHistoryList(); // 목록 새로고침
+}

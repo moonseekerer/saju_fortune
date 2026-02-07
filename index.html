@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <!-- CSS 분리 -->
-    <link rel="stylesheet" href="style.css?v=20260207234455">
+    <link rel="stylesheet" href="style.css?v=20260208002949">
 </head>
 
 <body>
@@ -183,6 +183,43 @@
                     </div>
                 </div>
             </button>
+
+            <button class="premium-share-btn" onclick="showHistoryList()" style="margin-top: 15px;">
+                <div class="btn-content">
+                    <span class="btn-icon">📜</span>
+                    <div class="btn-text">
+                        <span class="main-text" data-i18n="history_title">최근 분석 기록</span>
+                        <span class="sub-text" data-i18n="history_desc">이전에 분석한 사주를 다시 확인하세요</span>
+                    </div>
+                </div>
+            </button>
+
+            <button class="premium-share-btn" onclick="window.location.href='lunar_converter.html'"
+                style="margin-top: 15px;">
+                <div class="btn-content">
+                    <span class="btn-icon">📅</span>
+                    <div class="btn-text">
+                        <span class="main-text" data-i18n="lunar_converter_title">음력/양력 변환기</span>
+                        <span class="sub-text" data-i18n="lunar_converter_desc">생년월일을 음력↔양력으로 변환하세요</span>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <!-- 최근 기록 모달 -->
+        <div id="history-modal" class="modal-overlay"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+            <div class="modal-content"
+                style="background:#1a1a2e; width:90%; max-width:400px; border-radius:20px; padding:25px; border:1px solid rgba(255,255,255,0.1); position:relative;">
+                <button onclick="closeHistoryModal()"
+                    style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+                <h2 style="color:#54a0ff; margin-top:0;" data-i18n="history_modal_title">최근 기록</h2>
+                <div id="history-list" style="max-height:300px; overflow-y:auto; margin-top:20px;">
+                    <!-- 기록이 여기에 동적으로 추가됨 -->
+                </div>
+                <div id="empty-history" style="text-align:center; padding:20px; opacity:0.6; display:none;"
+                    data-i18n="history_empty">기록이 없습니다.</div>
+            </div>
         </div>
 
         <!-- 로딩 화면 -->
@@ -373,7 +410,7 @@
         </div>
         <footer
             style="width: 100%; text-align: center; padding: 40px 0 20px; font-size: 0.7rem; color: rgba(255,255,255,0.3); clear: both;">
-            <p style="margin: 0;">Ver 2026.02.07</p>
+            <p style="margin: 0;">Ver 2026.02.08</p>
             <p style="margin: 4px 0 0;">Copyright &copy; moonseeker. All rights reserved.</p>
         </footer>
     </div>
@@ -390,7 +427,7 @@
         </button>
     </div>
 
-    <script src="script.js?v=20260207234455"></script>
+    <script src="script.js?v=20260208002949"></script>
 </body>
 
 </html>

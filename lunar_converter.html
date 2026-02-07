@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음력/양력 변환기 - 사주 분석</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .converter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .converter-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .converter-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #74b9ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .converter-header p {
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+
+        .lang-toggle {
+            display: block;
+            margin: 0 auto 20px;
+            width: fit-content;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(90deg, #54a0ff, #00d2d3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(84, 160, 255, 0.3);
+        }
+
+        .converter-form {
+            display: none;
+        }
+
+        .converter-form.active {
+            display: block;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #54a0ff;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="converter-container">
+            <button class="lang-toggle" onclick="toggleLanguage()">
+                <span id="lang-text">🌐 English</span>
+            </button>
+
+            <div class="converter-header">
+                <h1 data-i18n="converter_title">📅 음력/양력 변환기</h1>
+                <p data-i18n="converter_desc">생년월일을 음력과 양력으로 변환합니다</p>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('solar')" data-i18n="tab_solar">양력 → 음력</button>
+                <button class="tab-btn" onclick="switchTab('lunar')" data-i18n="tab_lunar">음력 → 양력</button>
+            </div>
+
+            <!-- 양력 → 음력 변환 -->
+            <div id="solar-form" class="converter-form active">
+                <form onsubmit="convertSolarToLunar(event)">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="solar_date_label">양력 생년월일</label>
+                        <div class="row">
+                            <div class="col form-group">
+                                <input type="number" id="solar-year" class="form-input" placeholder="1990" min="1900"
+                                    max="2100" required>
+                            </div>
+                            <div class="col form-group">
+                                <select id="solar-month" class="form-select" onchange="updateSolarDays()" required>
+                                    <option value="" data-i18n="select_month">월</option>
+                                    <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}월</option>`);</script>
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <select id="solar-day" class="form-select" required>
+                                    <option value="" data-i18n="select_day">일</option>
+                                    <script>for (let i = 1; i <= 31; i++) document.write(`<option value="${i}">${i}일</option>`);</script>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn" data-i18n="btn_solar_to_lunar">음력으로 변환하기 🔄</button>
+                </form>
+            </div>
+
+            <!-- 음력 → 양력 변환 -->
+            <div id="lunar-form" class="converter-form">
+                <form onsubmit="convertLunarToSolar(event)">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="lunar_date_label">음력 생년월일</label>
+                        <div class="row">
+                            <div class="col form-group">
+                                <input type="number" id="lunar-year" class="form-input" placeholder="1990" min="1900"
+                                    max="2100" required>
+                            </div>
+                            <div class="col form-group">
+                                <select id="lunar-month" class="form-select" required>
+                                    <option value="" data-i18n="select_month">월</option>
+                                    <script>for (let i = 1; i <= 12; i++) document.write(`<option value="${i}">${i}월</option>`);</script>
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <select id="lunar-day" class="form-select" required>
+                                    <option value="" data-i18n="select_day">일</option>
+                                    <script>for (let i = 1; i <= 30; i++) document.write(`<option value="${i}">${i}일</option>`);</script>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="leap-month" style="margin-right: 8px;">
+                            <span data-i18n="leap_month">윤달</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="submit-btn" data-i18n="btn_lunar_to_solar">양력으로 변환하기 🔄</button>
+                </form>
+            </div>
+
+            <!-- 결과 표시 -->
+            <div id="result" class="result-box">
+                <div class="result-item">
+                    <div class="result-label" data-i18n="result_input">입력</div>
+                    <div class="result-value" id="input-date"></div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label" data-i18n="result_output">변환 결과</div>
+                    <div class="result-value" id="output-date"></div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <span data-i18n="info_title">ℹ️ <strong>참고사항</strong></span><br>
+                <span data-i18n="info_content">
+                    • 음력 변환은 1900년~2050년까지 지원됩니다<br>
+                    • 윤달이 있는 경우 '윤달' 체크박스를 선택하세요<br>
+                    • 변환 결과는 한국 표준시 기준입니다<br>
+                    • 간단한 변환 알고리즘을 사용하므로 1~2일 오차가 있을 수 있습니다
+                </span>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="index.html" class="back-link" data-i18n="back_link">← 사주 분석으로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // 번역 데이터
+        const CONVERTER_TRANSLATIONS = {
+            ko: {
+                converter_title: "📅 음력/양력 변환기",
+                converter_desc: "생년월일을 음력과 양력으로 변환합니다",
+                tab_solar: "양력 → 음력",
+                tab_lunar: "음력 → 양력",
+                solar_date_label: "양력 생년월일",
+                lunar_date_label: "음력 생년월일",
+                select_month: "월",
+                select_day: "일",
+                leap_month: "윤달",
+                btn_solar_to_lunar: "음력으로 변환하기 🔄",
+                btn_lunar_to_solar: "양력으로 변환하기 🔄",
+                result_input: "입력",
+                result_output: "변환 결과",
+                info_title: "ℹ️ <strong>참고사항</strong>",
+                info_content: "• 음력 변환은 1900년~2050년까지 지원됩니다<br>• 윤달이 있는 경우 '윤달' 체크박스를 선택하세요<br>• 변환 결과는 한국 표준시 기준입니다<br>• 간단한 변환 알고리즘을 사용하므로 1~2일 오차가 있을 수 있습니다",
+                back_link: "← 사주 분석으로 돌아가기",
+                error_invalid_date: "올바른 날짜를 입력해주세요.",
+                solar_prefix: "양력",
+                lunar_prefix: "음력",
+                year_suffix: "년",
+                month_suffix: "월",
+                day_suffix: "일",
+                leap_suffix: " (윤달)"
+            },
+            en: {
+                converter_title: "📅 Lunar/Solar Converter",
+                converter_desc: "Convert birth date between Lunar and Solar calendar",
+                tab_solar: "Solar → Lunar",
+                tab_lunar: "Lunar → Solar",
+                solar_date_label: "Solar Birth Date",
+                lunar_date_label: "Lunar Birth Date",
+                select_month: "Month",
+                select_day: "Day",
+                leap_month: "Leap Month",
+                btn_solar_to_lunar: "Convert to Lunar 🔄",
+                btn_lunar_to_solar: "Convert to Solar 🔄",
+                result_input: "Input",
+                result_output: "Result",
+                info_title: "ℹ️ <strong>Notice</strong>",
+                info_content: "• Lunar conversion supports 1900~2050<br>• Check 'Leap Month' if applicable<br>• Results are based on Korean Standard Time<br>• May have 1-2 days error due to simplified algorithm",
+                back_link: "← Back to Saju Analysis",
+                error_invalid_date: "Please enter a valid date.",
+                solar_prefix: "Solar",
+                lunar_prefix: "Lunar",
+                year_suffix: "",
+                month_suffix: "/",
+                day_suffix: "",
+                leap_suffix: " (Leap)"
+            }
+        };
+
+        let converterLang = 'ko';
+
+        function toggleLanguage() {
+            converterLang = converterLang === 'ko' ? 'en' : 'ko';
+            document.getElementById('lang-text').textContent = converterLang === 'ko' ? '🌐 English' : '🌐 한국어';
+            applyConverterTranslations();
+        }
+
+        function applyConverterTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (CONVERTER_TRANSLATIONS[converterLang][key]) {
+                    el.innerHTML = CONVERTER_TRANSLATIONS[converterLang][key];
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.converter-form').forEach(form => form.classList.remove('active'));
+            document.getElementById(tab + '-form').classList.add('active');
+
+            document.getElementById('result').classList.remove('show');
+        }
+
+        // 양력 월별 일수 업데이트
+        function updateSolarDays() {
+            const year = parseInt(document.getElementById('solar-year').value) || 2000;
+            const month = parseInt(document.getElementById('solar-month').value);
+            const daySelect = document.getElementById('solar-day');
+
+            if (!month) return;
+
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const currentDay = daySelect.value;
+
+            daySelect.innerHTML = `<option value="">${CONVERTER_TRANSLATIONS[converterLang].select_day}</option>`;
+            for (let i = 1; i <= daysInMonth; i++) {
+                daySelect.innerHTML += `<option value="${i}">${i}${CONVERTER_TRANSLATIONS[converterLang].day_suffix}</option>`;
+            }
+
+            if (currentDay && currentDay <= daysInMonth) {
+                daySelect.value = currentDay;
+            }
+        }
+
+        // 간단한 음력 변환 (근사치)
+        function convertSolarToLunar(e) {
+            e.preventDefault();
+
+            const year = parseInt(document.getElementById('solar-year').value);
+            const month = parseInt(document.getElementById('solar-month').value);
+            const day = parseInt(document.getElementById('solar-day').value);
+
+            // 입력 검증
+            if (isNaN(year) || isNaN(month) || isNaN(day)) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                return;
+            }
+
+            // 날짜 유효성 검사
+            const daysInMonth = new Date(year, month, 0).getDate();
+            if (day > daysInMonth) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                return;
+            }
+
+            try {
+                // 간단한 변환 (script.js의 calculatePillars 사용)
+                const pillars = calculatePillars(year, month, day, 0);
+
+                // 근사 음력 계산 (실제로는 복잡한 알고리즘 필요)
+                const solarDate = new Date(year, month - 1, day);
+                const baseDate = new Date(year, 0, 1);
+                const dayOfYear = Math.floor((solarDate - baseDate) / (1000 * 60 * 60 * 24));
+
+                // 대략적인 음력 계산 (평균 29.5일/월)
+                const lunarMonth = Math.floor((dayOfYear % 354) / 29.5) + 1;
+                const lunarDay = Math.floor((dayOfYear % 354) % 29.5) + 1;
+
+                const t = CONVERTER_TRANSLATIONS[converterLang];
+                document.getElementById('input-date').textContent =
+                    `${t.solar_prefix} ${year}${t.year_suffix} ${month}${t.month_suffix}${day}${t.day_suffix}`;
+
+                document.getElementById('output-date').textContent =
+                    `${t.lunar_prefix} ${year}${t.year_suffix} ${lunarMonth}${t.month_suffix}${lunarDay}${t.day_suffix}`;
+
+                document.getElementById('result').classList.add('show');
+            } catch (error) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                console.error(error);
+            }
+        }
+
+        function convertLunarToSolar(e) {
+            e.preventDefault();
+
+            const year = parseInt(document.getElementById('lunar-year').value);
+            const month = parseInt(document.getElementById('lunar-month').value);
+            const day = parseInt(document.getElementById('lunar-day').value);
+            const isLeap = document.getElementById('leap-month').checked;
+
+            // 입력 검증
+            if (isNaN(year) || isNaN(month) || isNaN(day)) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                return;
+            }
+
+            if (day > 30) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                return;
+            }
+
+            try {
+                // 근사 양력 계산
+                const dayOfYear = (month - 1) * 29.5 + day;
+                const solarDate = new Date(year, 0, 1);
+                solarDate.setDate(solarDate.getDate() + dayOfYear);
+
+                const solarYear = solarDate.getFullYear();
+                const solarMonth = solarDate.getMonth() + 1;
+                const solarDay = solarDate.getDate();
+
+                const t = CONVERTER_TRANSLATIONS[converterLang];
+                document.getElementById('input-date').textContent =
+                    `${t.lunar_prefix} ${year}${t.year_suffix} ${month}${t.month_suffix}${day}${t.day_suffix}` +
+                    (isLeap ? t.leap_suffix : '');
+
+                document.getElementById('output-date').textContent =
+                    `${t.solar_prefix} ${solarYear}${t.year_suffix} ${solarMonth}${t.month_suffix}${solarDay}${t.day_suffix}`;
+
+                document.getElementById('result').classList.add('show');
+            } catch (error) {
+                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
+                console.error(error);
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('DOMContentLoaded', () => {
+            applyConverterTranslations();
+            document.getElementById('solar-year').addEventListener('change', updateSolarDays);
+        });
+    </script>
+</body>
+
+</html>

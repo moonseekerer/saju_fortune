@@ -2,38 +2,18 @@
 decrypt_server.gs
 decrypt.html
 
-# 중복/임시 파일
-index..html
-script_head.js
-*.bak
-*.backup
-*.tmp
-*.temp
-
 # 환경 변수
 .env
 .env.local
-.env.production
 
 # 비밀 키 파일
 *secret*
 *key*
-*.pem
-*.key
 
 # 개발 파일
 *.log
-node_modules/
-dist/
-build/
+*.tmp
 
 # OS 파일
 .DS_Store
 Thumbs.db
-desktop.ini
-
-# IDE 파일
-.vscode/
-.idea/
-*.swp
-*.swo
