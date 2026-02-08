@@ -259,10 +259,10 @@
             <div class="info-box">
                 <span data-i18n="info_title">ℹ️ <strong>참고사항</strong></span><br>
                 <span data-i18n="info_content">
-                    • 음력 변환은 1900년~2050년까지 지원됩니다<br>
+                    • 음력 변환은 1900년~2100년까지 지원됩니다<br>
                     • 윤달이 있는 경우 '윤달' 체크박스를 선택하세요<br>
                     • 변환 결과는 한국 표준시 기준입니다<br>
-                    • 간단한 변환 알고리즘을 사용하므로 1~2일 오차가 있을 수 있습니다
+                    • 전문 천문 알고리즘을 사용하여 정확하게 변환됩니다
                 </span>
             </div>
 
@@ -272,6 +272,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <script src="script.js"></script>
     <script>
         // 번역 데이터
@@ -291,7 +292,7 @@
                 result_input: "입력",
                 result_output: "변환 결과",
                 info_title: "ℹ️ <strong>참고사항</strong>",
-                info_content: "• 음력 변환은 1900년~2050년까지 지원됩니다<br>• 윤달이 있는 경우 '윤달' 체크박스를 선택하세요<br>• 변환 결과는 한국 표준시 기준입니다<br>• 간단한 변환 알고리즘을 사용하므로 1~2일 오차가 있을 수 있습니다",
+                info_content: "• 음력 변환은 1900년~2100년까지 지원됩니다<br>• 윤달이 있는 경우 '윤달' 체크박스를 선택하세요<br>• 변환 결과는 한국 표준시 기준입니다<br>• 전문 천문 알고리즘을 사용하여 정확하게 변환됩니다",
                 back_link: "← 사주 분석으로 돌아가기",
                 error_invalid_date: "올바른 날짜를 입력해주세요.",
                 solar_prefix: "양력",
@@ -316,7 +317,7 @@
                 result_input: "Input",
                 result_output: "Result",
                 info_title: "ℹ️ <strong>Notice</strong>",
-                info_content: "• Lunar conversion supports 1900~2050<br>• Check 'Leap Month' if applicable<br>• Results are based on Korean Standard Time<br>• May have 1-2 days error due to simplified algorithm",
+                info_content: "• Lunar conversion supports 1900~2100<br>• Check 'Leap Month' if applicable<br>• Results are based on Korean Standard Time<br>• Accurate conversion using professional astronomical algorithms",
                 back_link: "← Back to Saju Analysis",
                 error_invalid_date: "Please enter a valid date.",
                 solar_prefix: "Solar",
@@ -376,7 +377,7 @@
             }
         }
 
-        // 간단한 음력 변환 (근사치)
+        // 정확한 음력 변환 (lunar-javascript 사용)
         function convertSolarToLunar(e) {
             e.preventDefault();
 
@@ -390,33 +391,25 @@
                 return;
             }
 
-            // 날짜 유효성 검사
-            const daysInMonth = new Date(year, month, 0).getDate();
-            if (day > daysInMonth) {
-                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
-                return;
-            }
-
             try {
-                // 간단한 변환 (script.js의 calculatePillars 사용)
-                const pillars = calculatePillars(year, month, day, 0);
+                // Solar 객체 생성 (양력)
+                const solar = Solar.fromYmd(year, month, day);
+                // Lunar 객체로 변환 (음력)
+                const lunar = solar.getLunar();
 
-                // 근사 음력 계산 (실제로는 복잡한 알고리즘 필요)
-                const solarDate = new Date(year, month - 1, day);
-                const baseDate = new Date(year, 0, 1);
-                const dayOfYear = Math.floor((solarDate - baseDate) / (1000 * 60 * 60 * 24));
-
-                // 대략적인 음력 계산 (평균 29.5일/월)
-                const lunarMonth = Math.floor((dayOfYear % 354) / 29.5) + 1;
-                const lunarDay = Math.floor((dayOfYear % 354) % 29.5) + 1;
+                const lunarYear = lunar.getYear();
+                const lunarMonth = lunar.getMonth();
+                const lunarDay = lunar.getDay();
+                const isLeap = lunar.getMonth() < 0; // lunar-javascript에서 음수 월은 윤달을 의미
 
                 const t = CONVERTER_TRANSLATIONS[converterLang];
                 document.getElementById('input-date').textContent =
                     `${t.solar_prefix} ${year}${t.year_suffix} ${month}${t.month_suffix}${day}${t.day_suffix}`;
 
-                document.getElementById('output-date').textContent =
-                    `${t.lunar_prefix} ${year}${t.year_suffix} ${lunarMonth}${t.month_suffix}${lunarDay}${t.day_suffix}`;
+                let resultText = `${t.lunar_prefix} ${lunarYear}${t.year_suffix} ${Math.abs(lunarMonth)}${t.month_suffix}${lunarDay}${t.day_suffix}`;
+                if (isLeap) resultText += t.leap_suffix;
 
+                document.getElementById('output-date').textContent = resultText;
                 document.getElementById('result').classList.add('show');
             } catch (error) {
                 alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
@@ -438,20 +431,16 @@
                 return;
             }
 
-            if (day > 30) {
-                alert(CONVERTER_TRANSLATIONS[converterLang].error_invalid_date);
-                return;
-            }
-
             try {
-                // 근사 양력 계산
-                const dayOfYear = (month - 1) * 29.5 + day;
-                const solarDate = new Date(year, 0, 1);
-                solarDate.setDate(solarDate.getDate() + dayOfYear);
+                // Lunar 객체 생성 (음력)
+                // lunar-javascript: month가 음수면 윤달
+                const lunar = Lunar.fromYmd(year, isLeap ? -month : month, day);
+                // Solar 객체로 변환 (양력)
+                const solar = lunar.getSolar();
 
-                const solarYear = solarDate.getFullYear();
-                const solarMonth = solarDate.getMonth() + 1;
-                const solarDay = solarDate.getDate();
+                const solarYear = solar.getYear();
+                const solarMonth = solar.getMonth();
+                const solarDay = solar.getDay();
 
                 const t = CONVERTER_TRANSLATIONS[converterLang];
                 document.getElementById('input-date').textContent =
